@@ -40,8 +40,11 @@ namespace MarelibuSoft.WebStore.Controllers
 		{
 			var sessioncart = HttpContext.Session.GetString("ShoppingCartId");
 			int shipTypeDefault = 1; //Type 1 = kleines Paket
+			decimal shipDefaultPrice = 0.0M;
 			int countryDefault = 1;//Country 1 Deutschland
 			int periodDefault = 1;
+
+			
 
 			if (id == null)
 			{
@@ -84,9 +87,11 @@ namespace MarelibuSoft.WebStore.Controllers
 					periodDefault = product.ShippingPeriod;
 				}
 
-				if (shipTypeDefault < product.ShippingPriceType) 
+				var productShipPrice = await _context.ShippingPrices.SingleAsync(s => s.ShippingPriceTypeId == product.ShippingPriceType && s.CountryId == countryDefault);
+
+				if (shipDefaultPrice < productShipPrice.Price) 
 				{
-					shipTypeDefault = product.ShippingPriceType;
+					shipDefaultPrice = productShipPrice.Price;
 				}
 
 				decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
@@ -129,12 +134,10 @@ namespace MarelibuSoft.WebStore.Controllers
 				total = total + pPrice;
 			}
 
-			ShippingPrice defaultPrice = _context.ShippingPrices.Single(s => s.ShippingPriceTypeId == shipTypeDefault && s.CountryId == countryDefault);
-
 			ShippingPeriod shippingPeriod = await _context.ShpippingPeriods.SingleAsync(s => s.ShippingPeriodID == periodDefault);
 
-			total = total + defaultPrice.Price;
-			defaultPrice.Price = Math.Round(defaultPrice.Price, 2);
+			total = total + shipDefaultPrice;
+			shipDefaultPrice = Math.Round(shipDefaultPrice, 2);
 			var shippreise = await new ShippingPricesHelpers(_context).GetShippingPricesViewModels(shipTypeDefault);
 
 			CartViewModel vm = new CartViewModel()

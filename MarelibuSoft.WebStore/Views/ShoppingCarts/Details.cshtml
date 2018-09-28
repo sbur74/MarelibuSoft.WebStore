@@ -128,7 +128,7 @@
 					@Html.DisplayFor(model => model.ShippingPeriodName)
 				</div>
 				<div class="col-md-4">
-					<p>Versand: <span id="shipPrice">@shippingPrice.Price</span> &euro;</p>
+					<p>Versand: <span id="shipPrice">@Math.Round(shippingPrice.Price,2)</span> &euro;</p>
 				</div>
 
 			</div>

@@ -74,8 +74,9 @@ namespace MarelibuSoft.WebStore.Controllers
 			var userId = currentUser.Id;
 
 			var customer = await _context.Customers.Where(c => c.UserId == userId).SingleAsync();
+			ShippingPrice shippingPriceDefault = null;
+			decimal shipDefaultPrice = 0.0M;
 
-			int shipTypeDefault = 1; //Type Maxibrief
 			int countryDefault = 1;//Country 1 Deutschland
 			int ShippingPeriodDefaultID = 1;
 
@@ -115,10 +116,12 @@ namespace MarelibuSoft.WebStore.Controllers
 					{
 						ShippingPeriodDefaultID = product.ShippingPeriod;
 					}
+					var productShipPrice = await _context.ShippingPrices.SingleAsync(s => s.ShippingPriceTypeId == product.ShippingPriceType && s.CountryId == countryDefault);
 
-					if (shipTypeDefault < product.ShippingPriceType)
+					if (shipDefaultPrice < productShipPrice.Price)
 					{
-						shipTypeDefault = product.ShippingPriceType;
+						shipDefaultPrice = productShipPrice.Price;
+						shippingPriceDefault = productShipPrice;
 					}
 
 					decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
@@ -206,19 +209,17 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			var paymends = await _context.Paymends.ToListAsync();
 
-			ShippingPrice defaultPrice = await _context.ShippingPrices.SingleAsync(s => s.ShippingPriceTypeId == shipTypeDefault && s.CountryId == countryDefault);
-
 			ShippingPeriod periodDefault = await _context.ShpippingPeriods.SingleAsync(s => s.ShippingPeriodID == ShippingPeriodDefaultID);
 
-			vm.Cart.Total = vm.Cart.Total + defaultPrice.Price;
+			vm.Cart.Total = vm.Cart.Total + shipDefaultPrice;
 
 			vm.Cart.Total = Math.Round(vm.Cart.Total, 2);
 
 			vm.PayPalTotal = Math.Round(vm.Cart.Total, 2).ToString(CultureInfo.CreateSpecificCulture("en-US"));
 
-			defaultPrice.Price = Math.Round(defaultPrice.Price, 2);
+			shipDefaultPrice = Math.Round(shipDefaultPrice);
 
-			vm.ShippingPrice = defaultPrice;
+			vm.ShippingPrice = shippingPriceDefault;
 
 			vm.ShippingPeriod = periodDefault;
 
