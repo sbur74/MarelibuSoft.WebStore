@@ -10,17 +10,24 @@ using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Models.ViewModels;
 using MarelibuSoft.WebStore.Common.Helpers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Controllers
 {
     public class ShoppingCartsController : Controller
     {
         private readonly ApplicationDbContext _context;
+		private readonly ILoggerFactory factory;
+		private readonly ILogger logger;
+		private ShoppingCartHelper cartHelper;
 
-        public ShoppingCartsController(ApplicationDbContext context)
+		public ShoppingCartsController(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
-            _context = context;    
-        }
+            _context = context;
+			factory = loggerFactory;
+			logger = factory.CreateLogger<ShoppingCartsController>();
+			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
+		}
 
         // GET: ShoppingCarts
         public async Task<IActionResult> Index()
@@ -34,6 +41,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			var sessioncart = HttpContext.Session.GetString("ShoppingCartId");
 			int shipTypeDefault = 1; //Type 1 = kleines Paket
 			int countryDefault = 1;//Country 1 Deutschland
+			int periodDefault = 1;
 
 			if (id == null)
 			{
@@ -51,8 +59,8 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			if(shoppingCart.CustomerId != Guid.Empty)
 			{
-				var customer = _context.Customers.Single(c => c.CustomerID == shoppingCart.CustomerId);
-				countryDefault = customer.CountryId;
+				var shipping = _context.ShippingAddresses.Single(c => c.CustomerID == shoppingCart.CustomerId && c.IsMainAddress);
+				countryDefault = shipping.CountryID;
 			}
 
 			decimal total = 0.0M;
@@ -71,6 +79,11 @@ namespace MarelibuSoft.WebStore.Controllers
 				}
 				var product = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault();
 
+				if(periodDefault < product.ShippingPeriod)
+				{
+					periodDefault = product.ShippingPeriod;
+				}
+
 				if (shipTypeDefault < product.ShippingPriceType) 
 				{
 					shipTypeDefault = product.ShippingPriceType;
@@ -88,7 +101,8 @@ namespace MarelibuSoft.WebStore.Controllers
 				{
 					path = "noImage.svg";
 				}
-				string unit = new UnitHelper(_context).GetUnitName(product.BasesUnitID);
+				string unit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID);
+				string sekunit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit);
 
 				CartLineViewModel cvml = new CartLineViewModel()
 				{
@@ -103,10 +117,13 @@ namespace MarelibuSoft.WebStore.Controllers
 					UnitID = item.UnitID,
 					ProductName = product.Name,
 					ProductNo = product.ProductNumber.ToString(),
-					MinimumPurchaseQuantity = product.MinimumPurchaseQuantity,
-					AvailableQuantity = product.AvailableQuantity,
+					ShortDescription = product.ShortDescription,
+					MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity,2),
+					AvailableQuantity = Math.Round( product.AvailableQuantity, 2),
 					ShoppingCartID = shoppingCart.ID,
-					SellBasePrice = item.SellBasePrice
+					SellBasePrice = Math.Round(item.SellBasePrice,2),
+					SellSekPrice = Math.Round(product.SecondBasePrice,2),
+					SekUnit = sekunit
 				};
 				vmcLines.Add(cvml);
 				total = total + pPrice;
@@ -114,9 +131,11 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			ShippingPrice defaultPrice = _context.ShippingPrices.Single(s => s.ShippingPriceTypeId == shipTypeDefault && s.CountryId == countryDefault);
 
+			ShippingPeriod shippingPeriod = await _context.ShpippingPeriods.SingleAsync(s => s.ShippingPeriodID == periodDefault);
+
 			total = total + defaultPrice.Price;
 			defaultPrice.Price = Math.Round(defaultPrice.Price, 2);
-			ViewData["ShippingPrice"] = defaultPrice;
+			var shippreise = await new ShippingPricesHelpers(_context).GetShippingPricesViewModels(shipTypeDefault);
 
 			CartViewModel vm = new CartViewModel()
 			{
@@ -124,9 +143,13 @@ namespace MarelibuSoft.WebStore.Controllers
 				Number = shoppingCart.Number,
 				OrderId = shoppingCart.OrderId,
 				Lines = vmcLines,
-				Total = total
+				Total = total,
+				DefaultCountry = countryDefault,
+				ShipPrices = shippreise,
+				ShippingPeriodName = shippingPeriod.Decription
 			};
 
+			cartHelper.CheckAndRemove();
 
 			return View(vm);
         }

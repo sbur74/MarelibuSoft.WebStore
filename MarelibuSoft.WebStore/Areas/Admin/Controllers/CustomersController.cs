@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Common.Helpers;
+using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
+using MarelibuSoft.WebStore.Models.ViewModels;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -25,7 +27,35 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
 			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList(), "ID", "Name");
-            return View(await _context.Customers.ToListAsync());
+			var customers = await _context.Customers.ToListAsync();
+			var vms = new List<AdminCustomerViewModel>();
+
+			foreach (var item in customers)
+			{
+				var user = await _context.Users.SingleAsync(u => u.Id==item.UserId);
+				var country = await _context.Countries.SingleAsync(c => c.ID == item.CountryId);
+
+				var custVm = new AdminCustomerViewModel
+				{
+					CustomerID = item.CustomerID,
+					CustomerNo = item.CustomerNo,
+					AdditionalAddress = item.AdditionalAddress,
+					Address = item.Address,
+					Addresses = null,
+					AllowedPayByBill = item.AllowedPayByBill,
+					City = item.City,
+					CountryName = country.Name,
+					CountryId = item.CountryId,
+					Name = item.Name,
+					FirstName = item.FirstName,
+					PostCode = item.PostCode,
+					UserEmail = user.Email,
+					UserId = item.UserId
+				};
+				vms.Add(custVm);
+			}
+
+			return View(vms);
         }
 
         // GET: Admin/Customers/Details/5
@@ -42,8 +72,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+			var vm = await GetCustomerViewModel((Guid)id);
 
-            return View(customer);
+			return View(vm);
         }
 
         // GET: Admin/Customers/Create
@@ -83,8 +114,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+			var vm = await GetCustomerViewModel((Guid)id);
+
 			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList(), "ID", "Name");
-			return View(customer);
+			return View(vm);
         }
 
         // POST: Admin/Customers/Edit/5
@@ -132,12 +166,15 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 
             var customer = await _context.Customers
                 .SingleOrDefaultAsync(m => m.CustomerID == id);
+
+
             if (customer == null)
             {
                 return NotFound();
             }
+			var vm =await GetCustomerViewModel((Guid)id);
 
-            return View(customer);
+			return View(vm);
         }
 
         // POST: Admin/Customers/Delete/5
@@ -146,10 +183,61 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var customer = await _context.Customers.SingleOrDefaultAsync(m => m.CustomerID == id);
+			var user = await _context.Users.SingleAsync(u => u.Id == customer.UserId);
             _context.Customers.Remove(customer);
+			_context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+		private async Task<AdminCustomerViewModel> GetCustomerViewModel(Guid id)
+		{
+			AdminCustomerViewModel result = new AdminCustomerViewModel();
+
+			var customer = await _context.Customers.SingleAsync(c => c.CustomerID == id);
+			var user = await _context.Users.SingleAsync(u => u.Id == customer.UserId);
+			var countries = await _context.Countries.ToListAsync();
+			var shipToAddresses = await _context.ShippingAddresses.Where(sh => sh.CustomerID == customer.CustomerID).ToListAsync();
+
+			result.CustomerID = customer.CustomerID;
+			result.CustomerNo = customer.CustomerNo;
+			result.FirstName = customer.FirstName;
+			result.Name = customer.Name;
+			result.PostCode = customer.PostCode;
+			result.UserEmail = user.Email;
+			result.UserId = user.Id;
+			result.City = customer.City;
+			result.AdditionalAddress = customer.AdditionalAddress;
+			result.Address = customer.Address;
+			result.AllowedPayByBill = customer.AllowedPayByBill;
+			result.Addresses = new List<ShippingAddressViewModel>();
+			result.CountryId = customer.CountryId;
+			result.CountryName = countries.Single(c => c.ID == customer.CountryId).Name;
+
+			foreach (var item in shipToAddresses)
+			{
+				var shipTo = new ShippingAddressViewModel
+				{
+					ID = item.ID,
+					Address = item.Address,
+					AdditionalAddress = item.AdditionalAddress,
+					City = item.City,
+					CountryID = item.CountryID,
+					CountryName = countries.Single(c => c.ID == item.CountryID).Name,
+					CustomerID = item.CustomerID,
+					FirstName = item.FirstName,
+					IsMainAddress = item.IsMainAddress,
+					LastName = item.LastName,
+					PostCode = item.PostCode,
+					IsInvoiceAddress = item.IsInvoiceAddress
+				};
+				result.Addresses.Add(shipTo);
+				
+			}
+		
+
+			return result;
+		}
 
         private bool CustomerExists(Guid id)
         {

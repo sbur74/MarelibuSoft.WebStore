@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using MarelibuSoft.WebStore.Generics;
 using MarelibuSoft.WebStore.Areas.Admin.Helpers;
 using MarelibuSoft.WebStore.Common.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -22,42 +23,61 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 	public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+		private readonly ILogger _logger;
+		private readonly ILoggerFactory factory;
 		private CultureInfo deDE = new CultureInfo("de-DE");
 
-		public ProductsController(ApplicationDbContext context)
+		public ProductsController(ApplicationDbContext context, ILogger<ProductsController> logger, ILoggerFactory loggerFactory )
         {
-            _context = context;    
+            _context = context;
+			_logger = logger;
+			factory = loggerFactory;
         }
 
         // GET: Admin/Products
-        public async Task<IActionResult> Index(string searchString, int? page)
+        public async Task<IActionResult> Index(string searchString)
         {
 			List<IndexProductViewModel> vms = new List<IndexProductViewModel>();
 			ViewData["CurrentFilter"] = searchString;
-			ViewData["Units"] = from u in _context.Units select u;
-			ViewData["ShippingPriceType"] = from p in _context.ShippingPriceTypes select p;
-			int pageSize = 5;
 
-			var products = from p in _context.Products select p;
+			var products = await _context.Products.ToListAsync();
 			if (!String.IsNullOrEmpty(searchString))
 			{
-				products = products.Where(p => p.Name.Contains(searchString));
+				products = products.Where(p => p.Name.Contains(searchString)).ToList();
 			}
 
 			foreach (var item in products)
 			{
+				string mainImgStr = string.Empty;
+
+				try
+				{
+					var mainImg = await _context.ProductImages.SingleAsync(i => i.ProductID == item.ProductID && i.IsMainImage);
+					mainImgStr = mainImg.ImageUrl;
+				}
+				catch (Exception e)
+				{
+					_logger.LogError(e, "Fehler, beim ermittel eines Hauptatriklebildes!");
+					mainImgStr = "noImage.svg";
+				}
+
+				 
+				if (string.IsNullOrWhiteSpace(mainImgStr)) mainImgStr = "noImage.svg";
+
 				IndexProductViewModel vm = new IndexProductViewModel()
 				{					
 					ProductID = item.ProductID,
 					ProductNumber = item.ProductNumber,
 					Price = item.Price,
 					AvailableQuantity = Math.Round(item.AvailableQuantity,2),
-					BasesUnit = new UnitHelper(_context).GetUnitName(item.BasesUnitID),
+					BasesUnit = new UnitHelper(_context, factory).GetUnitName(item.BasesUnitID),
 					Description = item.Description,
 					Name = item.Name,
 					ShortDescription = item.ShortDescription,
 					ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(item.ShippingPriceType),
-					ShippingTime = new ShippingPeriodHelper(_context).GetDescription(item.ShippingPeriod)
+					ShippingTime = new ShippingPeriodHelper(_context).GetDescription(item.ShippingPeriod),
+					IsActive = item.IsActive,
+					MainImage = mainImgStr
 				};
 				vms.Add(vm);
 			}
@@ -85,9 +105,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				ProductID = product.ProductID,
 				AvailableQuantity = Math.Round(product.AvailableQuantity,2).ToString(),
 				BasesUnitID = product.BasesUnitID,
-				BasesUnit = new UnitHelper(_context).GetUnitName(product.BasesUnitID),
+				BasesUnit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID),
 				Description = product.Description,
-				//GroupName = grpName,
+				IsActive = product.IsActive,
 				Name = product.Name,
 				//MainGroupName = mGrpName,
 				MinimumPurchaseQuantity = Math.Round( product.MinimumPurchaseQuantity,2).ToString(),
@@ -99,9 +119,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				SizeID = product.Size,
 				ShortDescription = product.ShortDescription,
 				SecondBasePrice = Math.Round(product.SecondBasePrice,2).ToString(),
-				SecondBaseUnit = new UnitHelper(_context).GetUnitName(product.SecondBaseUnit),
+				SecondBaseUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit),
 				SecondBaseUnitID = product.SecondBaseUnit,
-				ImageUrls = new ProductImageHelper(_context).GetUrls(product.ProductID),
+				ImageUrls = new ProductImageHelper(_context, factory).GetUrls(product.ProductID),
 				//CategoryID = product.CategoryID,
 				//CategoryName = new CategoryRepository(_context).GetNameByID(product.CategoryID),
 				//CategorySubID = product.CategorySubID,
@@ -135,7 +155,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			//ViewData["MainGroupID"] =  new SelectList(_context.Catagories, "CatagoryID", "Name");
 
 
-			List<UnitViewModel> vmunits = new UnitHelper(_context).GetVmUnits();
+			List<UnitViewModel> vmunits = new UnitHelper(_context, factory).GetVmUnits();
 			List<SizeViewModel> vwsizes = new SizeHelper(_context).GetVmSizes();
 			List<ShippingPeriodViewModel> periods = new ShippingPeriodHelper(_context).GetVmShippingPeriods();
 			List<SelectItemViewModel> catvms = new CategoryHelper(_context).GetVmList();
@@ -162,7 +182,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,SecondBaseUnitID,SecondBasePrice,ShortDescription,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID")] AdminProductViewModel vm)
+        public async Task<IActionResult> Create([Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,SecondBaseUnitID,SecondBasePrice,ShortDescription,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive")] AdminProductViewModel vm)
        {
 			
 			
@@ -181,10 +201,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				SecondBasePrice = StaticDecimalHelper.PaseString(vm.SecondBasePrice),
 				SecondBaseUnit = vm.SecondBaseUnitID,
 				BasesUnitID = vm.BasesUnitID,
-				ShippingPriceType = vm.ShippingPriceTypeID
-				//CategoryDetailID = vm.CategoryDetailID,
-				//CategoryID = vm.CategoryID,
-				//CategorySubID = vm.CategorySubID
+				ShippingPriceType = vm.ShippingPriceTypeID,
+				IsActive = vm.IsActive
 			};
 
 			if (ModelState.IsValid)
@@ -225,17 +243,17 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				BasesUnitID = product.BasesUnitID,
 				SecondBaseUnitID = product.SecondBaseUnit,
 				SecondBasePrice = Math.Round(product.SecondBasePrice,2).ToString(),
-				
-				BasesUnit = new UnitHelper(_context).GetUnitName(product.BasesUnitID),
+				IsActive = product.IsActive,
+				BasesUnit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID),
 				Period = new ShippingPeriodHelper(_context).GetDescription(product.ShippingPeriod),
-				SecondBaseUnit = new UnitHelper(_context).GetUnitName(product.SecondBaseUnit),
+				SecondBaseUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit),
 				Size = new SizeHelper(_context).GetName(product.Size),
-				ImageUrls = new ProductImageHelper(_context).GetUrls(product.ProductID),
+				ImageUrls = new ProductImageHelper(_context, factory).GetUrls(product.ProductID),
 				ShippingPriceTypeID = product.ShippingPriceType,
 				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType)
 			};
 
-			List<UnitViewModel> vmunits = new UnitHelper(_context).GetVmUnits();
+			List<UnitViewModel> vmunits = new UnitHelper(_context, factory).GetVmUnits();
 			List<SizeViewModel> vwsizes = new SizeHelper(_context).GetVmSizes();
 			List<ShippingPeriodViewModel> periods = new ShippingPeriodHelper(_context).GetVmShippingPeriods();
 			List<SelectItemViewModel> catvms = new CategoryHelper(_context).GetVmList();
@@ -260,7 +278,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int ProductID, [Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,ShortDescription,SecondBasePrice,SecondBaseUnitID,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID ")] AdminProductViewModel vm)
+        public async Task<IActionResult> Edit(int ProductID, [Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,ShortDescription,SecondBasePrice,SecondBaseUnitID,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive")] AdminProductViewModel vm)
         {
 			Product product = new Product() {
 				ProductID = vm.ProductID,
@@ -276,9 +294,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				ShortDescription = vm.ShortDescription,
 				SecondBasePrice = StaticDecimalHelper.PaseString( vm.SecondBasePrice),
 				SecondBaseUnit = vm.SecondBaseUnitID,
-				//CategoryDetailID =vm.CategoryDetailID,
-				//CategoryID = vm.CategoryID,
-				//CategorySubID = vm.CategorySubID
+				IsActive = vm.IsActive,
 				ShippingPriceType = vm.ShippingPriceTypeID
 			};
 

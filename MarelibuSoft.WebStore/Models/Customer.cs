@@ -12,6 +12,8 @@ namespace MarelibuSoft.WebStore.Models
 		public string CustomerNo { get; set; }
 		public string FirstName { get; set; }
 		public string Name { get; set; }
+		[Display(Name = "Firmenname")]
+		public string CompanyName { get; set; }
 		public string Address { get; set; }
 		public string AdditionalAddress { get; set; }
 		public string City { get; set; }
@@ -21,7 +23,8 @@ namespace MarelibuSoft.WebStore.Models
 		public bool AllowedPayByBill { get; set; }
 
 		public string UserId { get; set; }
-
+		[Display(Name = "Land")]
+		[Required(ErrorMessage = "Es muss ein Land ausgewählt sein")]
 		public int CountryId { get; set; }
 	}
 }

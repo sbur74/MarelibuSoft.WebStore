@@ -146,7 +146,21 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             {
 				try
 				{
-					_context.Update(productImage);
+					var images = await _context.ProductImages.Where(i => i.ProductID == productImage.ProductID).ToListAsync();
+
+					foreach (var item in images)
+					{
+						if (item.ProductImageID == productImage.ProductImageID)
+						{
+							item.IsMainImage = true;
+						}
+						else
+						{
+							item.IsMainImage = false;
+						}
+						_context.Entry(item).State = EntityState.Modified;
+					}
+
 					await _context.SaveChangesAsync();
 				}
 				catch (DbUpdateConcurrencyException)

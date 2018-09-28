@@ -19,7 +19,7 @@
 	@*@Html.Raw(JavaScriptSnippet.FullScript)*@
 </head>
 <body>
-	<nav class="navbar navbar-inverse ">
+	<nav class="navbar navbar-inverse">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -44,6 +44,13 @@
 						</ul>
 					</li>
 					<li><a asp-area="Admin" asp-controller="Customers" asp-action="Index">Kunden</a></li>
+					@*<li class="dropdown">
+			<a href="#" data-toggle="dropdown" class="dropdown-toggle">Benutzer und Kunden<b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<li><a asp-area="Admin" asp-controller="AdminUsers" asp-action="Index">Benutzer</a></li>
+				<li><a asp-area="Admin" asp-controller="Customers" asp-action="Index">Kunden</a></li>
+			</ul>
+		</li>*@
 					<li class="dropdown">
 						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Kategorien<b class="caret"></b></a>
 						<ul class="dropdown-menu">
@@ -61,6 +68,13 @@
 							<li><a asp-area="Admin" asp-controller="Units" asp-action="Index">Einheiten</a></li>
 							<li><a asp-area="Admin" asp-controller="Sizes" asp-action="Index">Gr&ouml;&szlig;en</a></li>
 							<li><a asp-area="Admin" asp-controller="AdditionalPriceInformations" asp-action="Index">Preis Zusatzinformationen</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Rechtstexte<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte Shop HTML</a></li>
+							<li><a asp-area="Admin" asp-controller="ShopFiles" asp-action="Index">Rechtstexte PDF</a> </li>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -85,7 +99,7 @@
 		@RenderBody()
 		<hr />
 		<footer>
-			<p>&copy; 2017 - marelibuDesign</p>
+			<p>&copy; @DateTime.Now.Year - marelibuDesign</p>
 		</footer>
 	</div>
 
@@ -111,7 +125,7 @@
 		</script>
 		<script src="~/js/site.min.js" asp-append-version="true"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-		<script src="~/js/admin.js" asp-append-version="true"></script>
+		<script src="~/js/admin.min.js" asp-append-version="true"></script>
 	</environment>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
 

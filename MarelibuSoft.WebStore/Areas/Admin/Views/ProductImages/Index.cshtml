@@ -44,7 +44,7 @@
                 @Html.DisplayFor(modelItem => item.Product.Name)
             </td>
             <td>
-                @*<a class="btn btn-default" asp-action="Edit" asp-route-id="@item.ProductImageID">Bearbeiten</a>*@
+                <a class="btn btn-default" asp-action="Edit" asp-route-id="@item.ProductImageID">Bearbeiten</a>
                 <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ProductImageID">Details</a>
 				<a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="L&ouml;schen" asp-action="Delete" asp-route-id="@item.ProductImageID"><span class="glyphicon glyphicon-trash"></span></a>
             </td>

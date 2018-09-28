@@ -45,13 +45,11 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 		{
 			List<SelectItemViewModel> selectItemViewModels  = new List<SelectItemViewModel>();
 
-			var none = new SelectItemViewModel { ID = 0, Name = "nicht zu gewiesen" };
-			selectItemViewModels.Add(none);
 			var coutries = _context.Countries.ToList();
 
 			foreach (var item in coutries)
 			{
-				var vm = new SelectItemViewModel { ID = item.ID, Name = item.Name };
+				var vm = new SelectItemViewModel { ID = item.ID.ToString(), Name = item.Name };
 				selectItemViewModels.Add(vm);
 			}
 
@@ -62,14 +60,14 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 		{
 			List<SelectItemViewModel> selectItemViewModels = new List<SelectItemViewModel>();
 
-			var none = new SelectItemViewModel { ID = 0, Name = "nicht zu gewiesen" };
+			var none = new SelectItemViewModel { ID = "", Name = "nicht zu gewiesen" };
 			selectItemViewModels.Add(none);
 			var coutries = _context.Countries.ToList();
 
 			foreach (var item in coutries)
 			{
 				bool select = id == item.ID ? true : false;
-				var vm = new SelectItemViewModel { ID = item.ID, Name = item.Name, IsSelected = select };
+				var vm = new SelectItemViewModel { ID = item.ID.ToString(), Name = item.Name, IsSelected = select };
 				selectItemViewModels.Add(vm);
 			}
 

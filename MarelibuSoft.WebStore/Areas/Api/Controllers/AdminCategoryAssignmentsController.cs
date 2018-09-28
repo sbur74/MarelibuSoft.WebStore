@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 {
@@ -17,10 +18,14 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 	public class AdminCategoryAssignmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+		private readonly ILoggerFactory factory;
+		private readonly ILogger logger;
 
-        public AdminCategoryAssignmentsController(ApplicationDbContext context)
+		public AdminCategoryAssignmentsController(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
+			factory = loggerFactory;
+			logger = factory.CreateLogger<AdminCategoryAssignmentsController>();
         }
 
         // GET: api/AdminCategoryAssignments
@@ -90,13 +95,23 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
+				logger.LogError("POST: api/AdminCategoryAssignments -> invalid model");
                 return BadRequest(ModelState);
             }
 
-            _context.CategoryAssignments.Add(categoryAssignment);
-            await _context.SaveChangesAsync();
+			try
+			{
 
-            return CreatedAtAction("GetCategoryAssignment", new { id = categoryAssignment.ID }, categoryAssignment);
+				_context.CategoryAssignments.Add(categoryAssignment);
+				await _context.SaveChangesAsync();
+
+				return CreatedAtAction("GetCategoryAssignment", new { id = categoryAssignment.ID }, categoryAssignment);
+			}
+			catch (Exception e)
+			{
+				logger.LogError(e, "POST: api/AdminCategoryAssignments -> Fehler beim anlegen");
+				return BadRequest(e.Message);
+			}
         }
 
         // DELETE: api/AdminCategoryAssignments/5

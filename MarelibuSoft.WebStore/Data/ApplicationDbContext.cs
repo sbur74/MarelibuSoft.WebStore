@@ -40,6 +40,8 @@ namespace MarelibuSoft.WebStore.Data
 		public DbSet<Paymend> Paymends { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<ProductImage> ProductImages { get; set; }
+		public DbSet<ProductVariant> ProductVariants { get; set; }
+		public DbSet<ProductVariantOption> ProductVariantOptions { get; set; }
 		public DbSet<SellAction> SellActions { get; set; }
 		public DbSet<SellActionItem> SellActionItems { get; set; }
 		public DbSet<ShoppingCart> ShoppingCarts { get; set; }
@@ -54,7 +56,6 @@ namespace MarelibuSoft.WebStore.Data
 		public DbSet<Impressum> Impressums { get; set; }
 		public DbSet<ShopContent> ShopContents { get; set; }
 		public DbSet<LawContent> LawContents { get; set; }
-		//public DbSet<MarelibuSoft.WebStore.Models.ViewModels.WeHaveYourOrderViewModel> WeHaveYourOrderViewModel { get; set; }
-		//public DbSet<MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.OrderViewModel> OrderViewModel { get; set; }
+		public DbSet<VariantProductAssignment> VariantProductAssignments { get; set; }
 	}
 }

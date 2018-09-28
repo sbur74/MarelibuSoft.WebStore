@@ -1,0 +1,182 @@
+﻿@model MarelibuSoft.WebStore.Models.ViewModels.CustomerOrderViewModel
+
+@{
+    ViewData["Title"] = "Mein Auftrag";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Mein Auftrag</h2>
+
+<div>
+    <h4>@Html.DisplayFor(model => model.Number)</h4>
+    <hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.OrderDate)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OrderDate)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.PaymentName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.PaymentName)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.IsPayed)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.IsPayed)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.IsSend)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.IsSend)
+		</dd>
+		@if (Model.Shippingdate != DateTime.MinValue)
+		{
+		<dt>
+			@Html.DisplayNameFor(model => model.Shippingdate)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Shippingdate)
+		</dd>
+		}
+		<dt>
+			@Html.DisplayNameFor(model => model.IsClosed)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.IsClosed)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ExceptLawConditions)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ExceptLawConditions)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ShipPrice)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ShipPrice) &euro;
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Total)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Total) &euro;
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ShipPeriod)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ShipPeriod)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.FreeText)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.FreeText)
+		</dd>
+	</dl>
+
+	<div class="row">
+		<div class="col-lg-6 col-md-6">
+			<h4>Rechnungsadresse</h4>
+			<dl class="dl-horizontal">
+				<dt>
+					@Html.DisplayNameFor(model => model.InvoiceAddressName)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.InvoiceAddressName)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.InvoiceAddressString)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.InvoiceAddressString)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.InvoicePostCodeCity)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.InvoicePostCodeCity)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.InvoiceCountryName)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.InvoiceCountryName)
+				</dd>
+
+			</dl>
+		</div>
+		<div class="col-lg-6 col-md-6">
+			<h4>Lieferadresse</h4>
+			<dl class="dl-horizontal">
+				<dt>
+					@Html.DisplayNameFor(model => model.ShippingAddressName)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.ShippingAddressName)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.ShippingAddressString)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.ShippingAddressString)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.ShippingPostCodeCity)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.ShippingPostCodeCity)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.ShippingCountryName)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.ShippingCountryName)
+				</dd>
+			</dl>
+		</div>
+	</div>
+</div>
+<hr />
+<h4>Artikel</h4>
+@foreach(var item in Model.Lines)
+{
+<div class="row">
+	<div class="col-md-2">
+		@Html.DisplayNameFor(modelItem => item.Position):<br />
+		@Html.DisplayFor(modelItem => item.Position)
+	</div>
+	<div class="col-md-2">
+		@Html.DisplayNameFor(modelItem => item.ProductNumber):<br />
+		@Html.DisplayFor(modelItem => item.ProductNumber)
+	</div>
+	<div class="col-md-2">
+		@Html.DisplayNameFor(modelItem => item.ProductName):<br />
+		@Html.DisplayFor(modelItem => item.ProductName)
+	</div>
+	<div class="col-md-2">
+		@Html.DisplayNameFor(modelItem => item.Quantity):<br />
+		@Html.DisplayFor(modelItem => item.Quantity)
+	</div>
+	<div class="col-md-2">
+		@Html.DisplayNameFor(modelItem => item.Unit):<br />
+		@Html.DisplayFor(modelItem => item.Unit)
+	</div>
+	<div class="col-md-2">
+		@Html.DisplayNameFor(modelItem => item.SellBasePrice):<br />
+		@Html.DisplayFor(modelItem => item.SellBasePrice) &euro;
+	</div>
+</div>
+}
+<hr />
+<br />
+<div>
+    <a class="btn btn-primary" asp-action="Index" asp-route-id="@Model.CustomerID">Meine Auftr&auml;ge</a>
+</div>

@@ -1,0 +1,14 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Benutzer";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Benutzer Verwaltung</h2>
+
+	<ul>
+	@foreach (var item in Model)
+	{
+		<li>@Html.DisplayFor(modelItem => item.UserName)</li>
+	}
+	</ul>

@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-	IQueryable<Unit> units =(IQueryable<Unit>) ViewData["Units"];
-	IQueryable<ShippingPriceType> shippingPriceTypes = (IQueryable<ShippingPriceType>)ViewData["ShippingPriceType"];
 }
 
 <h2>&Uuml;bersicht</h2>
@@ -12,7 +10,7 @@
 <p>
     <a class="btn btn-success" asp-action="Create" >Neu</a>
 </p>
-@*<form asp-action="Index" method="get">
+<form asp-action="Index" method="get">
 	<div class="form-actions no-color">
 		<p>
 			Produktnamen: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
@@ -20,10 +18,13 @@
 			<a class="btn btn-primary" asp-action="Index">Gesamte Liste anzeigen</a>
 		</p>
 	</div>
-</form>*@
+</form>
 <table class="table table-bordered">
     <thead>
         <tr>
+			<th>
+				Bild
+			</th>
                 <th>
                     Nummer
                 </th>
@@ -39,14 +40,14 @@
                 <th>
                     Verf&uuml;gbaremenge
                 </th>
-                @*<th>
-                    @Html.DisplayNameFor(model => model.MinimumPurchaseQuantity)
-                </th>*@
                 <th>
                    Basiseinheit
                 </th>
 			<th>
 				Versandtyp
+			</th>
+			<th>
+				Aktiv
 			</th>
             <th>Aktionen</th>
         </tr>
@@ -54,6 +55,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+			<td>
+				<img src="~/images/store/@item.MainImage" style="max-width:80px; max-height:80px;" class="img-responsive" />
+			</td>
             <td>
                 @Html.DisplayFor(modelItem => item.ProductNumber)
             </td>
@@ -75,6 +79,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ShippingPriceTypeName)
             </td>
+			<td>
+				@Html.DisplayFor(modelItem => item.IsActive)
+			</td>
             <td>
 				<a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Bearbeiten" asp-action="Edit" asp-route-id="@item.ProductID"><span class="glyphicon glyphicon-edit"></span></a>
                 <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.ProductID">Details</a> 

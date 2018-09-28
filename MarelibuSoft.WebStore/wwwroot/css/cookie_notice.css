@@ -1,0 +1,97 @@
+/**
+ * 	
+ * Pure javascript cookie notice 2018 by Michael Hudault, https://hudault.de
+ * Javascript in /cookie_notice/cookie_notice.js
+ * 
+ * Without-any-warranty-do-whatever-you-want licence
+ *
+ */
+
+
+/* Cookie notice main container */
+
+.cookie-notice-container {
+	background-color: #fff;
+	font-family: "Arial", "Helvetica", "Verdana", "Tahoma", sans-serif;
+	padding: 20px;
+	text-align:center;
+	max-width:1024px;
+	margin:0 auto;
+	}
+
+
+/* Logo */
+
+.cookie-notice-container .cookie-notice-logo{
+	text-align:center;
+	width:100px;
+	}
+
+
+/* Headline */
+
+.cookie-notice-container .cookie-notice-headline{
+	color:  turquoise;
+	text-align:center;
+	font-size: 22px;
+	font-weight: bold;
+	padding: 7px;
+	margin-bottom:15px;
+	}
+
+
+/* Text */
+
+.cookie-notice-container p{
+	color: #333;
+	font-size: 14px;
+	text-align:center;
+	margin:5px;
+	}
+
+
+/* Privacy-Link */
+
+.cookie-notice-container .cookie-notice-privacy-link {
+	color: turquoise;
+	text-decoration:underline;
+	font-weight:bold;
+	}
+
+.cookie-notice-privacy-link:hover {
+	color: darkturquoise !important;
+	text-decoration:underline;
+	}
+
+
+/* Button Container */
+
+.cookie-notice-container .cookie-notice-buttons {
+	text-align:center;
+	margin-top:10px;
+	margin-bottom:20px;
+	}
+
+
+/* Accept-Button */
+
+	.cookie-notice-container .cookie-notice-buttons .cookie-notice-button-accept {
+		background: turquoise;
+		color: #fff;
+		margin: 5px;
+		padding: 10px;
+		padding-left: 20px;
+		padding-right: 20px;
+		font-size: 20px;
+		font-weight: bold;
+		white-space: nowrap;
+		text-decoration: none;
+	}
+
+
+/* Accept-Butoon hover */
+
+		.cookie-notice-container .cookie-notice-buttons .cookie-notice-button-accept:hover,
+		.cookie-notice-container .cookie-notice-buttons .cookie-notice-button-accept:focus {
+			background: darkturquoise;
+		}

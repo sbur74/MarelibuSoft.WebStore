@@ -63,7 +63,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
             {
                 return BadRequest();
             }
-
+			shoppingCart.LastChange = DateTime.Now;
             _context.Entry(shoppingCart).State = EntityState.Modified;
 
             try
@@ -91,6 +91,9 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 		public async Task<IActionResult> PostShoppingCart([FromBody] ShoppingCart shoppingCart)
         {
 			shoppingCart.Number = "MD" + DateTime.Now.Ticks;
+			shoppingCart.CreateAt = DateTime.Now;
+			shoppingCart.LastChange = DateTime.Now;
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -105,7 +108,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
         // DELETE: api/ShoppingCarts/5
         [HttpDelete("{id}")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteShoppingCart([FromRoute] Guid id)
+		public async Task<IActionResult> DeleteShoppingCart([FromRoute] Guid id, [FromBody] string sessionId)
         {
             if (!ModelState.IsValid)
             {
@@ -117,6 +120,21 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
             {
                 return NotFound();
             }
+			if (!shoppingCart.SessionId.Equals(sessionId))
+			{
+				return BadRequest();
+			}
+
+			var clines = await _context.ShoppingCartLines.Where(l => l.ShoppingCartID.Equals(shoppingCart.ID)).ToListAsync();
+
+			foreach (var item in clines)
+			{
+				var product = await _context.Products.SingleAsync(p => p.ProductID == item.ProductID);
+				product.AvailableQuantity += item.Quantity;
+				_context.Entry(product).State = EntityState.Modified;
+				_context.Entry(item).State = EntityState.Deleted;
+			}
+
 
             _context.ShoppingCarts.Remove(shoppingCart);
             await _context.SaveChangesAsync();

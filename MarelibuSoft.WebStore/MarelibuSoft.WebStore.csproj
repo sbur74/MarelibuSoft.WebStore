@@ -3,7 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>aspnet-MarelibuSoft.WebStore-870AF5D8-BF42-4453-85A2-3FCBB9D259D3</UserSecretsId>
-  </PropertyGroup>
+	<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+ </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Manage\ChangePassword.cshtml~RF22d45abb.TMP\**" />
+    <Content Remove="Views\Manage\ChangePassword.cshtml~RF22d45abb.TMP\**" />
+    <EmbeddedResource Remove="Views\Manage\ChangePassword.cshtml~RF22d45abb.TMP\**" />
+    <None Remove="Views\Manage\ChangePassword.cshtml~RF22d45abb.TMP\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20180813190408_inti_publish_mysql.cs" />
+    <Compile Remove="Migrations\20180813190408_inti_publish_mysql.Designer.cs" />
+    <Compile Remove="Migrations\20180813190553_inti_publish_mysql_inte.cs" />
+    <Compile Remove="Migrations\20180813190553_inti_publish_mysql_inte.Designer.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Remove="wwwroot\js\adminProduct.js" />
@@ -11,15 +26,23 @@
 
   <ItemGroup>
     <None Remove="Controllers\OrdersController.cs~RF9b332b42.TMP" />
+    <None Remove="Models\ShippingAddress.cs~RFbe8a5.TMP" />
   </ItemGroup>
 
 
   <ItemGroup>
     <PackageReference Include="bootstrap" Version="3.3.7" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
+    <PackageReference Include="BundlerMinifier.Core" Version="2.8.391" />
+    <PackageReference Include="Certes" Version="2.3.0" />
+    <PackageReference Include="jQuery" Version="3.3.1" />
     <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
+    <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.2" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.3" PrivateAssets="All" />
 	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.1" />
 	  <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
 	  <PackageReference Include="Serilog.Settings.Configuration" Version="2.6.1" />
@@ -46,6 +69,24 @@
     <Content Update="wwwroot\css\site.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\favicon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\favicon.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\logoMarelibuDesign.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="marelibucert.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

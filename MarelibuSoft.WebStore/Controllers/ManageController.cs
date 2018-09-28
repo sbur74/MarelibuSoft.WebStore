@@ -57,7 +57,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
 			var customer = await _context.Customers.SingleAsync(cu => cu.UserId == user.Id);
@@ -74,7 +74,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				AdditionalAddress = customer.AdditionalAddress,
 				Address = customer.Address,
 				City = customer.City,
-			
+				CompanyName = customer.CompanyName,
 				FirstName = customer.FirstName,
 				Name = customer.Name,
 				CustomerID = customer.CustomerID,
@@ -99,7 +99,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var email = user.Email;
@@ -108,7 +108,7 @@ namespace MarelibuSoft.WebStore.Controllers
                 var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
                 if (!setEmailResult.Succeeded)
                 {
-                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+                    throw new ApplicationException($"Beim Einstellen der E-Mail-Adresse für einen Benutzer mit ID '{user.Id}' ist ein unerwarteter Fehler aufgetreten.");
                 }
             }
 
@@ -123,12 +123,13 @@ namespace MarelibuSoft.WebStore.Controllers
             }
 
 			Customer customer = await _context.Customers.SingleAsync(c => c.UserId.Equals(user.Id));
-			ShippingAddress shipping = await _context.ShippingAddresses.SingleAsync(s => s.CustomerID.Equals(customer.CustomerID) && s.IsMainAddress);
+			ShippingAddress shipping = await _context.ShippingAddresses.SingleAsync(s => s.CustomerID.Equals(customer.CustomerID) && s.IsInvoiceAddress);
 
 			if (customer.CustomerID.Equals(model.CustomerID))
 			{
 				customer.FirstName = model.FirstName;
 				customer.Name = model.Name;
+				customer.CompanyName = model.CompanyName;
 				customer.Address = model.Address;
 				customer.AdditionalAddress = model.AdditionalAddress;
 				customer.City = model.City;
@@ -142,24 +143,26 @@ namespace MarelibuSoft.WebStore.Controllers
 				{
 					shipping.LastName = model.Name;
 					shipping.FirstName = model.FirstName;
+					shipping.CompanyName = model.CompanyName;
 					shipping.City = model.City;
 					shipping.CountryID = model.CountryID;
 					shipping.AdditionalAddress = model.AdditionalAddress;
 					shipping.Address = model.Address;
 					shipping.PostCode = model.PostCode;
+					shipping.IsInvoiceAddress = true;
 
 					_context.Entry(shipping).State = EntityState.Modified;
 				}
 				else
 				{
-					shipping = new ShippingAddress { CustomerID = model.CustomerID, AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CountryID = model.CountryID, FirstName = model.FirstName, LastName = model.Name, PostCode = model.PostCode, IsMainAddress = true };
+					shipping = new ShippingAddress { CustomerID = model.CustomerID, AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CountryID = model.CountryID, FirstName = model.FirstName, LastName = model.Name, PostCode = model.PostCode, IsMainAddress = true, IsInvoiceAddress = true, CompanyName = model.CompanyName };
 					_context.ShippingAddresses.Add(shipping);
 				}
 
 				await _context.SaveChangesAsync();
 			}
 
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Dein Konto wurde aktualiest!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -175,7 +178,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -183,7 +186,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var email = user.Email;
             await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = "Bestätigungs-E-Mail gesendet. Bitte überprüfen Sie Ihre E-Mails.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -193,8 +196,8 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+				throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
+			}
 
             var hasPassword = await _userManager.HasPasswordAsync(user);
             if (!hasPassword)
@@ -218,7 +221,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
@@ -230,7 +233,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            StatusMessage = "Dein Passwort wurde geändert!";
 
             return RedirectToAction(nameof(ChangePassword));
         }
@@ -241,7 +244,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var hasPassword = await _userManager.HasPasswordAsync(user);
@@ -267,7 +270,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
@@ -278,7 +281,7 @@ namespace MarelibuSoft.WebStore.Controllers
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            StatusMessage = "Your password has been set.";
+            StatusMessage = "Ihr Passwort wurde festgelegt.";
 
             return RedirectToAction(nameof(SetPassword));
         }
@@ -289,7 +292,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var model = new ExternalLoginsViewModel { CurrentLogins = await _userManager.GetLoginsAsync(user) };
@@ -321,7 +324,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync(user.Id);
@@ -350,7 +353,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var result = await _userManager.RemoveLoginAsync(user, model.LoginProvider, model.ProviderKey);
@@ -370,7 +373,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var model = new TwoFactorAuthenticationViewModel
@@ -389,7 +392,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             if (!user.TwoFactorEnabled)
@@ -407,7 +410,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
@@ -426,7 +429,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
@@ -457,7 +460,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             // Strip spaces and hypens
@@ -490,7 +493,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, false);
@@ -506,7 +509,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             if (!user.TwoFactorEnabled)

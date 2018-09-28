@@ -9,7 +9,7 @@
 	if (User.IsInRole("Administrator"))
 	{
 		@*<div class="navbar-collapse collapse navbar-fixed-top">*@
-			<ul class="nav navbar-nav navbar-inverse">
+			<ul class="nav navbar-nav navbar-default">
 				<li>
 					<a asp-area="Admin" asp-controller="Home" asp-action="Index">
 						<span class="glyphicon glyphicon-cog"></span>
@@ -22,10 +22,10 @@
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Kundenkonto</a>
             </li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">Abmelden</button>
             </li>
         </ul>
     </form>
@@ -33,7 +33,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
-        <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Register">Registrieren</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Login">Anmelden</a></li>
     </ul>
 }

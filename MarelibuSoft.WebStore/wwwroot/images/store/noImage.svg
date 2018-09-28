@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><svg xmlns="http://www.w3.org/2000/svg" width="242" height="200" viewBox="0 0 242 200" preserveAspectRatio="none"><!--
-Source URL: holder.js/100%x200
-Created with Holder.js 2.6.0.
-Learn more at http://holderjs.com
-(c) 2012-2015 Ivan Malopinsky - http://imsky.co
---><defs><style type="text/css"><![CDATA[#holder_15c8603c8af text { fill:#AAAAAA;font-weight:bold;font-family:Arial, Helvetica, Open Sans, sans-serif, monospace;font-size:12pt } ]]></style></defs><g id="holder_15c8603c8af"><rect width="242" height="200" fill="#EEEEEE"/><g><text x="89.8046875" y="105.1">no image</text></g></g></svg>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="742.464" height="743.964" viewBox="0 0 742.46 743.96" enable-background="new 0 0 742.46 743.96" xml:space="preserve">
+	<path fill="none" stroke-width="15" stroke-linejoin="round" stroke="#000000" stroke-opacity="1" d="M 125.994,169.492L 70.4968,169.492L 70.4968,668.967L 607.47,668.967"/>
+	<path fill="none" stroke-width="15" stroke-linejoin="round" stroke="#000000" stroke-opacity="1" d="M 673.467,635.969L 673.467,169.492L 194.991,169.492"/>
+	<ellipse fill="none" stroke-width="15" stroke-linejoin="round" stroke="#000000" stroke-opacity="1" cx="372.732" cy="403.48" rx="159.742" ry="145.493"/>
+	<ellipse fill="none" stroke-width="15" stroke-linejoin="round" stroke="#000000" stroke-opacity="1" cx="373.232" cy="402.23" rx="98.2451" ry="86.2457"/>
+	<path fill="none" stroke-width="15" stroke-linejoin="round" stroke="#000000" stroke-opacity="1" d="M 567.722,203.99L 609.72,203.99C 626.702,203.99 640.468,217.757 640.468,234.739L 640.468,234.739C 640.468,251.721 626.702,265.487 609.72,265.487L 567.722,265.487C 550.74,265.487 536.973,251.721 536.973,234.739L 536.973,234.739C 536.973,217.757 550.74,203.99 567.722,203.99 Z "/>
+	<line fill="none" stroke-width="15" stroke-linejoin="round" stroke="#000000" stroke-opacity="1" x1="7.5" y1="7.49998" x2="734.964" y2="736.464"/>
+</svg>

@@ -8,5 +8,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "globalize": "^1.4.0",
+    "jquery": "^3.3.1",
+	"bootstrap": "^3.3.7"
+  }
 }

@@ -11,6 +11,11 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string Number { get; set; }
 		public Guid OrderId { get; set; }
 		public decimal Total { get; set; }
+		public int DefaultCountry { get; set; }
+
+		public string ShippingPeriodName { get; set; }
+
+		public List<ShippingPricesViewModel> ShipPrices { get; set; }
 
 		public List<CartLineViewModel> Lines { get; set; }
 	}

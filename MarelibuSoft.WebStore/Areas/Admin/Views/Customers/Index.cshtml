@@ -1,90 +1,90 @@
-﻿@model IEnumerable<MarelibuSoft.WebStore.Models.Customer>
+﻿@model IEnumerable<MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.AdminCustomerViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Kudenübersicht";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Übersicht</h2>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
 <table class="table">
     <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.CustomerNo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Address)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdditionalAddress)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.City)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PostCode)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AllowedPayByBill)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CountryId)
-                </th>
-            <th></th>
-        </tr>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.UserEmail)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.CustomerNo)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.FirstName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Address)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.AdditionalAddress)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.City)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.PostCode)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.AllowedPayByBill)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.CountryName)
+			</th>
+			<th></th>
+		</tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdditionalAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AllowedPayByBill)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CountryId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CustomerID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CustomerID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CustomerID">Delete</a>
-            </td>
-        </tr>
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.UserEmail)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.CustomerNo)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.FirstName)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Name)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Address)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.AdditionalAddress)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.City)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.PostCode)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.AllowedPayByBill)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.CountryName)
+			</td>
+			<td>
+				<a asp-action="Edit" asp-route-id="@item.CustomerID">Bearbeiten</a> |
+				<a asp-action="Details" asp-route-id="@item.CustomerID">Details</a> |
+				<a asp-action="Delete" asp-route-id="@item.CustomerID">Löschen</a>
+			</td>
+		</tr>
 }
     </tbody>
 </table>

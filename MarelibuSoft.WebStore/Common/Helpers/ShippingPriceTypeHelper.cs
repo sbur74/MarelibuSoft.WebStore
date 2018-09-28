@@ -37,12 +37,12 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 			List<SelectItemViewModel> selectItemViewModels = new List<SelectItemViewModel>();
 			var list = _context.ShippingPriceTypes.ToList();
 
-			SelectItemViewModel none = new SelectItemViewModel { ID = 0, Name = "nicht zugewiesen" };
+			SelectItemViewModel none = new SelectItemViewModel { ID = "", Name = "nicht zugewiesen" };
 			selectItemViewModels.Add(none);
 
 			foreach (var item in list)
 			{
-				SelectItemViewModel select = new SelectItemViewModel { ID = item.ID, Name = item.Name };
+				SelectItemViewModel select = new SelectItemViewModel { ID = item.ID.ToString(), Name = item.Name };
 				selectItemViewModels.Add(select);
 			}
 

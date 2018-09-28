@@ -15,6 +15,7 @@ marelibusoft.admin.getCategories = function () {
 		type: "GET", 
 		contentType: "application/json",
 		dataType: 'json',
+		timeout: 60000,
 		success: function (result) {
 			var data = result;
 			marelibusoft.admin.renderCatgories(data);
@@ -32,6 +33,7 @@ marelibusoft.admin.getCategorySubs = function (sender) {
 		type : "GET",
 		contentType: "application/json",
 		dataType: "json",
+		timeout: 60000,
 		success: function (result) {
 			var data = result;
 			marelibusoft.admin.renderSubs(data);
@@ -48,6 +50,7 @@ marelibusoft.admin.getCategoryDetails = function (sender) {
 		type: "GET",
 		contentType: "application/json",
 		dataType: "json",
+		timeout: 60000,
 		success: function (result) {
 			var data = result;
 			marelibusoft.admin.renderDetails(data);
@@ -137,7 +140,7 @@ marelibusoft.admin.renderDetails = function (response) {
 }
 
 marelibusoft.admin.renderOptions = function (response) {
-	var html = "<option value='0'>nicht Zugewiesen</option>";
+	var html = "<option value=0>nicht Zugewiesen</option>";
 	if (response) {
 		for (var i = 0; i < response.length; i++) {
 			html += "<option value='" + response[i].key + "'>" + response[i].value + "</option>";
@@ -199,37 +202,39 @@ marelibusoft.admin.postAssignment = function (productID, categoryID, categorySub
 		categoryDetailID: categoryDetialID
 	});
 
+	var xxsrf = $("input[name='__RequestVerificationToken']").val();
 	var apiurl = "/api/AdminCategoryAssignments";
+
 	$.ajax(apiurl, {
 		type: "POST",
+		headers: { 'X-XSRF-TOKEN': xxsrf },
 		contentType: "application/json",
 		dataType: "json",
 		data: body,
+		timeout: 60000,
 		success: function () {
 			var html = "<div class=\"alert alert-success alert-dismissable fade in\">" +
 				"<a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a>" +
 				"<strong>Erledigt!</strong> Artikel Kategorien Zuordnung angelegt</div>";
-
-			//function foo(id) {
-			//	window.location.href = '/Branch/Details/' + id;
-			//}
 
 			$("#messages").empty().append(html).fadeIn(3000);
 		}, error: function () {
 			var html = "<div class=\"alert alert-danger alert-dismissable fade in\">" +
 				"<a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a>" +
 				"<strong>Fehler!</strong> Fehler, bei der Anlage.</div>";
-			$("#messages").empty().append(html).fadeIn(3000);
+			$("#messages").empty().append(html).fadeIn(3000).fadeOut(1500);
 		}
 	})
 }
 
 marelibusoft.admin.calculateSecondBasePrice = function () {
-	var pPrice = parseFloat($("#basisPrice").val());
-	var pwith = parseFloat($("#productwith").val());
+	var pPrice = parseFloat($("#basisPrice").val().replace(",", "."));
+	var pwith = parseFloat($("#productwith").val().replace(",", "."));
 	var qmeter = 1 * pwith;
 	var secondPrice = pPrice / qmeter;
-	$("#sbPrice").val(parseFloat(secondPrice).toFixed(2));
+	secondPrice = secondPrice.toFixed(2);
+	secondPrice = secondPrice.replace(".", ",");
+	$("#sbPrice").val(secondPrice);
 	$("#myModal").modal("hide");
 }
 

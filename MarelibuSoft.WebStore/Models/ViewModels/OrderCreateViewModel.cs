@@ -24,5 +24,9 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string PayPalTotal { get; set; }
 
 		public bool CanBuyWithBill { get; set; }
+
+		public List<ShippingAddressViewModel> ShippingAddresseVMs { get; set; }
+
+		public List<ShippingPrice> ShippingPrices { get; set; }
 	}
 }

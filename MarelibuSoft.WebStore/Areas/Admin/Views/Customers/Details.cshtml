@@ -1,79 +1,118 @@
-﻿@model MarelibuSoft.WebStore.Models.Customer
+﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.AdminCustomerViewModel
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Details";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Kundenkonto</h2>
 
 <div>
-    <h4>Customer</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CustomerNo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CustomerNo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AdditionalAddress)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AdditionalAddress)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PostCode)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PostCode)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AllowedPayByBill)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AllowedPayByBill)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CountryId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CountryId)
-        </dd>
-    </dl>
+	<h4>Details</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.CustomerNo)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.CustomerNo)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.FirstName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.FirstName)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Address)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Address)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.AdditionalAddress)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.AdditionalAddress)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.City)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.City)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.PostCode)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.PostCode)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.AllowedPayByBill)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.AllowedPayByBill)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.UserEmail)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.UserEmail)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.CountryName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.CountryName)
+		</dd>
+	</dl>
+</div>
+<div class="row">
+	@foreach (var item in Model.Addresses)
+	{
+		<div class="col-md-3">
+			<div class="thumbnail">
+				<div class="caption">
+					@if (item.IsMainAddress)
+					{
+						<h4><strong class="bg-primary">&nbsp; aktive Lieferadresse &nbsp;</strong></h4>
+						@if (item.IsInvoiceAddress)
+						{
+							<h5>(@Html.DisplayNameFor(modelItem => item.IsInvoiceAddress))</h5>
+						}
+					}
+					else
+					{
+						<h4>Lieferadresse</h4>
+						@if (item.IsInvoiceAddress)
+						{
+							<h5>(@Html.DisplayNameFor(modelItem => item.IsInvoiceAddress))</h5>
+						}
+						<p><a class="btn btn-default" asp-action="UseAddress" asp-route-id="@item.ID">verwenden</a></p>
+					}
+
+					<p>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</p>
+					<p>@Html.DisplayFor(moleItem => item.Address)</p>
+					@if (string.IsNullOrWhiteSpace(item.AdditionalAddress))
+					{<p>&nbsp;</p>}
+					else
+					{
+						<p>@Html.DisplayFor(moleItem => item.AdditionalAddress)</p>
+					}
+					<p>@Html.DisplayFor(moleItem => item.PostCode) @Html.DisplayFor(moleItem => item.City)</p>
+					<p>@Html.DisplayFor(modelItem => item.CountryName)</p>
+				</div>
+			</div>
+		</div>
+	}
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.CustomerID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Edit" asp-route-id="@Model.CustomerID">Edit</a> |
+	<a asp-action="Index">Back to List</a>
 </div>

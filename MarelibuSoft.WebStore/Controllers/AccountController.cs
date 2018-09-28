@@ -141,7 +141,7 @@ namespace MarelibuSoft.WebStore.Controllers
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                 throw new ApplicationException($"Benuter '{_userManager.GetUserId(User)}' konnte nicht gefunden werden.");
             }
 
             var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
@@ -225,28 +225,6 @@ namespace MarelibuSoft.WebStore.Controllers
         [AllowAnonymous]
         public IActionResult Lockout()
         {
-			string cartId = HttpContext.Session.GetString("ShoppingCartId");
-
-			var cart = _context.ShoppingCarts.Single(s => s.ID.Equals(Guid.Parse(cartId)));
-
-			if(cart != null)
-			{
-				var lines = _context.ShoppingCartLines.Where(cl => cl.ShoppingCartID.Equals(cart.ID));
-				foreach (var item in lines)
-				{
-					if (cart.OrderId == Guid.Empty)
-					{
-						var product = _context.Products.Single(p => p.ProductID.Equals(item.ProductID));
-						product.AvailableQuantity += item.Quantity;
-						_context.Entry(product).State = EntityState.Modified; 
-					}
-					_context.ShoppingCartLines.Remove(item);
-				}
-
-				_context.ShoppingCarts.Remove(cart);
-				_context.SaveChanges();
-			}
-
 			return View();
         }
 
@@ -286,14 +264,16 @@ namespace MarelibuSoft.WebStore.Controllers
 					//					values: new { userId = user.Id, code = code },
 					//					protocol: Request.Scheme);
 
-					
+
 					//await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                    //await _signInManager.SignInAsync(user, isPersistent: false);
+					//await _signInManager.SignInAsync(user, isPersistent: false);
 
-					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"CUST{DateTime.Now.Ticks}",  FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID };
+					var customers = await _context.Customers.ToListAsync();
 
-					ShippingAddress shipping = new ShippingAddress { AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, FirstName = model.FirstName, IsMainAddress = true, CustomerID = customer.CustomerID, LastName = model.Name, PostCode = model.PostCode, CountryID = model.CountryID };
+					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}C{customers.Count + 1}",  FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID, CompanyName = model.CompanyName };
+
+					ShippingAddress shipping = new ShippingAddress { AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, FirstName = model.FirstName, IsMainAddress = true, CustomerID = customer.CustomerID, LastName = model.Name, PostCode = model.PostCode, CountryID = model.CountryID, IsInvoiceAddress = true, CompanyName = model.CompanyName };
 
 					_context.Add(customer);
 					_context.Add(shipping);
@@ -303,9 +283,11 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					_logger.LogInformation("User created a new account with password.");
 
-					await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
-					$"<h2>Willkommen bei marelibuDesign</h2>" +
-					$"Bitte best&auml;tige Deine Email Adresse: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Email best&auml;tigen </ a >.");
+					string subject = "Registrierung abschließen";
+					string message = $"<h2>Herzlich Willkommen bei marelibuDesign!</h2>" +
+						$"<p>Bitte bestätige deine Registrierung durch Klicken dieses Links: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Registrierung abschließen.</a><br />Danach kannst du dich in dein Kundenkonto einloggen.Danach kannst du dich in dein Kundenkonto einloggen.</p><p>Du hast dich nicht auf www.marelibuDesign.de angemeldet? Dann klicke den Link bitte nicht, die eingegebenen Daten werden nach Ablauf von 7 Tagen automatisch gelöscht.</p><br /> ";
+
+					await _emailSender.SendEmailAsync(user.Email, subject, message);
 
 					return RedirectToAction("PleaseConfirmEmail", "Home");
 
@@ -324,8 +306,32 @@ namespace MarelibuSoft.WebStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
+			string cartId = HttpContext.Session.GetString("ShoppingCartId");
+
+			var cart = _context.ShoppingCarts.Single(s => s.ID.Equals(Guid.Parse(cartId)));
+
+			if (cart != null)
+			{
+				var lines = _context.ShoppingCartLines.Where(cl => cl.ShoppingCartID.Equals(cart.ID));
+				if (lines != null)
+				{
+					foreach (var item in lines)
+					{
+						if (cart.OrderId == Guid.Empty)
+						{
+							var product = _context.Products.Single(p => p.ProductID.Equals(item.ProductID));
+							product.AvailableQuantity += item.Quantity;
+							_context.Entry(product).State = EntityState.Modified;
+						}
+						_context.ShoppingCartLines.Remove(item);
+					}
+				}
+				_context.ShoppingCarts.Remove(cart);
+				_context.SaveChanges();
+			}
+			HttpContext.Session.SetString("ShoppingCartId", string.Empty);
+			await _signInManager.SignOutAsync();
+			_logger.LogInformation("User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
@@ -372,9 +378,9 @@ namespace MarelibuSoft.WebStore.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
+				ViewData["ShoppingCartId"] = HttpContext.Session.GetString("ShoppingCartId");
+				return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
             }
-			ViewData["ShoppingCartId"] = HttpContext.Session.GetString("ShoppingCartId");
 		}
 
         [HttpPost]
@@ -458,7 +464,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				var cart = HttpContext.Session.GetString("ShoppingCartId");
 				var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, cart, Request.Scheme);
-                await _emailSender.SendEmailAsync(model.Email, "Reset Password",
+                await _emailSender.SendEmailAsync(model.Email, "Passwort zurücksetzen",
                    $"<h2>marelibuDesign Passwort zur&uuml;cksetzen</h2>" +
 				   $"Bitte benutze diesen Link um Dein Passwort zur&uuml;ckzusetzen: <a href='{callbackUrl}'>link</a>");
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
@@ -556,7 +562,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				var cart = _context.ShoppingCarts.Single(s => s.ID.Equals(Guid.Parse(shoppingcartid)));
 
 				cart.CustomerId = customerid;
-
+				_context.Update(cart);
 				_context.SaveChanges(); 
 			}
 		}

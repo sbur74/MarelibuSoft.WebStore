@@ -22,6 +22,7 @@ namespace MarelibuSoft.WebStore.Models
 		public decimal SecondBasePrice { get; set; }
 		public int ShippingPeriod { get; set; }
 		public int ShippingPriceType { get; set; }
+		public bool IsActive { get; set; }
 
 		public ICollection<CategoryAssignment> CategoryAssignments { get; set; }
 

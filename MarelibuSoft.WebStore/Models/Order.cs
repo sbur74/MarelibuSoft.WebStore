@@ -21,6 +21,7 @@ namespace MarelibuSoft.WebStore.Models
 		public bool IsSend { get; set; }
 		[Display(Name = "Versanddatum")]
 		public DateTime Shippingdate { get; set; }
+		[Display(Name = "Lieferadresse")]
 		public int ShippingAddressId { get; set; }
 		[Display(Name = "Auftrag abgeschlossen")]
 		public bool IsClosed { get; set; }
@@ -37,7 +38,9 @@ namespace MarelibuSoft.WebStore.Models
 		public Decimal ShippingPrice { get; set; }
 		[Display(Name = "Versandzeitraum")]
 		public int ShippingPeriodId { get; set; }
-		[Display(Name = "Gesamtbetrag in Euro")]
+		[Display(Name = "Gesamtbetrag")]
 		public decimal Total { get; set; }
+		[Display(Name = "Zusätzliche Angaben")]
+		public string FreeText { get; set; }
 	}
 }

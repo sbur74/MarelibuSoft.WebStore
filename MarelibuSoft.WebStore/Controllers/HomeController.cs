@@ -8,24 +8,32 @@ using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models.ViewModels;
 using Microsoft.Extensions.Logging;
+using MarelibuSoft.WebStore.Services;
+using MarelibuSoft.WebStore.Common.Helpers;
 
 namespace MarelibuSoft.WebStore.Controllers
 {
     public class HomeController : Controller
     {
 		private readonly ApplicationDbContext _context;
+		private readonly ILoggerFactory factory;
 		private readonly ILogger _logger;
+		private ShoppingCartHelper cartHelper;
 
-		public HomeController(ApplicationDbContext context, ILogger<HomeController>logger)
+		public HomeController(ApplicationDbContext context, ILoggerFactory loggerFactory)
 		{
 			_context = context;
-			_logger = logger;
+			factory = loggerFactory;
+			_logger = factory.CreateLogger<HomeController>();
+			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
 		}
 
 		public IActionResult Index()
         {
-			var productImages = _context.ProductImages.ToList();
+			var productImages = _context.ProductImages.Where(i => i.IsMainImage).ToList();
 			var urls = new List<string>();
+
+			cartHelper.CheckAndRemove();
 
 			_logger.LogDebug("show home index");
 
@@ -99,6 +107,20 @@ namespace MarelibuSoft.WebStore.Controllers
 			return View();
 		}
 
+		public IActionResult PaymendAndShipping()
+		{
+			return View();
+		}
+
+		public IActionResult Faq()
+		{
+			return View();
+		}
+
+		public IActionResult OnWeb()
+		{
+			return View();
+		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()

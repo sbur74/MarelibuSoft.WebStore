@@ -1,19 +1,20 @@
 ﻿@model MarelibuSoft.WebStore.Models.ShippingAddress
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Neue Adresse";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>Neu Lieferadresse</h2>
 
-<h4>ShippingAddress</h4>
+<h4>Lieferadresse anlegen</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
 		<form asp-action="Create">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<input asp-for="CustomerID" type="hidden" />
+			<input asp-for="ID" type="hidden" value="0" />
+			<input asp-for="CustomerID" type="hidden" value="@ViewBag.CustomerId" />
 			<div class="form-group">
 				<label asp-for="FirstName" class="control-label"></label>
 				<input asp-for="FirstName" class="form-control" />
@@ -23,6 +24,11 @@
 				<label asp-for="LastName" class="control-label"></label>
 				<input asp-for="LastName" class="form-control" />
 				<span asp-validation-for="LastName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CompanyName" class="control-label"></label>
+				<input asp-for="CompanyName" class="form-control" />
+				<span asp-validation-for="CompanyName" class="text-danger"></span>
 			</div>
 			<div class="form-group">
 				<label asp-for="Address" class="control-label"></label>
@@ -44,9 +50,13 @@
 				<input asp-for="PostCode" class="form-control" />
 				<span asp-validation-for="PostCode" class="text-danger"></span>
 			</div>
+			@*<div class="form-group">
+			<label asp-for="IsMainAddress"></label>
+			<input type="checkbox" asp-for="IsMainAddress" />
+		</div>*@
 			<div class="form-group">
 				<label asp-for="CountryID"></label>
-				<select asp-for="CountryID" asp-items="ViewBag.CountryID" class="form-control" />
+				<select asp-for="CountryID" asp-items="ViewBag.Countries" class="form-control" required></select>
 				<span asp-validation-for="CountryID" class="text-danger"></span>
 			</div>
 
@@ -58,7 +68,7 @@
 </div>
 
 <div>
-    <a class="btn btn-default" asp-action="CustomerIndex" asp-route-id="@Model.CustomerID">Meine Adressen</a>
+    <a class="btn btn-default" asp-action="CustomerIndex" asp-route-id="@ViewBag.CustomerId">Meine Adressen</a>
 </div>
 
 @section Scripts {

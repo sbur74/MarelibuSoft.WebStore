@@ -53,7 +53,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			{
 				Customer customer = await _context.Customers.SingleAsync(c => c.CustomerID == id);
 				
-				ShippingAddress main = new ShippingAddress() { CustomerID = customer.CustomerID, AdditionalAddress = customer.AdditionalAddress, Address = customer.Address, City = customer.City, FirstName = customer.FirstName, IsMainAddress = true, LastName = customer.Name, PostCode = customer.PostCode };
+				ShippingAddress main = new ShippingAddress() { CustomerID = customer.CustomerID, AdditionalAddress = customer.AdditionalAddress, Address = customer.Address, City = customer.City, FirstName = customer.FirstName, IsMainAddress = true, LastName = customer.Name, PostCode = customer.PostCode, CompanyName = customer.CompanyName };
 
 				_context.Add(main);
 				await _context.SaveChangesAsync();
@@ -72,11 +72,13 @@ namespace MarelibuSoft.WebStore.Controllers
 					Address = item.Address,
 					City = item.City,
 					CountryID = item.CountryID,
+					CompanyName = item.CompanyName,
 					CountryName = new CountryHelper(_context).GetNameByID(item.CountryID),
 					CustomerID = item.CustomerID,
 					PostCode = item.PostCode,
 					FirstName = item.FirstName,
 					IsMainAddress = item.IsMainAddress,
+					IsInvoiceAddress = item.IsInvoiceAddress,
 					LastName = item.LastName
 				};
 
@@ -107,13 +109,10 @@ namespace MarelibuSoft.WebStore.Controllers
         // GET: ShippingAddresses/Create
         public IActionResult Create(Guid? id)
         {
-			if (id != null)
-			{
-				var address = new ShippingAddress { CustomerID = (Guid)id };
-				return View(address);
-			}
-			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList());
-
+			var countries = new CountryHelper(_context).GetVmList();
+			ViewData["Countries"] = new SelectList(countries, "ID", "Name");
+			ViewData["CustomerId"] = id;
+			
 			return View();
         }
 
@@ -122,15 +121,24 @@ namespace MarelibuSoft.WebStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Address,AdditionalAddress,City,PostCode,Customer,CountryID")] ShippingAddress shippingAddress)
-        {
+        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Address,AdditionalAddress,City,PostCode,IsMainAddress,CustomerID,CountryID,CompanyName")] ShippingAddress shippingAddress)
+		{
             if (ModelState.IsValid)
             {
-                _context.Add(shippingAddress);
+				if (shippingAddress.IsMainAddress)
+				{
+					var addresses = await _context.ShippingAddresses.Where(a => a.CustomerID.Equals(shippingAddress.CustomerID)).ToListAsync();
+					foreach (var item in addresses)
+					{
+						item.IsMainAddress = false;
+					}
+					_context.UpdateRange(addresses);
+				}
+				_context.Add(shippingAddress);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(CustomerIndex), new { id = shippingAddress.CustomerID });
             }
-            return View(shippingAddress);
+			return RedirectToAction(nameof(Create), new { shippingAddress.CustomerID });
         }
 
         // GET: ShippingAddresses/Edit/5
@@ -149,7 +157,9 @@ namespace MarelibuSoft.WebStore.Controllers
                 return NotFound();
             }
 
-			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList(shippingAddress.CountryID));
+			var countries = new CountryHelper(_context).GetVmList(shippingAddress.CountryID);
+
+			ViewData["CountryID"] = new SelectList(countries,"ID","Name");
 
 			return View(shippingAddress);
         }
@@ -159,8 +169,8 @@ namespace MarelibuSoft.WebStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Address,AdditionalAddress,City,PostCode,Customer,CountryID")] ShippingAddress shippingAddress)
-        {
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Address,AdditionalAddress,City,PostCode,IsMainAddress,CustomerID,CountryID,CompanyName")] ShippingAddress shippingAddress)
+		{
             if (id != shippingAddress.ID)
             {
                 return NotFound();
@@ -170,7 +180,34 @@ namespace MarelibuSoft.WebStore.Controllers
             {
                 try
                 {
-                    _context.Update(shippingAddress);
+					if (shippingAddress.IsMainAddress)
+					{
+						var addresses = await _context.ShippingAddresses.Where(a => a.CustomerID.Equals(shippingAddress.CustomerID)).ToListAsync();
+						foreach (var item in addresses)
+						{
+							if (item.ID != shippingAddress.ID)
+							{
+								item.IsMainAddress = false;
+							}
+							else
+							{
+								item.IsMainAddress = shippingAddress.IsMainAddress;
+								item.FirstName = shippingAddress.FirstName;
+								item.LastName = shippingAddress.LastName;
+								item.PostCode = shippingAddress.PostCode;
+								item.City = shippingAddress.City;
+								item.CountryID = shippingAddress.CountryID;
+								item.Address = shippingAddress.Address;
+								item.AdditionalAddress = shippingAddress.AdditionalAddress;
+							}
+						}
+						_context.UpdateRange(addresses);
+					}
+					else
+					{
+						_context.Update(shippingAddress);
+					}
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -184,7 +221,7 @@ namespace MarelibuSoft.WebStore.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(CustomerIndex), new { id = shippingAddress.CustomerID});
             }
             return View(shippingAddress);
         }
@@ -213,12 +250,35 @@ namespace MarelibuSoft.WebStore.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var shippingAddress = await _context.ShippingAddresses.SingleOrDefaultAsync(m => m.ID == id);
+			var custID = shippingAddress.CustomerID;
             _context.ShippingAddresses.Remove(shippingAddress);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(CustomerIndex), new { id = custID });
         }
+		
+		public async Task<IActionResult> UseAddress(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+			var address = await _context.ShippingAddresses.SingleAsync(s => s.ID == id);
+			Guid customerID = address.CustomerID;
+			var addresses = await _context.ShippingAddresses.Where(a => a.CustomerID.Equals(customerID)).ToListAsync();
 
-        private bool ShippingAddressExists(int id)
+			foreach (var item in addresses)
+			{
+				if (item.ID == id) item.IsMainAddress = true;
+				else item.IsMainAddress = false;				
+			}
+			_context.UpdateRange(addresses);
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction(nameof(CustomerIndex), new { id = customerID });
+		}
+
+
+		private bool ShippingAddressExists(int id)
         {
             return _context.ShippingAddresses.Any(e => e.ID == id);
         }

@@ -13,6 +13,8 @@ namespace MarelibuSoft.WebStore.Views.Manage
 
         public static string Index => "Index";
 
+		public static string ShippingAddresses => "ShippingAddresses";
+
         public static string ChangePassword => "ChangePassword";
 
         public static string ExternalLogins => "ExternalLogins";
@@ -22,7 +24,12 @@ namespace MarelibuSoft.WebStore.Views.Manage
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
-        public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
+		//public static string ShippingAddresses(ViewContext viewContext)
+		//{
+		//	return PageNavClass(viewContext, ShippingAddresses);
+		//}
+
+		public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
 
         public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
 

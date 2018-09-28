@@ -16,6 +16,7 @@ using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using MarelibuSoft.WebStore.Services;
+using MarelibuSoft.WebStore.Common.Statics;
 
 namespace MarelibuSoft.WebStore.Controllers
 {
@@ -24,16 +25,20 @@ namespace MarelibuSoft.WebStore.Controllers
     {
         private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly ILogger _logger;
+		private readonly ILogger logger;
+		private readonly ILoggerFactory factory;
 		private readonly IEmailSender _emailSender;
+		private ShoppingCartHelper cartHelper;
 
-		public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser>userManager, ILogger<OrdersController>logger, IEmailSender emailSender)
+		public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser>userManager, ILoggerFactory loggerFactory, IEmailSender emailSender)
         {
             _context = context;
 			_userManager = userManager;
-			_logger = logger;
+			factory = loggerFactory;
+			this.logger = factory.CreateLogger<OrdersController>();
 			_emailSender = emailSender;
-        }
+			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
+		}
 
         // GET: Orders
 		public async Task<IActionResult> WeHaveYourOrder(Guid? id)
@@ -42,15 +47,26 @@ namespace MarelibuSoft.WebStore.Controllers
 			{
 				return NotFound();
 			}
+			WeHaveYourOrderViewModel viewModel = await GetViewModel((Guid)id);
+			string subject = "Ihre Bestellung bei marelibuDesign";
+			string mailContent = await CreateOrderMail(viewModel.OrderID);
 
+			var agb = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.AGB);
+			var wiederuf = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.WRB);
+			var datenschutz = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.DSK);
+			var attachments = new List<string> { agb.Filename, wiederuf.Filename, datenschutz.Filename };
 
-			WeHaveYourOrderViewModel viewModel = await GetViewModel((Guid)id); 
-			
+			await _emailSender.SendEmailWithAttachmentsAsync(User.Identity.Name, subject, mailContent, attachments);
+			await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft",$"<p>Verkauf an: {User.Identity.Name}</p>");
+
 			return View(viewModel);
 		}
 		// GET: Orders/Create
 		public async Task<IActionResult> Create(Guid? id)
         {
+
+			cartHelper.CheckAndRemove();
+
 			OrderCreateViewModel vm = new OrderCreateViewModel();
 			List<ShippingAddress> addresses = new List<ShippingAddress>();
 			var identity = User.Identity;
@@ -59,14 +75,20 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			var customer = await _context.Customers.Where(c => c.UserId == userId).SingleAsync();
 
-			int shipTypeDefault = 1; //Type 1 = kleines Paket
+			int shipTypeDefault = 1; //Type Maxibrief
 			int countryDefault = 1;//Country 1 Deutschland
 			int ShippingPeriodDefaultID = 1;
 
 			if (customer.CustomerID != Guid.Empty)
 			{
-				countryDefault = customer.CountryId;
+				var shipping = _context.ShippingAddresses.Single(c => c.CustomerID == customer.CustomerID && c.IsMainAddress);
+				countryDefault = shipping.CountryID;
 			}
+
+			var countries = await _context.Countries.ToListAsync();
+			var country = countries.Single(c => c.ID == countryDefault);
+
+			ViewData["CustomerCountryCode"] = country.Code;
 
 			if (id != null)
 			{
@@ -75,6 +97,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				decimal total = 0.0M;
 				var lines = _context.ShoppingCartLines.Where(l => l.ShoppingCartID.Equals(shoppingCart.ID));
 				List<CartLineViewModel> vmcLines = new List<CartLineViewModel>();
+
 				foreach (var item in lines)
 				{
 					string path = string.Empty;
@@ -90,7 +113,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					if (ShippingPeriodDefaultID < product.ShippingPeriod)
 					{
-						ShippingPeriodDefaultID = product.ShippingPeriod; 
+						ShippingPeriodDefaultID = product.ShippingPeriod;
 					}
 
 					if (shipTypeDefault < product.ShippingPriceType)
@@ -110,24 +133,29 @@ namespace MarelibuSoft.WebStore.Controllers
 					{
 						path = "noImage.svg";
 					}
-					string unit = new UnitHelper(_context).GetUnitName(product.BasesUnitID);
-
+					var unitHelper = new UnitHelper(_context, factory);
+					string unit = unitHelper.GetUnitName(product.BasesUnitID);
+					string sekunit = unitHelper.GetUnitName(product.SecondBaseUnit);
 					CartLineViewModel cvml = new CartLineViewModel()
 					{
 						ID = item.ID,
 						CartID = item.ShoppingCartID,
 						ImgPath = path,
 						Position = item.Position,
-						PosPrice = Math.Round( pPrice, 2),
-						Quantity = Math.Round(item.Quantity,2),
+						PosPrice = Math.Round(pPrice, 2),
+						Quantity = Math.Round(item.Quantity, 2),
 						ProductID = item.ProductID,
 						Unit = unit,
 						ProductName = product.Name,
 						ProductNo = product.ProductNumber.ToString(),
-						MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity,2),
-						AvailableQuantity = Math.Round(product.AvailableQuantity,2),
+						MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity, 2),
+						AvailableQuantity = Math.Round(product.AvailableQuantity, 2),
 						ShoppingCartID = shoppingCart.ID,
-						SellBasePrice = Math.Round(item.SellBasePrice,2)
+						SellBasePrice = Math.Round(item.SellBasePrice, 2),
+						SellSekPrice = Math.Round(product.SecondBasePrice,2),
+						SekUnit = sekunit,
+						ShortDescription = product.ShortDescription,
+						UnitID = product.BasesUnitID
 					};
 					vmcLines.Add(cvml);
 					total = total + pPrice;
@@ -139,25 +167,40 @@ namespace MarelibuSoft.WebStore.Controllers
 					Number = shoppingCart.Number,
 					OrderId = shoppingCart.OrderId,
 					Lines = vmcLines,
-					Total = total
+					Total = total,
 				};
 
 				addresses = await _context.ShippingAddresses.Where(sh => sh.CustomerID == customer.CustomerID).ToListAsync();
 
-				List<SelectItemViewModel> selectItemViewModels = new List<SelectItemViewModel>();
+				vm.ShippingAddresseVMs = new List<ShippingAddressViewModel>();
+				int mainShipID = 0;
 				foreach (var item in addresses)
 				{
-					SelectItemViewModel selectItemViewModel = new SelectItemViewModel { ID = item.ID, IsSelected = item.IsMainAddress, Name = item.Address + "\n" + item.PostCode + " " +  item.City};
-					selectItemViewModels.Add(selectItemViewModel);
+					var shipVm = new ShippingAddressViewModel
+					{
+						ID = item.ID,
+						FirstName = item.FirstName,
+						LastName = item.LastName,
+						Address = item.Address,
+						AdditionalAddress = item.AdditionalAddress,
+						PostCode = item.PostCode,
+						City = item.City,
+						CountryID = item.CountryID,
+						CustomerID = item.CustomerID,
+						IsMainAddress = item.IsMainAddress,
+						CountryName = countries.Single(c => c.ID == item.CountryID).Name
+					};
+					if (shipVm.IsMainAddress) mainShipID = shipVm.ID;
+					vm.ShippingAddresseVMs.Add(shipVm);
 				}
 
-				ViewData["Addresses"] = new SelectList( selectItemViewModels , "ID","Name");
+				string strOrderNo = await GetActualOrderNo();
 
 				vm.Cart = cvm;
-				
 				vm.Order = new Order();
-				vm.Order.Number = "AF-" + DateTime.Now.ToFileTimeUtc();
+				vm.Order.Number = strOrderNo;
 				vm.Order.CartID = cvm.ID;
+				vm.Order.ShippingAddressId = mainShipID;
 				vm.Order.OrderDate = DateTime.Now;
 			}
 
@@ -179,18 +222,46 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			vm.ShippingPeriod = periodDefault;
 
+			vm.CanBuyWithBill = customer.AllowedPayByBill;
+
 			ViewData["Paymends"] = paymends;
 
 
 			return View(vm);
         }
 
-        // POST: Orders/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		private async Task<string> GetActualOrderNo()
+		{
+			int no = 0;
+			try
+			{
+				var lastorder = await _context.Orders.OrderBy(o => o.OrderDate).LastAsync();
+				
+				if (lastorder != null)
+				{
+					string lastOrdNo = lastorder.Number;
+					no = int.Parse(lastOrdNo.Substring(lastOrdNo.IndexOf("S") + 1));
+					no++;
+				}
+				else
+				{
+					no = 1000;
+				}
+			}
+			catch (Exception e)
+			{
+				logger.LogError(e, "OrderController.GetActualOrderNo -> Fehler beim ermitteln der Auftragsnummer");
+			}
+			string strOrderNo = $"{DateTime.Now.Year}{DateTime.Now.Month.ToString("d2")}{DateTime.Now.Day.ToString("d2")}S{no}";
+			return strOrderNo;
+		}
+
+		// POST: Orders/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Number,OrderDate,PaymentID,IsPayed,IsSend,Shippingdate,IsClosed,CartID,ExceptLawConditions,ShippingAddressId,ShippingPriceId, ShippingPeriodId,Total")] Order order)
+        public async Task<IActionResult> Create([Bind("ID,Number,OrderDate,PaymentID,IsPayed,IsSend,Shippingdate,IsClosed,CartID,ExceptLawConditions,ShippingAddressId,ShippingPriceId, ShippingPeriodId,Total,FreeText")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -210,6 +281,7 @@ namespace MarelibuSoft.WebStore.Controllers
 					var shipPrice = await _context.ShippingPrices.SingleAsync(p => p.ID == order.ShippingPriceId);
 
 					order.ShippingPrice = shipPrice.Price;
+					order.Number = await GetActualOrderNo(); //vor dem Speichern nochmal abrufen
 
 					_context.Add(order);
 					await _context.SaveChangesAsync();
@@ -219,7 +291,7 @@ namespace MarelibuSoft.WebStore.Controllers
 						var odl = new OrderLine { OrderID = order.ID, Position = item.Position, ProductID = item.ProductID, Quantity = item.Quantity, SellBasePrice = item.SellBasePrice, UnitID = item.UnitID };
 						_context.Add(odl);
 					}
-					_logger.LogInformation($"Order Information:\n" +
+					logger.LogInformation($"Order Information:\n" +
 							$"User:\t\t{User.Identity.Name},\n" +
 							$"Order No:\t\t{order.Number},\n" +
 							$"Order Date:\t\t{order.OrderDate}\n" +
@@ -228,6 +300,7 @@ namespace MarelibuSoft.WebStore.Controllers
 						   $"Ship Price:\t\t{order.ShippingPrice}\n" +
 						   $"Ship Price id:\t\t{order.ShippingPriceId}\n" +
 						   $"Paymend id:\t\t{order.PaymentID}\n" +
+						   $"FreeText:\t\t{order.FreeText}\n"+
 						   $"customer id:\t\t{order.CustomerID}\n", null);
 
 					await _context.SaveChangesAsync();
@@ -237,10 +310,10 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					HttpContext.Session.SetString("ShoppingCartId", string.Empty);
 
-					string subject = "Ihre Bestellung bei marelibuDesign";
-					string mailContent = await CreateOrderMail(order.ID);
-
-					await _emailSender.SendEmailAsync(User.Identity.Name,subject, mailContent);
+					if(order.PaymentID == 2)
+					{
+						return RedirectToAction("PayWithPayPal", new { id = order.ID });
+					}
 				}
 				else
 				{
@@ -252,17 +325,33 @@ namespace MarelibuSoft.WebStore.Controllers
 			//return View(order);
 		}
 
-		private async Task<IActionResult> RegisterGust(Guid? id)
+		public async Task<IActionResult>PayWithPayPal(Guid? id)
 		{
-			return View();
+			if (id == null)
+			{
+				return NotFound();
+			}
+			var order = await _context.Orders.SingleAsync(o => o.ID.Equals(id));
+			
+			return View(order);
 		}
 
-		private async Task<IActionResult> ShippingAddress(Guid? id)
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> PayWithPayPal([Bind("ID,Number,OrderDate,PaymentID,IsPayed,IsSend,Shippingdate,IsClosed,CartID,ExceptLawConditions,ShippingAddressId,ShippingPriceId, ShippingPeriodId,Total")] Order postorder)
 		{
-			var order = await _context.Orders.Where(o => o.ID.Equals(id)).SingleAsync();
-			var customer = await _context.Customers.Where(c => c.CustomerID == order.CustomerID).SingleAsync();
-			var vm = new ShippingAddressViewModel { Customer = customer, Guest = null, Order = order, ShippingAddress = new Models.ShippingAddress() };
-			return View();
+			if (postorder.ID == null)
+			{
+				return NotFound();
+			}
+
+			var order = await _context.Orders.SingleAsync(o => o.ID.Equals(postorder.ID));
+
+			order.IsPayed = postorder.IsPayed;
+			_context.Entry(order).State = EntityState.Modified;
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("WeHaveYourOrder", new { id = order.ID });
 		}
 
 		public async Task<IActionResult> Confirme(Guid? id)
@@ -329,13 +418,19 @@ namespace MarelibuSoft.WebStore.Controllers
 
 				var shipTo = $"<h4>Lieferadresse</h4>" +
 								$"<p>{order.OrderShippingAddress.FirstName} {order.OrderShippingAddress.LastName}</p>" +
+								$"<p>{order.OrderShippingAddress.CompanyName}</p>" +
 								$"<p>{order.OrderShippingAddress.Address}</p>" +
 								$"<p>{order.OrderShippingAddress.AdditionalAddress}</p>" +
 								$"<p>{order.OrderShippingAddress.PostCode} {order.OrderShippingAddress.City}</p>" +
 								$"<p>{order.CountryName}</p>";
 
-				var tac = await _context.LawContents.SingleAsync(a => a.ID == 1);
-				var cancel = await _context.LawContents.SingleAsync(c => c.ID == 2);
+				var invoice = $"<h4>Rechnungsadresse</h4>" +
+							$"<p>{order.OrderInvoiceAddress.FirstName} {order.OrderInvoiceAddress.LastName}</p>" +
+							$"<p>{order.OrderInvoiceAddress.CompanyName}</p>" +
+							$"<p>{order.OrderInvoiceAddress.Address}</p>" +
+							$"<p>{order.OrderInvoiceAddress.PostCode} {order.OrderInvoiceAddress.City}</p>" +
+							$"<p>{order.InvoiceCountryName}</p>";
+
 
 				string bank = string.Empty;
 
@@ -354,17 +449,15 @@ namespace MarelibuSoft.WebStore.Controllers
 				mail += $"<strong>Auftragsdatum:</strong><p>{order.OrderDate.Date}</p>";
 				mail += $"<strong>Auftragsnummer:</strong><p>{order.OrderNo}</p>";
 				mail += "<br />";
-				mail += bank;
 				mail += table;
+				mail += "<br />";
+				mail += invoice;
 				mail += "<br />";
 				mail += shipTo;
 				mail += "<br />";
+				mail += $"<p>Vielen Dank für deinen Einkauf.</p>";
+				mail += $"<p>Viele Gr&uuml;&szlig;e<br /> Petra Buron<br /><a href=\"www.marelibuDesign.de\">www.marelibuDesign.de</a>";
 				mail += "<hr />";
-				mail += cancel.HtmlContent;
-				mail += "<br />";
-				mail += "<hr />";
-				mail += tac.HtmlContent;
-
 			}
 
 			return mail;
@@ -376,25 +469,38 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			OrderCompletionText message;
 
-			switch (paymend.PaymendType)
+			try
 			{
-				case Enums.PaymendTypeEnum.None:
-					break;
-				case Enums.PaymendTypeEnum.Prepay:
-					message = await _context.OrderCompletionTexts.FirstAsync(c => c.PaymendType == Enums.PaymendTypeEnum.Prepay);
-					thankyou = message.Content;
-					break;
-				case Enums.PaymendTypeEnum.PayPal:
-					message = await _context.OrderCompletionTexts.FirstAsync(c => c.PaymendType == Enums.PaymendTypeEnum.PayPal);
-					thankyou = message.Content;
-					break;
-				case Enums.PaymendTypeEnum.Bill:
-					message = await _context.OrderCompletionTexts.FirstAsync(c => c.PaymendType == Enums.PaymendTypeEnum.Bill);
-					thankyou = message.Content;
-					break;
-				default:
-					break;
+				switch (paymend.PaymendType)
+				{
+					case Enums.PaymendTypeEnum.None:
+						break;
+					case Enums.PaymendTypeEnum.Prepay:
+						message = await _context.OrderCompletionTexts.FirstAsync(c => c.PaymendType == Enums.PaymendTypeEnum.Prepay);
+						thankyou = message.Content;
+						break;
+					case Enums.PaymendTypeEnum.PayPal:
+						message = await _context.OrderCompletionTexts.FirstAsync(c => c.PaymendType == Enums.PaymendTypeEnum.PayPal);
+						thankyou = message.Content;
+						break;
+					case Enums.PaymendTypeEnum.Bill:
+						message = await _context.OrderCompletionTexts.FirstAsync(c => c.PaymendType == Enums.PaymendTypeEnum.Bill);
+						thankyou = message.Content;
+						break;
+					default:
+						break;
+				}
 			}
+			catch (Exception e)
+			{
+				logger.LogError(e, "OrdersController.GetThankyou -> Fehler bei abruf der Auftragsbest&auml;tigung");
+			}
+
+			if (string.IsNullOrWhiteSpace(thankyou))
+			{
+				thankyou = "Danke f&uuml;r deinen Einkauf bei marelibuDesign";
+			}
+
 			return thankyou;
 		}
 
@@ -403,7 +509,9 @@ namespace MarelibuSoft.WebStore.Controllers
 			var myorder = await _context.Orders.SingleAsync(o => o.ID == id);
 			var paymend = await _context.Paymends.SingleAsync(p => p.ID == myorder.PaymentID);
 			var shippingAddress = await _context.ShippingAddresses.SingleAsync(a => a.ID == myorder.ShippingAddressId);
+			var invioceAddress = await _context.ShippingAddresses.SingleAsync(a => a.CustomerID == myorder.CustomerID && a.IsInvoiceAddress);
 			var country = await _context.Countries.SingleAsync(c => c.ID == shippingAddress.CountryID);
+			var incountry = await _context.Countries.SingleAsync(c => c.ID == invioceAddress.CountryID);
 			var period = await _context.ShpippingPeriods.SingleAsync(p => p.ShippingPeriodID == myorder.ShippingPeriodId);
 			var shipPrice = await _context.ShippingPrices.SingleAsync(p => p.ID == myorder.ShippingPriceId);
 
@@ -434,10 +542,10 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			BankAcccount bank = null;
 
-			if (paymend.PaymendType == Enums.PaymendTypeEnum.Prepay)
-			{
-				bank = await _context.BankAcccounts.FirstAsync();
-			}
+			//if (paymend.PaymendType == Enums.PaymendTypeEnum.Prepay)
+			//{
+			//	bank = await _context.BankAcccounts.FirstAsync();
+			//}
 
 			string thankyou = await GetThankyou(paymend);
 
@@ -448,6 +556,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				OrderNo = myorder.Number,
 				OrderPaymend = paymend.Name,
 				OrderShippingAddress = shippingAddress,
+				OrderInvoiceAddress = invioceAddress,
 				OrderShippingPeriod = period.Decription,
 				Bank = bank,
 				OrderTotal = Math.Round(myorder.Total,2),
@@ -455,7 +564,9 @@ namespace MarelibuSoft.WebStore.Controllers
 				ShipPrice = Math.Round(myorder.ShippingPrice,2),
 				ShipPriceName = shipPrice.Name,
 				CountryName = country.Name,
-				OrderLines = lineViewModels
+				InvoiceCountryName = incountry.Name,
+				OrderLines = lineViewModels,
+				FreeText = myorder.FreeText
 			};
 
 			return viewModel;

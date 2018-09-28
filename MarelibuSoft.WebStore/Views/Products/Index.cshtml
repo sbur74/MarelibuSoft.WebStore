@@ -17,43 +17,85 @@
 	@Html.AntiForgeryToken()
 </div>
 
-<div class="row" >
+@if (Model.Count() == 0)
+{
+	<h4>Keine Artikel zu dieser Kategorie verf&uuml;gbar</h4>
+}
+
+	<div class="toogler">
+		<div id="myalert"></div>
+	</div>
+
+<div class="row equal-height">
 	@foreach (var item in Model)
 	{
 		string plus = item.ProductID + "_plus";
 		string minus = item.ProductID + "_minus";
 		string quantity = item.ProductID + "_quantity";
 		string qunitityPrice = item.ProductID + "_quantityPrice";
-		decimal startPrice = Math.Round( (item.Price * item.MinimumPurchaseQuantity),2);
-	<div class="col-md-3 col-sm-4">
-		<div class="thumbnail">
-			<img width="100" height="100" src="~/images/store/@Html.DisplayFor(modelItme => item.MainImageUrl)" alt="Artikelbild" style="min-height:100px;">
-			<div class="caption">
-				<h3>@Html.DisplayFor(modelItem => item.Name)</h3>
-				<h4>@Html.DisplayFor(modelItem => item.ProductNumber)</h4>
-				<p>@Html.DisplayFor(modelItem => item.ShortDescription)</p>
-				<p>@Html.DisplayNameFor(modelItme => item.AvailableQuantity): @Html.DisplayFor(modelItem => item.AvailableQuantity) @Html.DisplayFor(modelItem => item.BasesUnit)</p>
-				<p><strong>Grundpreis @Html.DisplayFor(modelItem => item.Price) / @Html.DisplayFor(modelItem => item.BasesUnit)</strong></p>
-				<p>&nbsp;@Html.DisplayFor(modelItem => item.SecondPriceUnit)</p>
-				<div class="input-group">
-					<span class="input-group-btn">
-						<button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-minus-sign"></i></button>
-					</span>
-					<input id="@quantity" class="form-control" style="text-align:right;max-width:none;" value="@Html.DisplayFor(modelItem => item.MinimumPurchaseQuantity)"
-						   onload="quantityPrice(@item.ProductID,'@item.Price');"
-						   onchange="quantityPrice(@item.ProductID, '@item.Price');" />
-					<span class="input-group-btn">
-						<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
-					</span>
+		string availableQunitity = item.ProductID + "_availableQuantity";
+		string btnItemCart = item.ProductID + "_btnCart";
+		decimal startPrice = Math.Round((item.Price * item.MinimumPurchaseQuantity), 2);
+		<div class="col-xs-12 col-sm-6 col-md-3 ">
+			<div class="thumbnail">
+				<a asp-action="Details" asp-route-id="@item.ProductID">
+					<img src="~/images/store/@Html.DisplayFor(modelItme => item.MainImageUrl)" alt="Artikelbild" style="height:150px;">
+				</a>
+				<div class="caption">
+					<a asp-action="Details" asp-route-id="@item.ProductID">
+						<h3 class="flex-text">@Html.DisplayFor(modelItem => item.Name)</h3>
+					</a>
+					<p class="flex-text">
+						@Html.DisplayFor(modelItem => item.ShortDescription)<br />
+						<span>@Html.DisplayNameFor(modelItme => item.AvailableQuantity)</span>
+						<span id="@availableQunitity">@Html.DisplayFor(modelItem => item.AvailableQuantity)</span> <span>@Html.DisplayFor(modelItem => item.BasesUnit)</span>
+					</p>
+					<table>
+						<tbody>
+							<tr>
+								<td>@Html.DisplayNameFor(modelItem => item.Price): </td>
+								<td class="right"> @Html.DisplayFor(modelItem => item.Price)/@Html.DisplayFor(modelItem => item.BasesUnit)</td>
+							</tr>
+							@if (!string.IsNullOrWhiteSpace(item.SecondPriceUnit))
+							{
+								<tr>
+									<td></td>
+									<td class="right"> @Html.DisplayFor(modelItem => item.SecondPriceUnit)</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+
+					<div class="input-group">
+						<span class="input-group-btn">
+							<button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-minus-sign"></i></button>
+						</span>
+						<input id="@quantity" class="form-control" style="text-align:right;max-width:none;" value="@Html.DisplayFor(modelItem => item.MinimumPurchaseQuantity)"
+							   onload="quantityPrice(@item.ProductID,'@item.Price');"
+							   onchange="quantityPrice(@item.ProductID, '@item.Price');" />
+						<span class="input-group-btn">
+							<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
+						</span>
+					</div>
+					<p class="label label-default" id="@qunitityPrice" style="font-size:medium">@startPrice &euro; <b>*</b></p>
+					<a id="@btnItemCart" class="btn btn-primary" role="button" onclick="postCartLine(@item.ProductID, '@item.BasesUnitID', '@item.Price');">
+						<span class="glyphicon glyphicon-shopping-cart"></span> in den Warenkorb
+					</a>
+					<a asp-action="Details" asp-route-id="@item.ProductID" class="btn btn-default" role="button">Zum Artikel</a>
 				</div>
-				<p class="label label-default" id="@qunitityPrice" style="font-size:small">@startPrice &euro;</p>
-				<br />
-				<a id="item" class="btn btn-primary" role="button" onclick="postCartLine(@item.ProductID, '@item.BasesUnitID', '@item.Price');"><span class="glyphicon glyphicon-shopping-cart"></span>in den Warenkorb
-				</a> 
-				<p><a asp-action="Details" asp-route-id="@item.ProductID" class="btn btn-default" role="button">Details</a></p>
 			</div>
 		</div>
-	</div>
 	}
 </div>
+<div class="modal">
+	<
+</div>
+<hr />
+<p class="small">
+	*Angegebene Preise sind Gesamtpreise (zzgl. Versandkosten). Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
+	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
+</p>
+<p class="small">
+	Technisch bedingt kann es zu Farbabweichungen kommen.
+</p>
 
