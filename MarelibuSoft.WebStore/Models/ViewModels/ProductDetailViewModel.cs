@@ -16,14 +16,15 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		[Display(Name = "Kurzbeschreibung")]
 		public string ShortDescription { get; set; }
 		[Display(Name = "Beschreibung")]
+		//[DisplayFormat(HtmlEncode = true)]
 		[DataType(DataType.MultilineText)]
 		public string Description { get; set; }
-		[Display(Name = "Preis")]
+		[Display(Name = "Grundpreis")]
 		[DataType(DataType.Currency)]
 		public decimal Price { get; set; }
-		[Display(Name = "Verfügbaremenge")]
+		[Display(Name = "Verfügbare Menge")]
 		public decimal AvailableQuantity { get; set; }
-		[Display(Name = "Mindestabnahmemenge")]
+		[Display(Name = "Mindestabnahme")]
 		public decimal MinimumPurchaseQuantity { get; set; }
 		[Display(Name = "Einheit")]
 		public string BasesUnit { get; set; }
@@ -32,7 +33,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string Size { get; set; }
 		[Display(Name = "Lieferzeit")]
 		public string ShippingTime { get; set; }
-		[Display(Name ="Preiseinheit 2")]
+		[Display(Name = "Sekundäre Preis")]
 		public string SecondPriceUnit { get; set; }
 
 		 //TODO: hide this fields in view

@@ -1,4 +1,4 @@
-﻿@model MarelibuSoft.WebStore.Models.Customer
+﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.AdminCustomerViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,8 +13,9 @@
     <div class="col-md-4">
 		<form asp-action="Edit">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<input type="hidden" asp-for="CustomerID" asp-route-id="@Model.CustomerID" />
-			<div class="form-group">
+			<input type="hidden" asp-for="CustomerID" value="@Model.CustomerID" />
+			<input type="hidden" asp-for="UserId" value="@Model.UserId" />
+ 			<div class="form-group">
 				<label asp-for="CustomerNo" class="control-label"></label>
 				<input asp-for="CustomerNo" class="form-control" />
 				<span asp-validation-for="CustomerNo" class="text-danger"></span>
@@ -56,21 +57,14 @@
 					</label>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="checkbox">
-					<label>
-						<input asp-for="AllowedPayByBill" /> @Html.DisplayNameFor(model => model.AllowedPayByBill)
-					</label>
-				</div>
-			</div>
-			<div class="form-group">
+			@*<div class="form-group">
 				<label asp-for="UserId" class="control-label"></label>
 				<input asp-for="UserId" class="form-control" />
 				<span asp-validation-for="UserId" class="text-danger"></span>
-			</div>
+			</div>*@
 			<div class="form-group">
 				<label asp-for="CountryId" class="control-label"></label>
-				<select asp-for="CountryId" class="form-control" asp-items="ViewBag.CountryID"></select>
+				<select asp-for="CountryId" class="form-control" asp-items="ViewBag.CountryID" required></select>
 				<span asp-validation-for="CountryId" class="text-danger"></span>
 			</div>
 			<div class="form-group">

@@ -12,5 +12,9 @@ namespace MarelibuSoft.WebStore.Models
 		public Guid OrderId { get; set; }
 		public Guid CustomerId { get; set; }
 		public List<ShoppingCartLine> Lines { get; set; }
+		public DateTime CreateAt { get; set; }
+		public DateTime LastChange { get; set; }
+		public int TabCounter { get; set; }
+		public string SessionId { get; set; }
 	}
 }

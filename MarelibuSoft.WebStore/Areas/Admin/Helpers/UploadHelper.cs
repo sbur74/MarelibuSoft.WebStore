@@ -36,8 +36,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Helpers
 
 				if (!useguidname)
 				{
-					string datetimename = string.Format("{0}-{1}-{2}_{3}-{4}-{5}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
-					fileName = name + "-" + datetimename + FileExtension;
+					
+					fileName = name + FileExtension;
 				}
 				else
 				{

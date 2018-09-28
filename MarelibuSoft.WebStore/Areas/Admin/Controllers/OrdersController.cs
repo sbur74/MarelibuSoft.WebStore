@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
 using Microsoft.Extensions.Logging;
 using MarelibuSoft.WebStore.Services;
+using MarelibuSoft.WebStore.Areas.Admin.Helpers;
+using Microsoft.AspNetCore.Hosting;
+using MarelibuSoft.WebStore.Common.Statics;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -23,19 +26,21 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         private readonly ApplicationDbContext _context;
 		private readonly ILogger _logger;
 		private readonly IEmailSender _emailSender;
+		private IHostingEnvironment _environment;
 
-        public OrdersController(ApplicationDbContext context,ILogger<OrdersController>logger, IEmailSender emailSender)
+		public OrdersController(ApplicationDbContext context,ILogger<OrdersController>logger, IEmailSender emailSender, IHostingEnvironment environment)
         {
             _context = context;
 			_logger = logger;
 			_emailSender = emailSender;
+			_environment = environment;
         }
 
         // GET: Admin/Orders
         public async Task<IActionResult> Index()
         {
 			List<OrderViewModel> vms = new List<OrderViewModel>();
-			var orders = await _context.Orders.ToListAsync();
+			var orders = await _context.Orders.OrderByDescending(o => o.OrderDate).ToListAsync();
 			foreach (var order in orders)
 			{
 				var vm = await GetOrderViewModel(order.ID);
@@ -67,8 +72,62 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			return View(vm);
         }
 
-        // GET: Admin/Orders/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+		public async Task<IActionResult> EMailSend(Guid? id)
+		{
+			var order = await _context.Orders.SingleAsync(o => o.ID.Equals(id));
+			var customer = await _context.Customers.SingleAsync(c => c.CustomerID.Equals(order.CustomerID));
+			var user = await _context.Users.SingleAsync(u => u.Id.Equals(customer.UserId));
+			OrderEmailViewModel vm = new OrderEmailViewModel {
+				OrderID = order.ID, Subject = $"Auftrags-Nr.: {order.Number}, am {order.OrderDate.Day}.{order.OrderDate.Month}.{order.OrderDate.Year}", Email = user.Email, Message = "<h3>Rechnung</h3>"
+			};
+			return View(vm);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> EMailSend([Bind("OrderID, Email, Subject, Message, Attachments")] OrderEmailViewModel orderEmail)
+		{
+			if (ModelState.IsValid)
+			{
+				var files = HttpContext.Request.Form.Files;
+				if (files != null && files.Count > 0)
+				{
+					//var file = files.First();
+					var helper = new UploadHelper(_environment);
+					var todel = new List<string>();
+					var attachments = new List<string>();
+
+					foreach (var file in files)
+					{
+						var fnames = await helper.FileUploadAsync(file, "files", false);
+						todel.Add(fnames.Filename);
+						attachments.Add(fnames.Filename);
+					}
+					
+
+					var agb = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.AGB);
+					var wiederruf = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.WRB);
+					var datenschutz = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.DSK);
+
+					attachments.Add(agb.Filename);
+					attachments.Add(wiederruf.Filename);
+					attachments.Add(datenschutz.Filename);
+
+					
+					await _emailSender.SendEmailWithAttachmentsAsync(orderEmail.Email, orderEmail.Subject, orderEmail.Message, attachments);
+					foreach (string file in todel)
+					{
+						helper.DeleteFile("files", file);
+					}
+				}
+				
+				return RedirectToAction(nameof(Index));
+			}
+			return View(orderEmail);
+		}
+
+		// GET: Admin/Orders/Edit/5
+		public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
@@ -182,7 +241,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			string subject = "Versand von Auftrag " + ordervm.Number;
 			string email = ordervm.EMail;
 			string message = $"<p>Hallo {ordervm.CustomerFirstName},</p>" +
-				$"<p>ich habe die Ware zu Deimen Auftrag {ordervm.Number} vom {ordervm.OrderDate.ToShortDateString()} am {DateTime.Now.ToShortDateString()} versendet:</p>" +
+				$"<p>ich habe die Ware zu deinem Auftrag {ordervm.Number} vom {ordervm.OrderDate.ToShortDateString()} am {DateTime.Now.ToShortDateString()} versendet:</p>" +
 				$"<table><tr><th>Position</th><th>Artikel-Nr.</th><th>Artikelname</th><th>Menge</th></tr>";
 			foreach (var item in ordervm.OderLines)
 			{
@@ -191,12 +250,17 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			message += $"</table>";
 			message += $"<p><strong>Sendungsinformationen:</strong></p>";
 			message += $"<p>{viewModel.Message}</p>";
-			message += $"<p>Ich Danke Dir für Deinen Einkauf.</p>";
-			message += $"<p>Viele Gr&uuml;&szlig;e<br /> Petra Buron<br /><a href=\"www.marelibuDesign.de\">www.marelibuDesign.de</a>";
+			message += $"<p>Vielen Dank für deinen Einkauf.</p>";
+			message += $"<p>Viele Gr&uuml;&szlig;e<br /> Petra Buron<br />";
 
-			await _emailSender.SendEmailAsync(email,  subject, message);
+			var agb = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.AGB);
+			var wiederuf = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.WRB);
+			var datenschutz = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.DSK);
+			var attachments = new List<string> { agb.Filename, wiederuf.Filename, datenschutz.Filename };
+			await _emailSender.SendEmailWithAttachmentsAsync(email,  subject, message, attachments);
 			return RedirectToAction(nameof(Details), new { id = id });
 		}
+
 		[HttpPost, ActionName("MarkPayed")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> MarkPayedAsync(Guid? id, [Bind("ID", "StateAction", "Message")] OrderStateViewModel viewModel)
@@ -288,6 +352,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				var shippingAddress = await _context.ShippingAddresses.SingleAsync(s => s.ID == order.ShippingAddressId);
 				var country = await _context.Countries.SingleAsync(c => c.ID == shippingAddress.CountryID);
 
+				var invoiceaddress = await _context.ShippingAddresses.SingleAsync(c => c.CustomerID == order.CustomerID && c.IsInvoiceAddress);
+
+				var invoicecountry = await _context.Countries.SingleAsync(c => c.ID == invoiceaddress.CountryID);
+
 				var shipToAddress = new ShippToAddressViewModel
 				{
 					ID = shippingAddress.ID,
@@ -298,7 +366,22 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					FirstName = shippingAddress.FirstName,
 					IsMainAddress = shippingAddress.IsMainAddress,
 					LastName = shippingAddress.LastName,
-					PostCode = shippingAddress.PostCode 
+					PostCode = shippingAddress.PostCode,
+					CompanyName = shippingAddress.CompanyName
+				};
+
+				var invoiceVm = new ShippToAddressViewModel
+				{
+					ID = invoiceaddress.ID,
+					AdditionalAddress = invoiceaddress.AdditionalAddress,
+					Address = invoiceaddress.Address,
+					City = invoiceaddress.City,
+					CompanyName = invoiceaddress.CompanyName,
+					CountryName = invoicecountry.Name,
+					FirstName = invoiceaddress.FirstName,
+					IsMainAddress = invoiceaddress.IsMainAddress,
+					LastName = invoiceaddress.LastName,
+					PostCode = invoiceaddress.PostCode
 				};
 
 				vm = new OrderViewModel {
@@ -310,11 +393,13 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					IsSend = order.IsSend,
 					Number = order.Number,
 					OrderDate = order.OrderDate,
+					FreeText = order.FreeText,
 					Payment = paymend.Name,
 					Shippingdate = order.Shippingdate,
 					ShippingPriceAtOrder = order.ShippingPrice,
 					ShippingPriceName = shippingPrice.Name,
 					ShippToAddress = shipToAddress,
+					InvoiceAddress = invoiceVm,
 					ShippingPeriodString = shippingPeriod.Decription,
 					Total = order.Total,
 					CustomerFirstName = customer.FirstName,

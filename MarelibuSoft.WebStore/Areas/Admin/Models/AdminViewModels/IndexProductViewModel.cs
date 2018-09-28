@@ -14,7 +14,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		[Display(Name = "Artikelnummer")]
 		public int ProductNumber { get; set; }
 		public string Name { get; set; }
-		[Display(Name = "Kurzbeschreibung")]
+		[Display(Name = "Wesendliche Merkmale")]
 		public string ShortDescription { get; set; }
 		[DataType(DataType.MultilineText)]
 		[Display(Name = "Beschreibung")]
@@ -34,5 +34,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string ShippingTime { get; set; }
 		[Display(Name = "Lieferkostentyp")]
 		public string ShippingPriceTypeName { get; set; }
+		[Display(Name = "Aktiv")]
+		public bool IsActive { get; set; }
+		public string MainImage { get; set; }
 	}
 }

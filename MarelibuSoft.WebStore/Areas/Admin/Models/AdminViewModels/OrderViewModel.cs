@@ -27,6 +27,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		[DataType(DataType.Date)]
 		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd}")]
 		public DateTime Shippingdate { get; set; }
+		[Display(Name = "Rechnungsadresse")]
+		public ShippToAddressViewModel InvoiceAddress { get; set; }
 		[Display(Name = "Versandadresse")]
 		public ShippToAddressViewModel ShippToAddress { get; set; }
 		[Display(Name = "Auftrag abgeschlossen")]
@@ -48,6 +50,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string ShippingPeriodString { get; set; }
 		[Display(Name = "Gesamtbetrag in Euro")]
 		public decimal Total { get; set; }
+		[Display(Name = "Kundenwunsch")]
+		public string FreeText { get; set; }
 
 		public OrderStateViewModel StateViewModel { get; set; }
 	}

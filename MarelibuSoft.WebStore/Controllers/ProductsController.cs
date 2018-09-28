@@ -9,23 +9,33 @@ using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Models.ViewModels;
 using MarelibuSoft.WebStore.Common.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+		private readonly ILoggerFactory factory;
+		private readonly ILogger logger;
+		private ShoppingCartHelper cartHelper;
 
-        public ProductsController(ApplicationDbContext context)
+		public ProductsController(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
-            _context = context;    
-        }
+            _context = context;
+			factory = loggerFactory;
+			logger = factory.CreateLogger<ProductsController>();
+			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
+		}
 
         // GET: Store/Products
         public async Task<IActionResult> Index([FromQuery]int? categoryId, [FromQuery]int? categorySubId, [FromQuery]int? categoryDetailId)
         {
-			string breadcrumelink = "/Products";
+			string breadcrumelink = "";
 			string breadcrume = "/Products";
+
+			cartHelper.CheckAndRemove();
+
 			var products = await _context.Products.Include(p => p.ImageList).Include(ca => ca.CategoryAssignments).ToListAsync();
 			List<Product> filterProducts = new List<Product>();
 			List<ProductThumbnailsViewModel> thubnails = new List<ProductThumbnailsViewModel>();
@@ -60,23 +70,26 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				{
 					foreach (CategoryAssignment item in categoryAssignments)
 					{
-						var product = products.Where(p => p.ProductID == item.ProductID).FirstOrDefault();
+						var product = products.Where(p => p.ProductID == item.ProductID && p.MinimumPurchaseQuantity <= p.AvailableQuantity && p.IsActive).FirstOrDefault();
 
-						if (!filterProducts.Contains(product))
+						if (product != null)
 						{
-							filterProducts.Add(product); 
+							if (!filterProducts.Contains(product))
+							{
+								filterProducts.Add(product);
+							} 
 						}
 					}
 				}
-				else
-				{
-					filterProducts = products;
-				}
+				//else
+				//{
+				//	filterProducts = products;
+				//}
 			}
-			if (products != null && filterProducts.Count == 0)
-			{
-				filterProducts = products;
-			}
+			//if (products != null && filterProducts.Count == 0)
+			//{
+			//	filterProducts = products;
+			//}
 
 			foreach (Product item in filterProducts)
 			{
@@ -85,11 +98,11 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				string secondPriceUnit = string.Empty;
 				ProductThumbnailsViewModel vmProduct = new ProductThumbnailsViewModel();
 
-				baseUnit = new UnitHelper(_context).GetUnitName(item.BasesUnitID);
+				baseUnit = new UnitHelper(_context, factory).GetUnitName(item.BasesUnitID);
 
 				if (item.SecondBasePrice != 0.0M && item.SecondBaseUnit != 0)
 				{
-					string strUnit = new UnitHelper(_context).GetUnitName(item.SecondBaseUnit);
+					string strUnit = new UnitHelper(_context,factory).GetUnitName(item.SecondBaseUnit);
 					secondPriceUnit = Math.Round( item.SecondBasePrice, 2).ToString() + " €/" + strUnit;
 				}
 
@@ -145,7 +158,9 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 		// GET: Store/Products/Details/5
 		public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+			cartHelper.CheckAndRemove();
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -170,11 +185,11 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 			string secondPriceUnit = "";
 			if (product.SecondBasePrice != 0.0M && product.SecondBaseUnit != 0)
 			{
-				string strUnit = new UnitHelper(_context).GetUnitName(product.SecondBaseUnit);
+				string strUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit);
 				secondPriceUnit = Math.Round( product.SecondBasePrice,2 ).ToString() + " €/" + strUnit;
 			}
 
-			string baseuint = new UnitHelper(_context).GetUnitName(product.BasesUnitID);
+			string baseuint = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID);
 
 			ProductDetailViewModel dvm = new ProductDetailViewModel()
 			{

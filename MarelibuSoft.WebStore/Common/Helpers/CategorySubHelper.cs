@@ -36,13 +36,13 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 
 		public List<SelectItemViewModel> GetVmList()
 		{
-			List<SelectItemViewModel> list = new List<SelectItemViewModel>() { new SelectItemViewModel { ID = 0, Name = "Keine Zuordnung" } };
+			List<SelectItemViewModel> list = new List<SelectItemViewModel>() { new SelectItemViewModel { ID = "0", Name = "Keine Zuordnung" } };
 			var categories = _context.CategorySubs.ToList();
 			if (categories != null)
 			{
 				foreach (var item in categories)
 				{
-					var lItem = new SelectItemViewModel { ID = item.ID, Name = item.Name };
+					var lItem = new SelectItemViewModel { ID = item.ID.ToString(), Name = item.Name };
 					list.Add(lItem);
 				}
 			}

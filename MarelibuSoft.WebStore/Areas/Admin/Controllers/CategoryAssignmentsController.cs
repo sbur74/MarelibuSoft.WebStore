@@ -11,6 +11,7 @@ using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
 using MarelibuSoft.WebStore.Common.ViewModels;
 using MarelibuSoft.WebStore.Common.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -19,10 +20,15 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 	public class CategoryAssignmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+		private readonly ILogger _logger;
+		private readonly ILoggerFactory factory;
 
-        public CategoryAssignmentsController(ApplicationDbContext context)
+        public CategoryAssignmentsController(ApplicationDbContext context, ILogger<CategoryAssignmentsController>logger, ILoggerFactory loggerFactory)
         {
             _context = context;
+			_logger = logger;
+			factory = loggerFactory;
+
         }
 
         // GET: Admin/CategoryAssignments
@@ -32,8 +38,25 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			var vms = new List<CategoryAssignmentViewModel>();
 			foreach (var item in categoryAssignments)
 			{
-				var vm = new CategoryAssignmentViewModel { ID = item.ID, ProductName = item.Product.Name, ProductNo = item.Product.ProductNumber, ProductImage = new ProductImageHelper(_context).GetMainImageUrl(item.ProductID), Category = new CategoryHelper(_context).GetNameByID(item.CategoryID), CategoryDetail = new CategoryDetailHelper(_context).GetNameByID(item.CategoryDetailID), CategorySub = new CategorySubHelper(_context).GetNameByID(item.CategorySubID) };
-				vms.Add(vm);
+				try
+				{
+					var vm = new CategoryAssignmentViewModel
+					{
+						ID = item.ID,
+						ProductName = item.Product.Name,
+						ProductNo = item.Product.ProductNumber,
+						ProductImage = new ProductImageHelper(_context,factory).GetMainImageUrl(item.ProductID),
+						Category = new CategoryHelper(_context).GetNameByID(item.CategoryID),
+						CategoryDetail = new CategoryDetailHelper(_context).GetNameByID(item.CategoryDetailID),
+						CategorySub = new CategorySubHelper(_context).GetNameByID(item.CategorySubID)
+					};
+					vms.Add(vm);
+				}
+				catch (Exception e)
+				{
+					_logger.LogError(e, "CategoryAssignmentsController.GetIndex--> Fehler beim erstellen");
+				}
+				
 			}
             return View(vms);
         }
@@ -102,7 +125,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		
 		public IActionResult CreateMulti()
 		{
-			List<SelectProductViewModel> spvms = new ProductHelper(_context).GetSelectVmList();
+			List<SelectProductViewModel> spvms = new ProductHelper(_context, factory).GetSelectVmList();
 
 			ViewData["ProductID"] = new SelectList( spvms, "ID", "Name");
 			return View();
@@ -117,7 +140,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				await _context.SaveChangesAsync();
 				return RedirectToAction(nameof(Index));
 			}
-			List<SelectProductViewModel> spvms = new ProductHelper(_context).GetSelectVmList();
+			List<SelectProductViewModel> spvms = new ProductHelper(_context, factory).GetSelectVmList();
 
 			ViewData["ProductID"] = spvms;
 			return View(model);

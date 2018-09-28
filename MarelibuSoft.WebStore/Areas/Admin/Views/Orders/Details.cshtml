@@ -1,107 +1,113 @@
 ﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.OrderViewModel
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Details";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Details</h2>
 
 <div>
-    <h4>Auftrag</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Number)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Number)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.OrderDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Payment)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Payment)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsPayed)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsPayed)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsSend)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsSend)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Shippingdate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Shippingdate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsClosed)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsClosed)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EMail)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EMail)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CustomerFirstName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CustomerFirstName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CutomerLastName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CutomerLastName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ExceptLawConditions)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ExceptLawConditions)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ShippingPriceName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ShippingPriceName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ShippingPriceAtOrder)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ShippingPriceAtOrder)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ShippingPeriodString)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ShippingPeriodString)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Total)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Total)
-        </dd>
-    </dl>
+	<h4>Auftrag</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Number)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Number)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.OrderDate)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OrderDate)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Payment)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Payment)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.IsPayed)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.IsPayed)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.IsSend)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.IsSend)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Shippingdate)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Shippingdate)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.IsClosed)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.IsClosed)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.EMail)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.EMail)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.CustomerFirstName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.CustomerFirstName)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.CutomerLastName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.CutomerLastName)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ExceptLawConditions)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ExceptLawConditions)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ShippingPriceName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ShippingPriceName)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ShippingPriceAtOrder)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ShippingPriceAtOrder)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ShippingPeriodString)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ShippingPeriodString)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Total)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Total)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.FreeText)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.FreeText)
+		</dd>
+	</dl>
 </div>
 <h4>Auftragspositionen</h4>
 <div class="table table-bordered">
@@ -145,13 +151,13 @@
 				<p>@item.ProductName</p>
 			</div>
 			<div class="col-md-1">
-				<p>@Math.Round(item.OrderPrice,2) &euro;</p>
+				<p>@Math.Round(item.OrderPrice, 2) &euro;</p>
 			</div>
 			<div class="col-md-1">
-				<p>@Math.Round(item.OrderQuantity,2) @item.OrderUnit</p>
+				<p>@Math.Round(item.OrderQuantity, 2) @item.OrderUnit</p>
 			</div>
 			<div class="col-md-1">
-				<p>@Math.Round(item.OrderLineTotal,2) &euro;</p>
+				<p>@Math.Round(item.OrderLineTotal, 2) &euro;</p>
 			</div>
 		</div>
 	}
@@ -205,6 +211,58 @@
 	</dt>
 	<dd>
 		@Html.DisplayFor(shipping => shipping.ShippToAddress.CountryName)
+	</dd>
+</dl>
+
+<h4>Rechnung an</h4>
+<dl class="dl-horizontal">
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.FirstName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.FirstName)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.LastName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.LastName)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.Address)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.Address)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.AdditionalAddress)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.AdditionalAddress)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.FirstName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.FirstName)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.PostCode)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.PostCode)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.City)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.City)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(invoice => invoice.InvoiceAddress.CountryName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(invoice => invoice.InvoiceAddress.CountryName)
 	</dd>
 </dl>
 

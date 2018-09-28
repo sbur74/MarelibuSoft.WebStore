@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Lieferadressen</h2>
+<h2>Meine Lieferadressen</h2>
 
 <p>
-    <a asp-action="Create" asp-route-id="@ViewData["CustomerID"]" class="btn btn-primary">Neue Lieferadresse</a>
+    <a asp-area="" asp-controller="ShippingAddresses" asp-action="Create" asp-route-id="@ViewBag.CustomerID" class="btn btn-primary">Neue Lieferadresse</a>
 </p>
 <div class="row">
 	@foreach (var item in Model)
@@ -18,21 +18,39 @@
 				<div class="caption">
 					@if (item.IsMainAddress)
 					{
-						<h4><strong class="bg-primary">Standard Lieferadresse</strong></h4>
+						<h4><strong class="bg-primary">&nbsp; aktive Lieferadresse &nbsp;</strong></h4>
+						@if (item.IsInvoiceAddress)
+						{
+							<h5>(@Html.DisplayNameFor(modelItem => item.IsInvoiceAddress))</h5>
+						}
 					}
 					else
 					{
 						<h4>Lieferadresse</h4>
+						@if (item.IsInvoiceAddress)
+						{
+							<h5>(@Html.DisplayNameFor(modelItem => item.IsInvoiceAddress))</h5>
+						}
+						<p><a class="btn btn-default" asp-action="UseAddress" asp-route-id="@item.ID">verwenden</a></p>
 					}
+
 					<p>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</p>
+					<p>@Html.DisplayFor(modelItem => item.CompanyName)</p>
 					<p>@Html.DisplayFor(moleItem => item.Address)</p>
-					<p>@Html.DisplayFor(moleItem => item.AdditionalAddress)</p>
+					@if (string.IsNullOrWhiteSpace(item.AdditionalAddress))
+					{<p>&nbsp;</p>}
+					else
+					{
+						<p>@Html.DisplayFor(moleItem => item.AdditionalAddress)</p>
+					}
 					<p>@Html.DisplayFor(moleItem => item.PostCode) @Html.DisplayFor(moleItem => item.City)</p>
 					<p>@Html.DisplayFor(modelItem => item.CountryName)</p>
-					<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ID">Bearbeiten</a><a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.ID">L&ouml;schen</a>
+					@if (!item.IsInvoiceAddress) { 
+					<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ID">Bearbeiten</a><a class="btn btn-default" asp-action="Delete" asp-route-id="@item.ID">L&ouml;schen</a>
+					}
 				</div>
 			</div>
 		</div>
-	}
+			}
 </div>
 

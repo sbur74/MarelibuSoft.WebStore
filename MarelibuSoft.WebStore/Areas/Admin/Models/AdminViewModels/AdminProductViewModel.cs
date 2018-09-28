@@ -15,8 +15,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public int ProductNumber { get; set; }
 		[Required]
 		public string Name { get; set; }
-		[Display(Name = "Kurzbeschreibung")]
-		[StringLength(80, ErrorMessage ="Bitte nicht mehr als 80 Zeichen eingeben")]
+		[Display(Name = "Wesendliche Merkmale")]
 		public string ShortDescription { get; set; }
 		[DataType(DataType.MultilineText)]
 		[Display(Name = "Beschreibung")]
@@ -39,6 +38,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public int PeriodID { get; set; }
 		[Display(Name = "Lieferkostentyp")]
 		public string ShippingPriceTypeName { get; set; }
+		[Display(Name = "Lieferkostentyp Id")]
 		public int ShippingPriceTypeID { get; set; }
 		[Display(Name = "Sekundäre Preiseinheit")]
 		public string SecondBaseUnit { get; set; }
@@ -54,6 +54,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		[Display(Name = "Detail-Kategorie")]
 		public string CategoryDetailName { get; set; }
 		public int CategoryDetailID { get; set; }
+		[Display(Name = "Aktiv")]
+		public bool IsActive { get; set; }
 
 		public List<string> ImageUrls { get; set; }
 	}

@@ -13,6 +13,8 @@ namespace MarelibuSoft.WebStore.Models
 		public string FirstName { get; set; }
 		[Display(Name = "Name")]
 		public string LastName { get; set; }
+		[Display(Name = "Firmenname")]
+		public string CompanyName { get; set; }
 		[Display(Name = "Adresse")]
 		public string Address { get; set; }
 		[Display(Name = "Adresszusatz")]
@@ -21,10 +23,14 @@ namespace MarelibuSoft.WebStore.Models
 		public string City { get; set; }
 		[Display(Name = "PLZ")]
 		public string PostCode { get; set; }
-		[Display(Name = "als Hauptlieferadresse verwenden")]
+		[Display(Name = "Lieferadresse verwenden")]
 		public bool IsMainAddress { get; set; }
-		//fk 
+		[Display(Name = "Rechnungsadresse")]
+		public bool IsInvoiceAddress { get; set; }
+										  
 		public Guid CustomerID { get; set; }
+		[Display(Name = "Land")]
+		[Required(ErrorMessage = "Es muss ein Land ausgewählt sein")]
 		public int CountryID { get; set; }
 	}
 }

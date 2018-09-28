@@ -9,6 +9,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public int ProductID { get; set; }
 		public string ProductName { get; set; }
 		public string ProductNo { get; set; }
+		public string ShortDescription { get; set; }
 		public decimal Quantity { get; set; }
 		public string Unit { get; set; }
 		public int UnitID { get; set; }
@@ -19,5 +20,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public decimal AvailableQuantity { get; set; }
 		public Guid ShoppingCartID { get; set; }
 		public decimal SellBasePrice { get; set; }
+		public decimal SellSekPrice { get; set; }
+		public string SekUnit { get; set; }
 	}
 }

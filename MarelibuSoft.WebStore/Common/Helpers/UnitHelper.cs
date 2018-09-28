@@ -5,16 +5,21 @@ using System.Threading.Tasks;
 using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
 using MarelibuSoft.WebStore.Data;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Common.Helpers
 {
 	public class UnitHelper
     {
 		private readonly ApplicationDbContext _context;
+		private readonly ILoggerFactory factory;
+		private readonly ILogger logger;
 
-		public UnitHelper(ApplicationDbContext context)
+		public UnitHelper(ApplicationDbContext context, ILoggerFactory loggerFactory)
 		{
 			_context = context;
+			factory = loggerFactory;
+			logger = factory.CreateLogger<UnitHelper>();
 		}
 
 		public List<UnitViewModel> GetVmUnits()
@@ -35,9 +40,16 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 		{
 			string name = string.Empty;
 
-			if (id != 0)
+			try
 			{
-				name = _context.Units.Single(u => u.UnitID == id).Name; 
+				if (id != 0)
+				{
+					name = _context.Units.Single(u => u.UnitID == id).Name;
+				}
+			}
+			catch (Exception e)
+			{
+				logger.LogError(e, "UnitHelper.GetUnitName");
 			}
 
 			return name;

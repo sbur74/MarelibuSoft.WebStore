@@ -13,7 +13,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string FirstName { get; set; }
 		[Display(Name = "Name")]
 		public string LastName { get; set; }
-		[Display(Name = "Adresse")]
+		[Display(Name = "Firmenname")]
+		public string CompanyName { get; set; }
+		[Display(Name = "Straße, Hausnummer")]
 		public string Address { get; set; }
 		[Display(Name = "Adresszusatz")]
 		public string AdditionalAddress { get; set; }

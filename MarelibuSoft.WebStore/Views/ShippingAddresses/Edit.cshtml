@@ -5,9 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<h2>Lieferadresse bearbeiten</h2>
 
-<h4>ShippingAddress</h4>
+<h4>Lieferadresse</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,6 +24,11 @@
 				<label asp-for="LastName" class="control-label"></label>
 				<input asp-for="LastName" class="form-control" />
 				<span asp-validation-for="LastName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CompanyName" class="control-label"></label>
+				<input asp-for="CompanyName" class="form-control" />
+				<span asp-validation-for="CompanyName" class="text-danger"></span>
 			</div>
 			<div class="form-group">
 				<label asp-for="Address" class="control-label"></label>
@@ -45,20 +50,24 @@
 				<input asp-for="PostCode" class="form-control" />
 				<span asp-validation-for="PostCode" class="text-danger"></span>
 			</div>
+			@*<div class="form-group">
+			<label asp-for="IsMainAddress"></label>
+			<input type="checkbox" asp-for="IsMainAddress" />
+		</div>*@
 			<div class="form-group">
 				<label asp-for="CountryID"></label>
-				<select asp-for="CountryID" asp-items="ViewBag.CountryID" class="form-control" />
+				<select asp-for="CountryID" asp-items="ViewBag.CountryID" class="form-control" required></select>
 				<span asp-validation-for="CountryID" class="text-danger"></span>
-			</div>>
+			</div>
 			<div class="form-group">
-				<input type="submit" value="Save" class="btn btn-default" />
+				<input type="submit" value="Speichern" class="btn btn-default" />
 			</div>
 		</form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="CustomerIndex" asp-route-id="@Model.CustomerID">Zur&uuml;ck</a>
 </div>
 
 @section Scripts {

@@ -1,0 +1,43 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Models.ViewModels.CustomerIndexOrderViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Meine Bestellungen</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Orderdate)
+            </th>
+			<th>
+				@Html.DisplayNameFor(model => model.OrderState)
+			</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.Number)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Orderdate)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.OrderState)
+			</td>
+			<td>
+				<a asp-action="Details" asp-route-id="@item.ID">Details</a>
+			</td>
+		</tr>
+}
+    </tbody>
+</table>

@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Identity
 @using MarelibuSoft.WebStore.Models
+@using MarelibuSoft.WebStore.Models.ViewModels
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -9,139 +10,176 @@
 	ViewData["Title"] = "Details";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 
-	ShippingPrice shippingPrice = (ShippingPrice) ViewData["ShippingPrice"];
+	ShippingPricesViewModel shippingPrice = Model.ShipPrices.Single(s => s.CountryId == Model.DefaultCountry);
+
 }
 
-<h2>Details</h2>
-
+<h2>Warenkorb</h2>
+<br />
 <div class="hidden">
 	@Html.AntiForgeryToken()
 </div>
 
+<div class="toogler">
+	<div id="myalert"></div>
+</div>
+
 <div id="cartDetail">
-	<h4>Warenkorb &Uuml;bersicht</h4>
-	@*<a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.ID">Warenkorb l&ouml;schen</a>*@
-	<hr />
-	<dl class="dl-horizontal">
-		<dt>
-			@Html.DisplayNameFor(model => model.Number)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Number)
-		</dd>
-
-	</dl>
-
-	<table class="table">
-		<thead>
-			<tr>
-				<th></th>
-				<th>
-					Zeile
-				</th>
-				<th>
-					Artikle
-				</th>
-				<th>
-					Artiklenummer
-				</th>
-				<th>
-					Menge
-				</th>
-				<th>
-					Einheit
-				</th>
-				<th>
-					Preis
-				</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model.Lines)
-			{
-				string plus = item.ID + "_plus";
-				string minus = item.ID + "_minus";
-				string quantity = item.ID + "_quantity";
-				string qunitityPrice = item.ID + "_quantityPrice";
-				<tr>
-					<td>
-						<img width="100" height="100" src="~/images/store/@Html.DisplayFor(modelItme => item.ImgPath)" alt="Artikelbild" style="min-height:100px;">
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Position)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.ProductName)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.ProductNo)
-					</td>
-					<td>
+	@foreach (var item in Model.Lines)
+	{
+		string plus = item.ID + "_plus";
+		string minus = item.ID + "_minus";
+		string quantity = item.ID + "_quantity";
+		string qunitityPrice = item.ID + "_quantityPrice";
+		string availableQunitity = item.ProductID + "_availableQuantity";
+		string startQuantityId = item.ID + "_startQuantity";
+		string loaderId = item.ID + "_loader";
+		<div class="row">
+			<div class="col-md-1">
+				<a asp-action="Details" asp-controller="Products" asp-route-id="@item.ProductID">
+					<img src="~/images/store/@Html.DisplayFor(modelItem => item.ImgPath)" width="100" height="100" />
+				</a>
+			</div>
+			<div class="col-md-10" style="margin-left: 10px;">
+				<div class="row">
+					<div class="col-md-4">
+						<a asp-action="Details" asp-controller="Products" asp-route-id="@item.ProductID">@Html.DisplayFor(modelItem => item.ProductName)</a>
+					</div>
+					<div class="col-md-3">
 						<div class="input-group">
+							<span id="@startQuantityId" class="hidden">@item.Quantity</span>
 							<span class="input-group-btn">
-								<button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID');">&nbsp;-&nbsp;</button>
+								<button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID');updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');">&nbsp;-&nbsp;</button>
 							</span>
-							<input id="@quantity" class="form-control" style="min-width:100px;" value="@Html.DisplayFor(modelItem => item.Quantity)"
+							<input id="@quantity" class="form-control disabled" disabled
+								   style="min-width:40px;" value="@Html.DisplayFor(modelItem => item.Quantity)"
 								   onload="quantityPrice(@item.ID,'@item.PosPrice', '@item.Unit');"
-								   onchange="quantityPrice(@item.ID, '@item.SellBasePrice', '@item.UnitID');" />
+								   onchange="quantityPrice(@item.ID, '@item.SellBasePrice', '@item.UnitID');" onsubmit="updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');" />
 							<span class="input-group-btn">
-								<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID');"> + </button>
+								<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID','@item.Quantity');
+										updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');"> + </button>
 							</span>
 						</div>
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Unit)
-					</td>
-					<td id="@qunitityPrice">
-						@Html.DisplayFor(modelItem => item.PosPrice) &euro;
-					</td>
-					<td>
-						@*<a asp-controller="ShoppingCartLines" asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
-						<a class="btn btn-primary" onclick="updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice')">
-							<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>Speichern</a>
-						<a class="btn btn-danger" onclick="deleteCartLine('@item.ID')">
-							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>L&ouml;schen</a>
-					</td>
-				</tr>
-			},
-
-				<tr>
-					<td></td>
-					<td></td>
-					<td>@shippingPrice.Name</td>
-					<td></td>
-					<td>1</td>
-					<td>Versand</td>
-					<td id="shippingPrice">@shippingPrice.Price &euro;</td>
-				</tr>
-
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td>Gesamt:</td>
-				<td id="cartTotal">@Html.DisplayFor(model => model.Total) &euro;</td>
-			</tr>
-		</tbody>
-	</table>
+					</div>
+					<div class="col-md-4">
+						Preis:
+						<span id="@qunitityPrice" class="label label-default listprice" style="font-size:medium"> @Html.DisplayFor(modelItem => item.PosPrice) &euro; *</span>
+					</div>
+					<div class="col-md-1">
+						<div id="@loaderId" class="spinner" style="display:none;">
+							<div class="bounce1"></div>
+							<div class="bounce2"></div>
+							<div class="bounce3"></div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						@Html.DisplayFor(modelItem => item.ShortDescription)
+					</div>
+					<div class="col-md-3">
+						Restmenge:
+						<span id="@availableQunitity">@Html.DisplayFor(modelItem => item.AvailableQuantity) @Html.DisplayFor(modelItem => item.Unit)</span>
+					</div>
+					<div class="col-md-4">
+						<small>Grundpreis:</small><br />
+						<small>@Html.DisplayFor(modelItem => item.SellBasePrice) &euro;/@Html.DisplayFor(modelItem => item.Unit) *</small>
+						@if (item.SellSekPrice > 0.0M)
+						{
+							<small>| @Html.DisplayFor(modelItem => item.SellSekPrice) &euro;/@Html.DisplayFor(modelItem => item.SekUnit) *</small>
+						}
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-default" style="width:auto;" onclick="deleteCartLine('@item.ID')">
+							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;L&ouml;schen&nbsp;&nbsp;&nbsp;
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr />
+	}
 </div>
+
+@if (Model.Lines.Count > 0)
+{
+	<div class="row">
+		<div class="col-md-1">
+
+		</div>
+		<div class="col-md-10">
+			<div class="row">
+				<div class="col-md-4">
+					<select id="countries" class="form-control" onchange="onShipPriceChange();">
+						@foreach (ShippingPricesViewModel item in Model.ShipPrices)
+						{
+							@if (item.CountryId == Model.DefaultCountry)
+							{
+								<option id="@item.Id" value="@Math.Round(item.Price, 2)" selected="selected">@item.CountryName</option>
+							}
+							else
+							{
+								<option id="@item.Id" value="@Math.Round(item.Price, 2)">@item.CountryName</option>
+							}
+						}
+					</select>
+				</div>
+				<div class="col-md-3">
+					@Html.DisplayFor(model => model.ShippingPeriodName)
+				</div>
+				<div class="col-md-4">
+					<p>Versand: <span id="shipPrice">@shippingPrice.Price</span> &euro;</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<hr />
+	<div class="row">
+		<div class="col-md-1">
+
+		</div>
+		<div class="row">
+			<div class="col-md-10">
+				<div class="col-md-4">
+
+				</div>
+				<div class="col-md-3">
+
+				</div>
+				<div class="col-md-4">
+					Gesamt: <strong id="total">@Html.DisplayFor(model => model.Total)</strong> &euro;
+				</div>
+				<div class="col-md-1">
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+}
+
+
 <div>
-	@* <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |*@
-	<a class="btn btn-default" asp-action="Index" asp-controller="Products">Artikel&uuml;bersicht</a>
 	@if (SignInManager.IsSignedIn(User))
 	{
 		if (Model.Lines.Count > 0)
 		{
 			<a class="btn btn-primary" asp-action="Create" asp-controller="Orders" asp-route-id="@Model.ID">Zur Kasse</a>
 		}
-		
+
 	}
 	else
 	{
-		<a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-		<a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+		<a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Register">Registrieren</a>
+		<a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">Anmelden</a>
 	}
 </div>
+<br />
+<p class="small">
+	*Angegebene Preise sind Gesamtpreise (zzgl. Versandkosten). Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
+	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
+</p>
+<p class="small">
+	Technisch bedingt kann es zu Farbabweichungen kommen.
+</p>

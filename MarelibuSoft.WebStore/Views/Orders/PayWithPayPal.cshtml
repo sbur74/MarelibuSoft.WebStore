@@ -1,0 +1,89 @@
+﻿@model MarelibuSoft.WebStore.Models.Order
+
+@{
+	ViewData["Title"] = "Mit PayPal bezahlen";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	Decimal PayPalTotal = Math.Round(Model.Total, 2);
+	String PayPalMessageTotal = PayPalTotal.ToString(CultureInfo.CreateSpecificCulture("en-US"));
+}
+
+<h2>Bezahlen mit PayPal</h2>
+
+<h4>@Html.DisplayFor(model => model.Number)</h4>
+<hr />
+<div class="row">
+	<div class="col-md-6">
+		<div class="col-md-6">
+			<img src="~/images/ico-paypal.svg" /> @Html.DisplayNameFor(model => model.Total):
+		</div>
+		<div class="col-md-6">
+			@PayPalTotal &euro;
+		</div>
+	</div>
+    <div class="col-md-6">
+        <form asp-action="PayWithPayPal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+			<input id="isPayed" type="hidden" asp-for="IsPayed" value="fales" />
+			<div class="form-group">
+				<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+				<div id="paypal-button-container"></div>
+				<script>
+
+							// Render the PayPal button
+
+							paypal.Button.render({
+								// Set your environment
+								env: 'sandbox', // sandbox | production
+								// Specify the style of the button
+								style: {
+									label: 'pay',
+									size: 'responsive', // small | medium | large | responsive
+									shape: 'rect',   // pill | rect
+									color: 'silver'   // gold | blue | silver | black
+								},
+								// PayPal Client IDs - replace with your own
+								// Create a PayPal app: https://developer.paypal.com/developer/applications/create
+								client: {
+									sandbox: 'AeHbTOHHS025u5xk0c945Y1Q_X3K2VJMJ9lu9_7njGnDyO4VJ2m4-7gatL5blr-ofoM5AV7kVNLvHKgx',
+									production: '<insert production client id>'
+								},
+								// Show the buyer a 'Pay Now' button in the checkout flow
+								commit: true,
+								// Wait for the PayPal button to be clicked
+								payment: function (data, actions) {
+									return actions.payment.create({
+										payment: {
+											transactions: [
+												{
+													amount: { total: '@PayPalMessageTotal', currency: 'EUR' }
+												}
+											]
+										}
+									});
+								},
+								// Wait for the payment to be authorized by the customer
+
+								onAuthorize: function (data, actions) {
+									return actions.payment.execute().then(function () {
+										//window.alert('Payment Complete!');
+										console.log("paypal success");
+										$("#isPayed").val(true);
+										$("form").submit();
+									});
+								}
+							}, '#paypal-button-container');
+
+				</script>
+			</div>
+            @*<div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>*@
+        </form>
+    </div>
+</div>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+

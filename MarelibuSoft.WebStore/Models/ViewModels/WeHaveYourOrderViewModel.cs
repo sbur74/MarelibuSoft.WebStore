@@ -26,9 +26,14 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public BankAcccount Bank { get; set; }
 		[Display(Name = "Lieferadresse")]
 		public ShippingAddress OrderShippingAddress { get; set; }
+		[Display(Name = "Rechnungsadresse")]
+		public ShippingAddress OrderInvoiceAddress { get; set; }
 		public List<WeHaveYourOrderLineViewModel> OrderLines { get; set; }
 		public string ShipPriceName { get; set; }
 		public decimal ShipPrice { get; set; }
 		public string CountryName { get; set; }
+		public string InvoiceCountryName { get; set; }
+		[Display(Name = "Zusätzliche Angaben")]
+		public string FreeText { get; set; }
 	}
 }
