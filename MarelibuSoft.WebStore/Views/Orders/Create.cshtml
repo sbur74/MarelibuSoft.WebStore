@@ -1,0 +1,218 @@
+﻿@model MarelibuSoft.WebStore.Models.ViewModels.OrderCreateViewModel
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ShippingPrice shippingPrice = (ShippingPrice)ViewData["ShippingPrice"];
+	var orderobj = Model.Order;
+}
+
+<h2>JETZT KAUFEN</h2>
+
+<h4>Bestellung</h4>
+<hr />
+
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+			</th>
+			<th>
+				Position
+			</th>
+			<th>
+				Artikel Nr.
+			</th>
+			<th>
+				Artikel Name
+			</th>
+			<th>
+				Menge
+			</th>
+			<th>
+				Preis in &euro;
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Cart.Lines)
+		{
+			<tr>
+				<td>
+					<img class="img-responsive" src="~/images/store/@item.ImgPath" style="max-height:50px;" />
+				</td>
+				<td>
+					@item.Position
+				</td>
+				<td>
+					@item.ProductNo
+				</td>
+				<td>
+					@item.ProductName
+				</td>
+				<td>
+					@item.Quantity
+				</td>
+				<td>
+					@item.PosPrice
+				</td>
+			</tr>
+
+		}
+		<tr>
+			<td></td>
+			<td></td>
+			<td>@Html.DisplayNameFor(model => model.ShippingPrice.Name)</td>
+			<td>Versand</td>
+			<td>1</td>
+			<td id="shippingPrice">@Html.DisplayFor(model => model.ShippingPrice.Price)</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>@Html.DisplayFor(model => model.ShippingPeriod.Decription)</td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Gesamt:</td>
+			<td id="cartTotal">@Html.DisplayFor(model => model.Cart.Total)</td>
+		</tr>
+	</tbody>
+</table>
+
+<form asp-action="Create">
+	<div class="row">
+		<div class="col-md-6">
+			@*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+			<input id="isPayed" type="hidden" asp-for="Order.IsPayed" value="false" />
+			<input id="cartId" type="hidden" asp-for="Order.CartID" value="@Model.Cart.ID" />
+			<input id="paymentId" type="hidden" asp-for="Order.PaymentID" value="1" />
+			<input id="shippingPriceId" type="hidden" asp-for="Order.ShippingPriceId" value="@Model.ShippingPrice.ID" />
+			<input id="shippingPrice" type="hidden" asp-for="Order.ShippingPrice" value="@Model.ShippingPrice.Price" />
+			<input id="orderTotal" type="hidden" asp-for="Order.Total" value="@Model.Cart.Total" />
+			<input id="orderNumber" type="hidden" asp-for="Order.Number" value="@Model.Order.Number" />
+			<input id="orderPeriod" type="hidden" asp-for="Order.ShippingPeriodId" value="@Model.ShippingPeriod.ShippingPeriodID" />
+
+
+			<div class="form-group">
+				<label asp-for="Order.Number" class="control-label"></label>
+				<p>@Model.Order.Number</p>
+			</div>
+			<div class="form-group">
+				<label asp-for="Order.OrderDate" class="control-label"></label>
+				<input asp-for="Order.OrderDate" class="form-control" disabled="disabled" />
+				<span asp-validation-for="Order.OrderDate" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Order.ShippingAddressId" class="control-label"></label>
+				<select asp-for="Order.ShippingAddressId" asp-items="ViewBag.Addresses" class="form-control"></select>
+				<span asp-validation-for="Order.ShippingAddressId" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input id="agbCheck" asp-for="Order.ExceptLawConditions" onclick="marelibusoft.order.shopFileChecked()" />Ich habe habe die <a asp-area="" asp-controller="Home" asp-action="TermsAndConditions" asp-route-id="@Model.Cart.ID">Allgemeinen Gesch&auml;ftsbedingung</a> und die <a asp-area="" asp-controller="Home" asp-action="Cancellation" asp-route-id="@Model.Cart.ID">Wiederrufsbelehrung</a> gelesen, und akzeptiere sie.
+					</label>
+					<span asp-validation-for="Order.ExceptLawConditions" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="row hidden" id="buyBottons">
+					<div class="col-md-4">
+						<input type="submit" value="Per Überweisung Kaufen" class="btn btn-primary" onclick="marelibusoft.order.onSubmitUeberweisung();" />
+					</div>
+					<div class="col-md-4">
+						<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+						<div id="paypal-button-container"></div>
+						<script>
+
+							// Render the PayPal button
+
+							paypal.Button.render({
+
+								// Set your environment
+
+								env: 'sandbox', // sandbox | production
+
+								// Specify the style of the button
+
+								style: {
+									label: 'pay',
+									size: 'medium', // small | medium | large | responsive
+									shape: 'rect',   // pill | rect
+									color: 'gold'   // gold | blue | silver | black
+								},
+
+								// PayPal Client IDs - replace with your own
+								// Create a PayPal app: https://developer.paypal.com/developer/applications/create
+
+								client: {
+									sandbox: 'AeHbTOHHS025u5xk0c945Y1Q_X3K2VJMJ9lu9_7njGnDyO4VJ2m4-7gatL5blr-ofoM5AV7kVNLvHKgx',
+									production: '<insert production client id>'
+								},
+
+								// Show the buyer a 'Pay Now' button in the checkout flow
+								commit: true,
+
+								// Wait for the PayPal button to be clicked
+
+								payment: function (data, actions) {
+									return actions.payment.create({
+										payment: {
+											transactions: [
+												{
+													amount: { total: '@Model.PayPalTotal', currency: 'EUR' }
+												}
+											]
+										}
+									});
+								},
+
+								// Wait for the payment to be authorized by the customer
+
+								onAuthorize: function (data, actions) {
+									return actions.payment.execute().then(function () {
+										//window.alert('Payment Complete!');
+										console.log("paypal success");
+										$("#isPayed").val(true);
+										$("#paymentId").val(2);
+										$("form").submit();
+									});
+								}
+
+							}, '#paypal-button-container');
+
+						</script>
+					</div><!-- end col -->
+
+					@if (Model.CanBuyWithBill)
+					{
+						<div class="col-md-4">
+							<input type="submit" value="Per Überweisung Kaufen" class="btn btn-primary" onclick="marelibusoft.order.onSubmitBill();" />
+						</div>
+					}
+				</div><!-- end row -->
+			</div>
+
+			@*<div class="form-group">
+			<input id="submitBuy" type="submit" value="Kaufen" class="btn btn-default" />
+		</div>*@
+		</div><!-- end col-md-6 -->
+	</div><!-- end row -->
+</form>
+
+<div>
+    <a class="btn btn-primary" asp-action="Index" asp-controller="Products">Artikel&uuml;bersicht</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

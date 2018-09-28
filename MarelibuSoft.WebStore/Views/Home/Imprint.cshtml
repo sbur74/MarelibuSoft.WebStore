@@ -1,0 +1,10 @@
+﻿@model MarelibuSoft.WebStore.Models.LawContent
+
+@{
+	ViewData["Title"] = Model.Titel;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+	@Html.Raw(Model.HtmlContent)
+</div>

@@ -1,0 +1,45 @@
+﻿@model MarelibuSoft.WebStore.Models.CategorySub
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+<h4>CategorySub</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="CategoryID" class ="form-control" asp-items="ViewBag.CategoryID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (ViewBag.SenderID != null)
+{
+	<div>
+		<a class="btn btn-primary" asp-area="Admin" asp-action="Details" asp-controller="Categories" asp-route-id="@ViewBag.SenderID">zur&uuml;ck zur Kategorie</a>
+	</div>
+}
+
+<div>
+    <a class="btn btn-primary" asp-action="Index">zur &Uuml;bersicht</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

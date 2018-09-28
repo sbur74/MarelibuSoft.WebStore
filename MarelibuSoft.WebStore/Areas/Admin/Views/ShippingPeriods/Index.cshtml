@@ -1,0 +1,36 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Models.ShippingPeriod>
+
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Decription)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Decription)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ShippingPeriodID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ShippingPeriodID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ShippingPeriodID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

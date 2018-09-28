@@ -1,0 +1,92 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData.AddActivePage(ManageNavPages.Index);
+}
+
+<h4>@ViewData["Title"]</h4>
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+<div class="row">
+    <div class="col-md-6">
+		<form method="post">
+			<div asp-validation-summary="All" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Username"></label>
+				<input asp-for="Username" class="form-control" disabled />
+			</div>
+			<div class="form-group">
+				<label asp-for="Email"></label>
+				@if (Model.IsEmailConfirmed)
+				{
+					<div class="input-group">
+						<input asp-for="Email" class="form-control" />
+						<span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+					</div>
+				}
+				else
+				{
+					<input asp-for="Email" class="form-control" />
+					<button asp-action="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+				}
+				<span asp-validation-for="Email" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PhoneNumber"></label>
+				<input asp-for="PhoneNumber" class="form-control" />
+				<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+			</div>
+			<input asp-for="CustomerID" type="hidden" />
+			<div class="form-group">
+				<label asp-for="CustomerNo"></label>
+				<input asp-for="CustomerNo" class="form-control disabled" disabled="disabled" />
+			</div>
+			<div class="form-group">
+				<label asp-for="FirstName"></label>
+				<input asp-for="FirstName" class="form-control" />
+				<span asp-validation-for="FirstName" class="text-danger" />
+			</div>
+			<div class="form-group">
+				<label asp-for="Name"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger" />
+			</div>
+			<div class="form-group">
+				<label asp-for="Address"></label>
+				<input asp-for="Address" class="form-control" />
+				<span asp-validation-for="Address" class="text-danger" />
+			</div>
+			<div class="form-group">
+				<label asp-for="AdditionalAddress"></label>
+				<input asp-for="AdditionalAddress" class="form-control" />
+				<span asp-validation-for="AdditionalAddress" class="text-danger" />
+			</div>
+			<div class="form-group">
+				<label asp-for="PostCode"></label>
+				<input asp-for="PostCode" class="form-control" />
+				<span asp-validation-for="PostCode" class="text-danger" />
+			</div>
+			<div class="form-group">
+				<label asp-for="City"></label>
+				<input asp-for="City" class="form-control" />
+				<span asp-validation-for="City" class="text-danger" />
+			</div>
+			<div class="form-group">
+				<label asp-for="CountryID"></label>
+				<select asp-for="CountryID" asp-items="ViewBag.CountryID" class="form-control"></select>
+				<span asp-validation-for="CountryID" class="text-danger"></span>
+			</div>
+			<button type="submit" class="btn btn-default">Save</button>
+		</form>
+    </div>
+</div>
+<br />
+<div class="row">
+	@*<div class="col-md-6">
+		<a class="btn btn-primary" asp-area="" asp-controller="Customer" asp-action="Detail" asp-route-id="@Model.CustomerID">Rechungsdaten verwalten</a>*@
+		<a class="btn btn-primary" asp-area="" asp-controller="ShippingAddresses" asp-action="CustomerIndex" asp-route-id="@Model.CustomerID">Lieferaddressen verwalten</a>
+	</div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

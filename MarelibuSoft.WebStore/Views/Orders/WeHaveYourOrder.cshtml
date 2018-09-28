@@ -1,0 +1,130 @@
+﻿@model MarelibuSoft.WebStore.Models.ViewModels.WeHaveYourOrderViewModel
+
+@{
+    ViewData["Title"] = "Auftrag erhalten";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+	@Html.Raw(Model.OrderThankYou)
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.OrderNo)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OrderNo)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.OrderDate)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OrderDate)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.OrderTotal)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OrderTotal)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.OrderPaymend)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OrderPaymend)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.OrderShippingPeriod)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OrderShippingPeriod)
+		</dd>
+		@if (Model.Bank != null)
+		{
+			<h4>Bankverbindung</h4>
+			<dt>
+				@Html.DisplayNameFor(model => model.Bank.AccountOwner)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Bank.AccountOwner)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Bank.Institute)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Bank.Institute)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Bank.Iban)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Bank.Iban)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Bank.SwiftBic)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Bank.SwiftBic)
+			</dd>
+		}
+	</dl>
+	<table class="table-bordered table-responsive">
+		<thead>
+			<tr>
+				<th></th>
+				<th>
+					Position
+				</th>
+				<th>
+					Artikel Nr.
+				</th>
+				<th>
+					Artikelname
+				</th>
+				<th>
+					Menge
+				</th>
+				<th>
+					Preis in &euro;
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.OrderLines)
+			{
+				<tr>
+					<td><img src="~/images/store/@item.ImagePath" width="50" height="50" /></td>
+					<td>@item.Position</td>
+					<td>@item.ProductNumber</td>
+					<td>@item.ProductName</td>
+					<td>@item.Quantity @item.ProductUnit</td>
+					<td>@item.Price</td>
+				</tr>
+			}
+			<tr>
+				<td></td>
+				<td></td>
+				<td>Versand</td>
+				<td>@Model.ShipPriceName</td>
+				<td>1</td>
+				<td>@Model.ShipPrice</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>Gesamt</td>
+				<td></td>
+				<td>@Model.OrderTotal</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>Lieferadresse</h4>
+	<p>@Model.OrderShippingAddress.FirstName @Model.OrderShippingAddress.LastName</p>
+	<p>@Model.OrderShippingAddress.Address</p>
+	<p>@Model.OrderShippingAddress.AdditionalAddress</p>
+	<p>@Model.OrderShippingAddress.PostCode @Model.OrderShippingAddress.City</p>
+	<p>@Model.CountryName</p>
+</div>
+

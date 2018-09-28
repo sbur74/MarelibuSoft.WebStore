@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-MarelibuSoft.WebStore-870AF5D8-BF42-4453-85A2-3FCBB9D259D3</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\adminProduct.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Controllers\OrdersController.cs~RF9b332b42.TMP" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="bootstrap" Version="3.3.7" />
+    <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
+	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.1" />
+	  <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
+	  <PackageReference Include="Serilog.Settings.Configuration" Version="2.6.1" />
+	  <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+	  <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
+	  <PackageReference Include="Serilog.Sinks.MySQL.NetCore2" Version="2.7.5" />
+	  <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+  </ItemGroup>
+
+ <!-- <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>-->
+
+  <ItemGroup>
+    <Folder Include="Areas\Identity\" />
+    <Folder Include="Common\CustomValidations\" />
+    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\images\admin\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\css\site.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

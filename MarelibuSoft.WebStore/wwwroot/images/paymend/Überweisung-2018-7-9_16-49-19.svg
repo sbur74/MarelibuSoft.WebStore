@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="715" height="515" viewBox="0 0 715.00 515.00" enable-background="new 0 0 715.00 515.00" xml:space="preserve">
+	<path fill="#FFC800" fill-opacity="1" stroke-width="15" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 52.5,7.49994L 662.5,7.49994C 687.353,7.49994 707.5,27.6472 707.5,52.5L 707.5,462.5C 707.5,487.353 687.353,507.5 662.5,507.5L 52.5,507.5C 27.6472,507.5 7.5,487.353 7.5,462.5L 7.5,52.5C 7.5,27.6472 27.6472,7.49994 52.5,7.49994 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 107.5,307.5L 57.2651,207.5L 608.75,207.5L 678.75,307.5L 107.5,307.5L 57.2651,407.5L 608.75,407.5L 677.5,307.5"/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 134.5,232L 197.5,232C 198.605,232 199.5,232.896 199.5,234L 199.5,281C 199.5,282.105 198.605,283 197.5,283L 134.5,283C 133.395,283 132.5,282.105 132.5,281L 132.5,234C 132.5,232.896 133.395,232 134.5,232 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 137,332L 200,332C 201.105,332 202,332.895 202,334L 202,381C 202,382.104 201.105,383 200,383L 137,383C 135.895,383 135,382.104 135,381L 135,334C 135,332.895 135.895,332 137,332 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 507,232L 570,232C 571.104,232 572,232.895 572,234L 572,281C 572,282.105 571.104,283 570,283L 507,283C 505.895,283 505,282.105 505,281L 505,234C 505,232.895 505.895,232 507,232 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 508,332L 571,332C 572.104,332 573,332.895 573,334L 573,381C 573,382.104 572.104,383 571,383L 508,383C 506.895,383 506,382.104 506,381L 506,334C 506,332.895 506.895,332 508,332 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 295.5,257.5L 265.5,240.179L 265.5,274.821L 295.5,257.5 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 330.5,257.5L 300.5,240.179L 300.5,274.821L 330.5,257.5 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 431,257.5L 401,240.179L 401,274.821L 431,257.5 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 466,257.5L 436,240.179L 436,274.821L 466,257.5 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 431.75,357.5L 461.75,374.821L 461.75,340.18L 431.75,357.5 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 396.75,357.5L 426.75,374.821L 426.75,340.18L 396.75,357.5 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 289,357.5L 319,374.821L 319,340.18L 289,357.5 Z "/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 254,357.5L 284,374.82L 284,340.18L 254,357.5 Z "/>
+	<text transform="matrix(0.9999998807907103 0.0000000000000000 0.0000000000000000 0.9999998807907103 126.00 129.00)" xml:space="preserve">
+		<tspan style=" font-family:Segoe UI; font-size:48.000000pt;font-weight:Bold;font-style:Italic;" letter-spacing="0.00em" fill="#230FD2" fill-opacity="1" stroke-linejoin="round">ÜBERWEISUNG</tspan>
+	</text>
+</svg>

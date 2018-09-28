@@ -1,0 +1,66 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.CategoryAssignmentViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a class="btn btn-success" asp-action="Create">Neu</a>
+	<a class="btn btn-success" asp-action="CreateMulti">Neu Multi</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+			<th></th>
+			<th>
+				@Html.DisplayNameFor(model => model.ProductNo)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ProductName)
+			</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategorySub)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryDetail)
+                </th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+			<td>
+				<img src="~/images/store/@item.ProductImage" alt="@item.ProductName" style="max-height:50px;" class="img-thumbnail" />
+			</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductNo)
+            </td>
+			<td>
+				@Html.DisplayFor(modelItem => item.ProductName)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Category)
+			</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategorySub)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryDetail)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

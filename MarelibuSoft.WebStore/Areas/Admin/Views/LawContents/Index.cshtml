@@ -1,0 +1,43 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Models.LawContent>
+
+@{
+    ViewData["Title"] = "Rechtstexte";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>&Uuml;bersicht</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SiteType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Titel)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.HtmlContent)
+            </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SiteType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Titel)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.HtmlContent)
+            </td>*@
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

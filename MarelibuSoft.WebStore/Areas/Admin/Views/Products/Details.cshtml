@@ -1,0 +1,82 @@
+@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.AdminProductViewModel
+
+@{
+    ViewData["Title"] = "Artikel Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>@Html.DisplayFor(model => model.ProductNumber) - @Html.DisplayFor(model => model.Name)</h4>
+    <hr />
+	<div class="dl-horizontal">
+		<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.ShortDescription)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.ShortDescription)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2">@Html.DisplayNameFor(model => model.Description)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.Description)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2">@Html.DisplayNameFor(model => model.Price)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.Price) &euro;/@Html.DisplayFor(model => model.BasesUnit)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2">@Html.DisplayNameFor(model => model.AvailableQuantity)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.AvailableQuantity) @Html.DisplayFor(model => model.BasesUnit)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2">@Html.DisplayNameFor(model => model.MinimumPurchaseQuantity)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.MinimumPurchaseQuantity) @Html.DisplayFor(model => model.BasesUnit)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.Size)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.Size)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.SecondBasePrice)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.SecondBasePrice) &euro;/@Html.DisplayFor(model => model.SecondBaseUnit)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.Period)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.Period)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.ShippingPriceTypeName)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.ShippingPriceTypeName)</p>
+		</div>
+		@*<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.CategoryName)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.CategoryName)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.CategorySubName)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.CategorySubName)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.CategoryDetailName)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.CategoryDetailName)</p>
+		</div>*@
+	</div>
+	<div>
+		@if (Model.ImageUrls != null)
+		{
+			<hr />
+			@foreach (var item in Model.ImageUrls)
+			{
+				<img src="~/images/store/@item" class="img-thumbnail" style="max-height:100px;max-width:100px;" />
+			}
+			<hr />
+		}
+	</div>
+	<div>
+		<a class="btn btn-success" asp-action="Create" asp-area="Admin" asp-controller="ProductImages" asp-route-id="@Model.ProductID">Neues Bild</a>
+	</div>
+</div>
+<hr />
+<div>
+    <a class="btn btn-success" asp-action="Edit" asp-route-id="@Model.ProductID">Bearbeiten</a> |
+    <a class="btn btn-primary" asp-action="Index">zur &Uuml;bersicht</a>
+</div>

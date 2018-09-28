@@ -1,0 +1,47 @@
+﻿@model MarelibuSoft.WebStore.Models.BankAcccount
+
+@{
+	ViewData["Title"] = "Edit";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>BankAcccount</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="AccountOwner" class="control-label"></label>
+                <input asp-for="AccountOwner" class="form-control" />
+                <span asp-validation-for="AccountOwner" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Institute" class="control-label"></label>
+                <input asp-for="Institute" class="form-control" />
+                <span asp-validation-for="Institute" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Iban" class="control-label"></label>
+                <input asp-for="Iban" class="form-control" />
+                <span asp-validation-for="Iban" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SwiftBic" class="control-label"></label>
+                <input asp-for="SwiftBic" class="form-control" />
+                <span asp-validation-for="SwiftBic" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -1,0 +1,51 @@
+﻿@model MarelibuSoft.WebStore.Models.ShopFile
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rechtstext anlegen</h2>
+
+<h4>Dateianlage</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="Filename" class="control-label"></label>
+                <input name="files" type="file" class="form-control" />
+                <span asp-validation-for="Filename" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShopFileType" class="control-label"></label>
+                <select asp-for="ShopFileType" asp-items="@Html.GetEnumSelectList<ShopFileTypeEnum>()" class="form-control"></select>
+                <span asp-validation-for="ShopFileType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Speichern" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-primary" asp-action="Index">zur &Uuml;bersicht</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

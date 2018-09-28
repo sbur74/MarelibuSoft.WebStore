@@ -1,0 +1,46 @@
+﻿@model MarelibuSoft.WebStore.Models.BankAcccount
+
+@{
+	ViewData["Title"] = "Delete";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>BankAcccount</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountOwner)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AccountOwner)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Institute)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Institute)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Iban)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Iban)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SwiftBic)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SwiftBic)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

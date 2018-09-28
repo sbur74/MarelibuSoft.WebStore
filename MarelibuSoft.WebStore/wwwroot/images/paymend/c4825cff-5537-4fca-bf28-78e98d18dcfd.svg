@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="800" height="600" viewBox="0 0 800.00 600.00" enable-background="new 0 0 800.00 600.00" xml:space="preserve">
+	<path fill="#FFC800" fill-opacity="1" stroke-linejoin="round" d="M 55,0L 745,0C 775.375,0 800,24.6243 800,55L 800,545C 800,575.376 775.375,600 745,600L 55,600C 24.6243,600 0,575.376 0,545L 0,55C 0,24.6243 24.6243,0 55,0 Z "/>
+	<text transform="matrix(0.9999999403953552 0.0000000000000000 0.0000000000000000 0.9999999403953552 245.00 322.00)" xml:space="preserve">
+		<tspan style=" font-family:Verdana; font-size:60.000000pt;font-weight:Bold;font-style:Italic;" letter-spacing="0.00em" fill="#7162FC" fill-opacity="1" stroke-linejoin="round">Pay</tspan>
+		<tspan style=" font-family:Verdana; font-size:60.000000pt;font-weight:Bold;font-style:Italic;" letter-spacing="0.00em" fill="#230FD2" fill-opacity="1" stroke-linejoin="round">Pal</tspan>
+	</text>
+</svg>

@@ -1,0 +1,38 @@
+﻿@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<MarelibuSoft.WebStore.Models.ViewModels.NavItemViewModel>
+		@foreach (var item in Model)
+		{
+			<li>
+				<a href="#" data-toggle="dropdown" class="dropdown-toggle">@item.Name<b class="caret"></b></a>
+				<ul id="main_@item.Name@item.Id" class="dropdown-menu multi-level">
+					<li><a href="@Url.Action("Index", "Products", new { categoryId = item.Id })">@Html.DisplayFor(modelItem => item.Name)</a></li>
+					@if (item.Childs != null && item.Childs.Count > 0)
+					{
+						<li class="dropdown-submenu">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle">@Html.DisplayFor(modelItem => item.Name) mehr</a>
+							<ul id="top" class="dropdown-menu">
+								@foreach (var sub in item.Childs)
+								{
+									<li><a href="@Url.Action("Index", "Products", new { categoryId = item.Id, categorySubId = sub.Id })">@Html.DisplayFor(modelItem => sub.Name)</a></li>
+									@if (sub.Childs != null && sub.Childs.Count > 0)
+									{
+										<li class="dropdown-submenu">
+											<a href="#" data-toggle="dropdown" class="dropdown-toggle">@Html.DisplayFor(modelItem => sub.Name) mehr</a>
+											<ul class="dropdown-menu">
+												@foreach (var details in sub.Childs)
+												{
+													<li><a href="@Url.Action("Index", "Products", new { categoryId = item.Id, categorySubId = sub.Id, categoryDetailId = details.Id })">@Html.DisplayFor(modelItem => details.Name)</a></li>
+												}
+											</ul>
+										</li>
+									}
+								}
+							</ul>
+						</li>
+						<li class="divider"></li>
+					}
+				</ul>
+			</li>
+		}

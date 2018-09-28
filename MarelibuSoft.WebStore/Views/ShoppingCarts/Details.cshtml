@@ -1,0 +1,147 @@
+@using Microsoft.AspNetCore.Identity
+@using MarelibuSoft.WebStore.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model MarelibuSoft.WebStore.Models.ViewModels.CartViewModel
+
+@{
+	ViewData["Title"] = "Details";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	ShippingPrice shippingPrice = (ShippingPrice) ViewData["ShippingPrice"];
+}
+
+<h2>Details</h2>
+
+<div class="hidden">
+	@Html.AntiForgeryToken()
+</div>
+
+<div id="cartDetail">
+	<h4>Warenkorb &Uuml;bersicht</h4>
+	@*<a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.ID">Warenkorb l&ouml;schen</a>*@
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Number)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Number)
+		</dd>
+
+	</dl>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th></th>
+				<th>
+					Zeile
+				</th>
+				<th>
+					Artikle
+				</th>
+				<th>
+					Artiklenummer
+				</th>
+				<th>
+					Menge
+				</th>
+				<th>
+					Einheit
+				</th>
+				<th>
+					Preis
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.Lines)
+			{
+				string plus = item.ID + "_plus";
+				string minus = item.ID + "_minus";
+				string quantity = item.ID + "_quantity";
+				string qunitityPrice = item.ID + "_quantityPrice";
+				<tr>
+					<td>
+						<img width="100" height="100" src="~/images/store/@Html.DisplayFor(modelItme => item.ImgPath)" alt="Artikelbild" style="min-height:100px;">
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Position)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ProductName)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ProductNo)
+					</td>
+					<td>
+						<div class="input-group">
+							<span class="input-group-btn">
+								<button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID');">&nbsp;-&nbsp;</button>
+							</span>
+							<input id="@quantity" class="form-control" style="min-width:100px;" value="@Html.DisplayFor(modelItem => item.Quantity)"
+								   onload="quantityPrice(@item.ID,'@item.PosPrice', '@item.Unit');"
+								   onchange="quantityPrice(@item.ID, '@item.SellBasePrice', '@item.UnitID');" />
+							<span class="input-group-btn">
+								<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID');"> + </button>
+							</span>
+						</div>
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Unit)
+					</td>
+					<td id="@qunitityPrice">
+						@Html.DisplayFor(modelItem => item.PosPrice) &euro;
+					</td>
+					<td>
+						@*<a asp-controller="ShoppingCartLines" asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+						<a class="btn btn-primary" onclick="updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice')">
+							<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>Speichern</a>
+						<a class="btn btn-danger" onclick="deleteCartLine('@item.ID')">
+							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>L&ouml;schen</a>
+					</td>
+				</tr>
+			},
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td>@shippingPrice.Name</td>
+					<td></td>
+					<td>1</td>
+					<td>Versand</td>
+					<td id="shippingPrice">@shippingPrice.Price &euro;</td>
+				</tr>
+
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>Gesamt:</td>
+				<td id="cartTotal">@Html.DisplayFor(model => model.Total) &euro;</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div>
+	@* <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |*@
+	<a class="btn btn-default" asp-action="Index" asp-controller="Products">Artikel&uuml;bersicht</a>
+	@if (SignInManager.IsSignedIn(User))
+	{
+		if (Model.Lines.Count > 0)
+		{
+			<a class="btn btn-primary" asp-action="Create" asp-controller="Orders" asp-route-id="@Model.ID">Zur Kasse</a>
+		}
+		
+	}
+	else
+	{
+		<a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+		<a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+	}
+</div>

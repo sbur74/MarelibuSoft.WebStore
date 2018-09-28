@@ -1,0 +1,28 @@
+﻿@model MarelibuSoft.WebStore.Models.Category
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>L&ouml;schen</h2>
+
+<h3>M&ouml;chten Sie diese Kategorie wirklich l&ouml;schen?</h3>
+<div>
+    <h4>Kategorie</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-success" /> |
+		<a class="btn btn-primary" asp-action="Index">zur &Uuml;bersicht</a>
+    </form>
+</div>

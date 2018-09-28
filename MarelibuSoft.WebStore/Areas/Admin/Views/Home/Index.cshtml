@@ -1,0 +1,41 @@
+﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.AdminHomeViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Dashboard</h2>
+<hr />
+<h3>Auftragszahlen</h3>
+<div class="row">
+	<div class="col-md-3">
+		@Html.DisplayNameFor(model => model.OpenOrdersCount)
+	</div>
+	<div class="col-md-3">
+		@Html.DisplayFor(model => model.OpenOrdersCount)
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		@Html.DisplayNameFor(model => model.OpenNotPayedOrdersCount)
+	</div>
+	<div class="col-md-3">
+		@Html.DisplayFor(model => model.OpenNotPayedOrdersCount)
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		@Html.DisplayNameFor(model => model.OpenSendOrdersCount)
+	</div>
+	<div class="col-md-3">
+		@Html.DisplayFor(model => model.OpenSendOrdersCount)
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		@Html.DisplayNameFor(model => model.ClosedOrdersCount)
+	</div>
+	<div class="col-md-3">
+		@Html.DisplayFor(model => model.ClosedOrdersCount)
+	</div>
+</div>

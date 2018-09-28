@@ -1,0 +1,10 @@
+@model MarelibuSoft.WebStore.Models.ShoppingCart
+	@*<script>
+		localStorage.setItem("CARTID", "@Model.ID");
+	</script>*@
+<p hidden id="cartid" >@Html.DisplayFor(model => model.ID)</p>
+	<a asp-area="" asp-controller="ShoppingCarts" asp-action="Details" asp-route-id="@Model.ID" class="btn bg-primary">
+		<span class="glyphicon glyphicon-shopping-cart"></span>
+			Warenkorb: @Html.DisplayFor(model => model.Lines.Count)
+	</a>
+

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Models.ShopFile>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>&Uuml;bersicht Rechtstexte</h2>
+
+<p>
+    <a class="btn btn-success" asp-action="Create">Neu Anlage</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Filename)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ShopFileType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+				<a href="~/files/@item.Filename">@Html.DisplayFor(modelItem => item.Filename)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShopFileType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |*@
+                <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a> |
+				<a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="L&ouml;schen" asp-action="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

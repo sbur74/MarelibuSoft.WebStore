@@ -1,0 +1,59 @@
+@using System
+@using System.Collections.Generic
+@model IEnumerable<MarelibuSoft.WebStore.Models.ViewModels.ProductThumbnailsViewModel>
+
+@{
+	ViewData["Title"] = "Artikel";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Artikel</h2>
+
+<div>
+	@*<link class="breadcrumb" href="@ViewBag("Breadcurmlink")" />*@
+</div>
+
+<div class="hidden">
+	@Html.AntiForgeryToken()
+</div>
+
+<div class="row" >
+	@foreach (var item in Model)
+	{
+		string plus = item.ProductID + "_plus";
+		string minus = item.ProductID + "_minus";
+		string quantity = item.ProductID + "_quantity";
+		string qunitityPrice = item.ProductID + "_quantityPrice";
+		decimal startPrice = Math.Round( (item.Price * item.MinimumPurchaseQuantity),2);
+	<div class="col-md-3 col-sm-4">
+		<div class="thumbnail">
+			<img width="100" height="100" src="~/images/store/@Html.DisplayFor(modelItme => item.MainImageUrl)" alt="Artikelbild" style="min-height:100px;">
+			<div class="caption">
+				<h3>@Html.DisplayFor(modelItem => item.Name)</h3>
+				<h4>@Html.DisplayFor(modelItem => item.ProductNumber)</h4>
+				<p>@Html.DisplayFor(modelItem => item.ShortDescription)</p>
+				<p>@Html.DisplayNameFor(modelItme => item.AvailableQuantity): @Html.DisplayFor(modelItem => item.AvailableQuantity) @Html.DisplayFor(modelItem => item.BasesUnit)</p>
+				<p><strong>Grundpreis @Html.DisplayFor(modelItem => item.Price) / @Html.DisplayFor(modelItem => item.BasesUnit)</strong></p>
+				<p>&nbsp;@Html.DisplayFor(modelItem => item.SecondPriceUnit)</p>
+				<div class="input-group">
+					<span class="input-group-btn">
+						<button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-minus-sign"></i></button>
+					</span>
+					<input id="@quantity" class="form-control" style="text-align:right;max-width:none;" value="@Html.DisplayFor(modelItem => item.MinimumPurchaseQuantity)"
+						   onload="quantityPrice(@item.ProductID,'@item.Price');"
+						   onchange="quantityPrice(@item.ProductID, '@item.Price');" />
+					<span class="input-group-btn">
+						<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
+					</span>
+				</div>
+				<p class="label label-default" id="@qunitityPrice" style="font-size:small">@startPrice &euro;</p>
+				<br />
+				<a id="item" class="btn btn-primary" role="button" onclick="postCartLine(@item.ProductID, '@item.BasesUnitID', '@item.Price');"><span class="glyphicon glyphicon-shopping-cart"></span>in den Warenkorb
+				</a> 
+				<p><a asp-action="Details" asp-route-id="@item.ProductID" class="btn btn-default" role="button">Details</a></p>
+			</div>
+		</div>
+	</div>
+	}
+</div>
+

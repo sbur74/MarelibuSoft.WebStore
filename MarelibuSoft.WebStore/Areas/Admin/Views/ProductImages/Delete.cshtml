@@ -1,0 +1,48 @@
+@model MarelibuSoft.WebStore.Models.ProductImage
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>L&ouml;schen</h2>
+
+<h3>Dieses Artikelbild wirklich l&ouml;schen?</h3>
+<div>
+    <h4>ProductImage</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <input type="hidden" asp-for="ProductImageID" />
+		<dt>
+			Bild
+		</dt>
+		<dd>
+			<img src="~/images/store/@Html.DisplayFor(model => model.ImageUrl)" alt="@Html.DisplayFor(model => model.Name)" width="240" height="240"/>
+		</dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            ist Hauptartikelbild
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsMainImage)
+        </dd>
+        <dt>
+            Artikelnummer
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.ProductNumber)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input class="btn btn-danger"  type="submit" value="L&ouml;schen" asp-route-id="@Model.ProductImageID"/> |
+            <a class="btn btn-primary"  asp-action="Index">zur &uuml;bersicht</a>
+        </div>
+    </form>
+</div>

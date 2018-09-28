@@ -1,0 +1,103 @@
+﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.CategoryAssignmentMultiViewModel
+
+@{
+    ViewData["Title"] = "CreateMulti";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@*<link rel="stylesheet" href="~/lib/jquery-ui/themes/dark-hive/jquery-ui.min.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+<style>
+	#draggable {
+		width: 150px;
+		height: 30px;
+		padding: 0.5em;
+		float: left;
+		margin: 10px 10px 10px 0;
+	}
+
+	#droppable {
+		width: 100%;
+		height: 150px;
+		padding: 0.5em;
+		float: left;
+		margin: 10px;
+	}
+</style>
+<script>
+  $( function() {
+    $( "#draggable" ).draggable();
+    $( "#droppable" ).droppable({
+      drop: function( event, ui ) {
+        $( this )
+          .addClass( "ui-state-highlight" )
+          .find( "p" )
+            .html( "Dropped!" );
+      }
+    });
+  } );
+</script>
+<div class="row">
+	<div id="draggable" class="ui-widget-content">
+		<p>Drag me to my target</p>
+	</div>
+</div>
+<div class="row">
+	<div id="droppable" class="ui-widget-header">
+		<p>Drop here</p>
+	</div>
+</div>*@
+
+<h2>CreateMulti</h2>
+
+<h4>CategoryAssignment</h4>
+<hr />
+<div class="row">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="form-group">
+		<label asp-for="ProductID" class="control-label"></label>
+		<select id="productID" asp-for="ProductID" class="form-control" asp-items="ViewBag.ProductID" onchange="marelibusoft.admin.cleareTable();"></select>
+	</div>
+	<button class="btn btn-success" onclick="marelibusoft.admin.getCategories();">Kategorie hinzuf&uuml;gen</button><button class="btn btn-danger" onclick="marelibusoft.admin.cleareTable();">Tabelle L&ouml;schen</button>
+	<div id="table" class="table">
+		<div class="row">
+			<div class="col-sm-3">
+				<label class="control-label">Kategorie</label>
+			</div>
+			<div class="col-sm-3">
+				<label class="control-label">Unterkategorie</label>
+			</div>
+			<div class="col-sm-3">
+				<label class="control-label">Detail-Kategorie</label>
+			</div>
+			<div class="col-sm-3">
+				<label class="control-label">Aktionen</label>
+			</div>
+		</div>
+		<div id="tableBody">
+			<!--pleace holder for dynamic view content-->
+		</div>
+	</div>
+</div>
+<hr />
+<div id="messages" class="row">
+
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" onload="marelibusoft.admin.check();">
+            <div class="form-group">
+                <input type="submit" value="Speichern" class="btn btn-success" onclick="marelibusoft.admin.submitTable();" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-primary" asp-action="Index">zur &Uuml;berischt</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

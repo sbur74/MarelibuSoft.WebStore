@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="800" height="600" viewBox="0 0 800.00 600.00" enable-background="new 0 0 800.00 600.00" xml:space="preserve">
+	<text transform="matrix(1.0000000000000000 0.0000000000000000 0.0000000000000000 1.0000000000000000 139.00 152.00)" xml:space="preserve">
+		<tspan style=" font-family:Verdana; font-size:60.000000pt;font-weight:Bold;font-style:Italic;" letter-spacing="0.00em" fill="#230FD2" fill-opacity="1" fill-rule="evenodd" stroke-linejoin="round">VORKAS</tspan>
+		<tspan style=" font-family:Verdana; font-size:60.000000pt;font-weight:Bold;font-style:Italic;" letter-spacing="0.00em" fill="#230FD2" fill-opacity="1" fill-rule="evenodd" stroke-linejoin="round">S</tspan>
+		<tspan style=" font-family:Verdana; font-size:60.000000pt;font-weight:Bold;font-style:Italic;" letter-spacing="0.00em" fill="#230FD2" fill-opacity="1" fill-rule="evenodd" stroke-linejoin="round">E</tspan>
+	</text>
+	<rect x="91.0001" y="221.5" fill="#230FD2" fill-opacity="1" stroke-linejoin="round" width="559" height="28"/>
+	<rect x="122" y="274" fill="#230FD2" fill-opacity="1" stroke-linejoin="round" width="559" height="28"/>
+	<rect x="151" y="327" fill="#230FD2" fill-opacity="1" stroke-linejoin="round" width="559" height="28"/>
+	<rect x="191" y="386" fill="#230FD2" fill-opacity="1" stroke-linejoin="round" width="559" height="28"/>
+</svg>

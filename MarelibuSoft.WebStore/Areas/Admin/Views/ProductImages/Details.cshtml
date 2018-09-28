@@ -1,0 +1,43 @@
+@model MarelibuSoft.WebStore.Models.ProductImage
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Artikelbild</h4>
+    <hr />
+    <dl class="dl-horizontal">
+		<dt>
+			Bild
+		</dt>
+		<dd>
+			<img src="~/images/store/@Html.DisplayFor(model => model.ImageUrl)" alt="@Html.DisplayFor(model => model.Name)" class="img-responsive" style="max-height:250px;" />
+		</dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            ist Hauptartikelbild
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsMainImage)
+        </dd>
+        <dt>
+            Artikelnummer
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.ProductNumber)
+        </dd>
+    </dl>
+</div>
+<div>
+   @* <a class="btn btn-default" asp-action="Edit" asp-route-id="@Model.ProductImageID">Edit</a> |*@
+    <a class="btn btn-primary"  asp-action="Index">zur &Uuml;bersicht</a>
+</div>

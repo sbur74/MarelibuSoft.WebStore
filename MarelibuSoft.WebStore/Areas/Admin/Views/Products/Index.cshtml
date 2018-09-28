@@ -1,0 +1,103 @@
+@model IEnumerable<MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.IndexProductViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+	IQueryable<Unit> units =(IQueryable<Unit>) ViewData["Units"];
+	IQueryable<ShippingPriceType> shippingPriceTypes = (IQueryable<ShippingPriceType>)ViewData["ShippingPriceType"];
+}
+
+<h2>&Uuml;bersicht</h2>
+
+<p>
+    <a class="btn btn-success" asp-action="Create" >Neu</a>
+</p>
+@*<form asp-action="Index" method="get">
+	<div class="form-actions no-color">
+		<p>
+			Produktnamen: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+			<input type="submit" value="Suchen" class="btn btn-default" />
+			<a class="btn btn-primary" asp-action="Index">Gesamte Liste anzeigen</a>
+		</p>
+	</div>
+</form>*@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+                <th>
+                    Nummer
+                </th>
+                <th>
+                    Name
+                </th>
+                <th class="col-md-2" scope="row">
+                   Kurz-Beschreibung
+                </th>
+                <th>
+                    Preis
+                </th>
+                <th>
+                    Verf&uuml;gbaremenge
+                </th>
+                @*<th>
+                    @Html.DisplayNameFor(model => model.MinimumPurchaseQuantity)
+                </th>*@
+                <th>
+                   Basiseinheit
+                </th>
+			<th>
+				Versandtyp
+			</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+				@Html.DisplayFor(modelItem => item.ShortDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AvailableQuantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BasesUnit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShippingPriceTypeName)
+            </td>
+            <td>
+				<a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Bearbeiten" asp-action="Edit" asp-route-id="@item.ProductID"><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.ProductID">Details</a> 
+				<a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="L&ouml;schen" asp-action="Delete" asp-route-id="@item.ProductID"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@*@{
+	var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+	Zur&uuml;ck
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">Weiter</a>*@

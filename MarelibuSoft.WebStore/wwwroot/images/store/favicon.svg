@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="64" height="64" viewBox="0 0 64.00 64.00" enable-background="new 0 0 64.00 64.00" xml:space="preserve">
+	<radialGradient id="SVGID_Fill1_" cx="31.7917" cy="31.5852" r="30.5112" gradientUnits="userSpaceOnUse">
+		<stop offset="0" stop-color="#FCFFFF" stop-opacity="1"/>
+		<stop offset="1" stop-color="#00DCFC" stop-opacity="1"/>
+	</radialGradient>
+	<path fill="url(#SVGID_Fill1_)" fill-rule="evenodd" stroke-width="1.00014" stroke-linejoin="round" stroke="#000000" stroke-opacity="1" d="M 21.2268,17.2064L 29.5983,5.29165L 12.8553,5.29165L 21.2268,17.2064 Z M 42.1332,17.2067L 50.5046,5.2919L 33.7617,5.2919L 42.1332,17.2067 Z M 31.7928,6.61872L 23.4211,18.5334L 40.1641,18.5336L 31.7928,6.61872 Z M 52.5552,6.54362L 44.1836,18.4583L 60.9265,18.4585L 52.5552,6.54362 Z M 10.6727,6.54362L 2.30106,18.4583L 19.044,18.4585L 10.6727,6.54362 Z M 31.7928,57.8786L 40.1643,20.3687L 23.4213,20.3687L 31.7928,57.8786 Z M 29.1972,55.6354L 2.16667,20.4428L 21.2312,20.4428L 29.1972,55.6354 Z M 34.3862,55.5429L 61.4167,20.3502L 42.3521,20.3502L 34.3862,55.5429 Z "/>
+</svg>

@@ -1,0 +1,216 @@
+﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.OrderViewModel
+
+@{
+	ViewData["Title"] = "Edit";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>Auftrag</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="ID" />
+			<div class="form-group">
+				<label asp-for="Number" class="control-label"></label>
+				<input asp-for="Number" class="form-control" />
+				<span asp-validation-for="Number" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="OrderDate" class="control-label"></label>
+				<input asp-for="OrderDate" class="form-control" />
+				<span asp-validation-for="OrderDate" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Payment" class="control-label"></label>
+				<input asp-for="Payment" class="form-control" />
+				<span asp-validation-for="Payment" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="IsPayed" /> @Html.DisplayNameFor(model => model.IsPayed)
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="IsSend" /> @Html.DisplayNameFor(model => model.IsSend)
+						<button class="btn btn-info" onclick="marelibusoft.admin.sendShippingMail(@Model.ID);">Versand E-Mail senden</button>
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label asp-for="Shippingdate" class="control-label"></label>
+				<input asp-for="Shippingdate" class="form-control" />
+				<span asp-validation-for="Shippingdate" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="IsClosed" /> @Html.DisplayNameFor(model => model.IsClosed)
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label asp-for="EMail" class="control-label"></label>
+				<input asp-for="EMail" class="form-control" />
+				<span asp-validation-for="EMail" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CustomerFirstName" class="control-label"></label>
+				<input asp-for="CustomerFirstName" class="form-control" />
+				<span asp-validation-for="CustomerFirstName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CutomerLastName" class="control-label"></label>
+				<input asp-for="CutomerLastName" class="form-control" />
+				<span asp-validation-for="CutomerLastName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="ExceptLawConditions" /> @Html.DisplayNameFor(model => model.ExceptLawConditions)
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label asp-for="ShippingPriceName" class="control-label"></label>
+				<input asp-for="ShippingPriceName" class="form-control" />
+				<span asp-validation-for="ShippingPriceName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="ShippingPriceAtOrder" class="control-label"></label>
+				<input asp-for="ShippingPriceAtOrder" class="form-control" />
+				<span asp-validation-for="ShippingPriceAtOrder" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="ShippingPeriodString" class="control-label"></label>
+				<input asp-for="ShippingPeriodString" class="form-control" />
+				<span asp-validation-for="ShippingPeriodString" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Total" class="control-label"></label>
+				<input asp-for="Total" class="form-control" />
+				<span asp-validation-for="Total" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-success" />
+			</div>
+		</form>
+	</div>
+</div>
+<div class="table table-bordered">
+	<div class="row">
+		<div class="col-md-1">
+			<strong>Position</strong>
+		</div>
+		<div class="col-md-1">
+			<strong>Artikelbild</strong>
+		</div>
+		<div class="col-md-1">
+			<strong>Artikel-Nr.</strong>
+		</div>
+		<div class="col-md-1">
+			<strong>Artikelname</strong>
+		</div>
+		<div class="col-md-1">
+			<strong>Arikelpreis</strong>
+		</div>
+		<div class="col-md-1">
+			<strong>Menge</strong>
+		</div>
+		<div class="col-md-1">
+			<strong>Betrag</strong>
+		</div>
+	</div>
+	<h4>Auftragspositionen</h4>
+	@foreach (var item in Model.OderLines)
+	{
+		<div class="row">
+			<div class="col-md-1">
+				<p id="@item.ID" class="hidden">@item.ID</p>
+				<p>@item.Position</p>
+			</div>
+			<div class="col-md-1">
+				<img src="~/images/store/@item.Image" width="50" height="50" />
+			</div>
+			<div class="col-md-1">
+				<p>@item.ProductNumber</p>
+			</div>
+			<div class="col-md-1">
+				<p>@item.ProductName</p>
+			</div>
+			<div class="col-md-1">
+				<p>@Math.Round(item.OrderPrice, 2) &euro;</p>
+			</div>
+			<div class="col-md-1">
+				<p>@Math.Round(item.OrderQuantity, 2) @item.OrderUnit</p>
+			</div>
+			<div class="col-md-1">
+				<p>@Math.Round(item.OrderLineTotal, 2) &euro;</p>
+			</div>
+		</div>
+	}
+</div>
+
+<h4>Liefern an</h4>
+<dl class="dl-horizontal">
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.FirstName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.FirstName)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.LastName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.LastName)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.Address)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.Address)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.AdditionalAddress)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.AdditionalAddress)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.FirstName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.FirstName)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.PostCode)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.PostCode)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.City)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.City)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(shipping => shipping.ShippToAddress.CountryName)
+	</dt>
+	<dd>
+		@Html.DisplayFor(shipping => shipping.ShippToAddress.CountryName)
+	</dd>
+</dl>
+
+<div>
+	<a class="btn btn-default" asp-action="Index">zur&uuml;ck zur &Uuml;bersicht</a>
+</div>
+

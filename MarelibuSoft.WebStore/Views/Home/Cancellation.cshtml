@@ -1,0 +1,14 @@
+﻿@model MarelibuSoft.WebStore.Models.LawContent
+
+@{
+	ViewData["Title"] = Model.Titel;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (ViewBag.BackToOrderCartId != null)
+{
+	<a class="btn btn-primary" asp-action="Create" asp-controller="Orders" asp-route-id="@ViewBag.BackToOrderCartId">Zur Kasse</a>
+}
+
+<div>
+	@Html.Raw(Model.HtmlContent)
+</div>

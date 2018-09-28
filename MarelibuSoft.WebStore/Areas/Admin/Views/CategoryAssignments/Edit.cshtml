@@ -1,0 +1,50 @@
+﻿@model MarelibuSoft.WebStore.Models.CategoryAssignment
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>CategoryAssignment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="ProductID" class="control-label"></label>
+                <select asp-for="ProductID" class="form-control" asp-items="ViewBag.ProductID"></select>
+                <span asp-validation-for="ProductID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
+                <span asp-validation-for="CategoryID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategorySubID" class="control-label"></label>
+				<select asp-for="CategorySubID" class="form-control" asp-items="ViewBag.CategorySubID"></select>
+                <span asp-validation-for="CategorySubID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryDetailID" class="control-label"></label>
+				<select asp-for="CategoryDetailID" class="form-control" asp-items="ViewBag.CategoryDetailID"></select>
+                <span asp-validation-for="CategoryDetailID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

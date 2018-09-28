@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="715" height="515" viewBox="0 0 715.00 515.00" enable-background="new 0 0 715.00 515.00" xml:space="preserve">
+	<path fill="none" stroke-width="15" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 52.5,7.49994L 662.5,7.49994C 687.353,7.49994 707.5,27.6472 707.5,52.5L 707.5,462.5C 707.5,487.353 687.353,507.5 662.5,507.5L 52.5,507.5C 27.6472,507.5 7.5,487.353 7.5,462.5L 7.5,52.5C 7.5,27.6472 27.6472,7.49994 52.5,7.49994 Z "/>
+	<text transform="matrix(0.9534066375009116 0.0000000000000000 0.0000000000000000 0.9999998807907103 120.00 136.00)" xml:space="preserve">
+		<tspan style=" font-family:Verdana; font-size:60.110104pt;font-weight:Bold;font-style:Italic;" letter-spacing="0.00em" fill="#230FD2" fill-opacity="1" fill-rule="evenodd" stroke-width="0.2" stroke-linejoin="round">VORKASSE</tspan>
+	</text>
+	<line fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" x1="82.5" y1="357.5" x2="639.75" y2="357.5"/>
+	<path fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" d="M 107.5,307.5L 57.2651,207.5L 608.75,207.5L 678.75,307.5L 107.5,307.5L 57.265,407.5L 608.75,407.5L 677.5,307.5"/>
+	<line fill="none" stroke-width="10" stroke-linejoin="round" stroke="#230FD2" stroke-opacity="1" x1="82.5" y1="257.5" x2="639.75" y2="257.5"/>
+</svg>

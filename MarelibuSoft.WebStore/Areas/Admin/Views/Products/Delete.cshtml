@@ -1,0 +1,102 @@
+@model MarelibuSoft.WebStore.Models.Product
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <input type="hidden" asp-for="ProductID" />
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.ShortDescription)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.ShortDescription)
+		</dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        @*<dt>
+            @Html.DisplayNameFor(model => model.AvailableQuantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AvailableQuantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MinimumPurchaseQuantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MinimumPurchaseQuantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BasesUnit)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BasesUnit)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Size)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Size)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ShippingTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ShippingTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MainGroupID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MainGroupID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.GroupID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GroupID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SubGroupID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SubGroupID)
+        </dd>*@
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="L&ouml;schen" class="btn btn-danger" /> |
+            <a asp-action="Index" class="btn btn-default">Zur&uuml;ck zur &Uuml;bersicht</a>
+        </div>
+    </form>
+</div>

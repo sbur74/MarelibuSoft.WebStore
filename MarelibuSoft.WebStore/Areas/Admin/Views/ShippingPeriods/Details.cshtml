@@ -1,0 +1,25 @@
+﻿@model MarelibuSoft.WebStore.Models.ShippingPeriod
+
+@{
+	ViewData["Title"] = "Details";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ShippingPeriod</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Decription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Decription)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ShippingPeriodID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

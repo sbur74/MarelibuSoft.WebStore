@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Models.ViewModels.CustomerShipToAddressVm>
+
+@{
+    ViewData["Title"] = "Lieferadressen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Lieferadressen</h2>
+
+<p>
+    <a asp-action="Create" asp-route-id="@ViewData["CustomerID"]" class="btn btn-primary">Neue Lieferadresse</a>
+</p>
+<div class="row">
+	@foreach (var item in Model)
+	{
+		<div class="col-md-3">
+			<div class="thumbnail">
+				<div class="caption">
+					@if (item.IsMainAddress)
+					{
+						<h4><strong class="bg-primary">Standard Lieferadresse</strong></h4>
+					}
+					else
+					{
+						<h4>Lieferadresse</h4>
+					}
+					<p>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</p>
+					<p>@Html.DisplayFor(moleItem => item.Address)</p>
+					<p>@Html.DisplayFor(moleItem => item.AdditionalAddress)</p>
+					<p>@Html.DisplayFor(moleItem => item.PostCode) @Html.DisplayFor(moleItem => item.City)</p>
+					<p>@Html.DisplayFor(modelItem => item.CountryName)</p>
+					<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ID">Bearbeiten</a><a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.ID">L&ouml;schen</a>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
