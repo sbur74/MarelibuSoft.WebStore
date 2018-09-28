@@ -21,18 +21,18 @@ using MarelibuSoft.WebStore.Common.Statics;
 namespace MarelibuSoft.WebStore.Controllers
 {
 	[Authorize]
-    public class OrdersController : Controller
-    {
-        private readonly ApplicationDbContext _context;
+	public class OrdersController : Controller
+	{
+		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly ILogger logger;
 		private readonly ILoggerFactory factory;
 		private readonly IEmailSender _emailSender;
 		private ShoppingCartHelper cartHelper;
 
-		public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser>userManager, ILoggerFactory loggerFactory, IEmailSender emailSender)
-        {
-            _context = context;
+		public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILoggerFactory loggerFactory, IEmailSender emailSender)
+		{
+			_context = context;
 			_userManager = userManager;
 			factory = loggerFactory;
 			this.logger = factory.CreateLogger<OrdersController>();
@@ -40,7 +40,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
 		}
 
-        // GET: Orders
+		// GET: Orders
 		public async Task<IActionResult> WeHaveYourOrder(Guid? id)
 		{
 			if (id == null)
@@ -57,13 +57,13 @@ namespace MarelibuSoft.WebStore.Controllers
 			var attachments = new List<string> { agb.Filename, wiederuf.Filename, datenschutz.Filename };
 
 			await _emailSender.SendEmailWithAttachmentsAsync(User.Identity.Name, subject, mailContent, attachments);
-			await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft",$"<p>Verkauf an: {User.Identity.Name}</p>");
+			await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft", $"<p>Verkauf an: {User.Identity.Name}</p>");
 
 			return View(viewModel);
 		}
 		// GET: Orders/Create
 		public async Task<IActionResult> Create(Guid? id)
-        {
+		{
 
 			cartHelper.CheckAndRemove();
 
@@ -74,8 +74,9 @@ namespace MarelibuSoft.WebStore.Controllers
 			var userId = currentUser.Id;
 
 			var customer = await _context.Customers.Where(c => c.UserId == userId).SingleAsync();
+			ShippingPrice shippingPriceDefault = null;
+			decimal shipDefaultPrice = 0.0M;
 
-			int shipTypeDefault = 1; //Type Maxibrief
 			int countryDefault = 1;//Country 1 Deutschland
 			int ShippingPeriodDefaultID = 1;
 
@@ -115,10 +116,12 @@ namespace MarelibuSoft.WebStore.Controllers
 					{
 						ShippingPeriodDefaultID = product.ShippingPeriod;
 					}
+					var productShipPrice = await _context.ShippingPrices.SingleAsync(s => s.ShippingPriceTypeId == product.ShippingPriceType && s.CountryId == countryDefault);
 
-					if (shipTypeDefault < product.ShippingPriceType)
+					if (shipDefaultPrice < productShipPrice.Price)
 					{
-						shipTypeDefault = product.ShippingPriceType;
+						shipDefaultPrice = productShipPrice.Price;
+						shippingPriceDefault = productShipPrice;
 					}
 
 					decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
@@ -152,7 +155,7 @@ namespace MarelibuSoft.WebStore.Controllers
 						AvailableQuantity = Math.Round(product.AvailableQuantity, 2),
 						ShoppingCartID = shoppingCart.ID,
 						SellBasePrice = Math.Round(item.SellBasePrice, 2),
-						SellSekPrice = Math.Round(product.SecondBasePrice,2),
+						SellSekPrice = Math.Round(product.SecondBasePrice, 2),
 						SekUnit = sekunit,
 						ShortDescription = product.ShortDescription,
 						UnitID = product.BasesUnitID
@@ -206,19 +209,17 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			var paymends = await _context.Paymends.ToListAsync();
 
-			ShippingPrice defaultPrice = await _context.ShippingPrices.SingleAsync(s => s.ShippingPriceTypeId == shipTypeDefault && s.CountryId == countryDefault);
-
 			ShippingPeriod periodDefault = await _context.ShpippingPeriods.SingleAsync(s => s.ShippingPeriodID == ShippingPeriodDefaultID);
 
-			vm.Cart.Total = vm.Cart.Total + defaultPrice.Price;
+			vm.Cart.Total = vm.Cart.Total + shipDefaultPrice;
 
 			vm.Cart.Total = Math.Round(vm.Cart.Total, 2);
 
 			vm.PayPalTotal = Math.Round(vm.Cart.Total, 2).ToString(CultureInfo.CreateSpecificCulture("en-US"));
 
-			defaultPrice.Price = Math.Round(defaultPrice.Price, 2);
+			shipDefaultPrice = Math.Round(shipDefaultPrice);
 
-			vm.ShippingPrice = defaultPrice;
+			vm.ShippingPrice = shippingPriceDefault;
 
 			vm.ShippingPeriod = periodDefault;
 
@@ -228,7 +229,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
 
 			return View(vm);
-        }
+		}
 
 		private async Task<string> GetActualOrderNo()
 		{
@@ -236,7 +237,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			try
 			{
 				var lastorder = await _context.Orders.OrderBy(o => o.OrderDate).LastAsync();
-				
+
 				if (lastorder != null)
 				{
 					string lastOrdNo = lastorder.Number;
@@ -260,11 +261,11 @@ namespace MarelibuSoft.WebStore.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Number,OrderDate,PaymentID,IsPayed,IsSend,Shippingdate,IsClosed,CartID,ExceptLawConditions,ShippingAddressId,ShippingPriceId, ShippingPeriodId,Total,FreeText")] Order order)
-        {
-            if (ModelState.IsValid)
-            {
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("ID,Number,OrderDate,PaymentID,IsPayed,IsSend,Shippingdate,IsClosed,CartID,ExceptLawConditions,ShippingAddressId,ShippingPriceId, ShippingPeriodId,Total,FreeText")] Order order)
+		{
+			if (ModelState.IsValid)
+			{
 				//TODO benutzer check und redirect anpassen!!!
 				order.ID = Guid.NewGuid();
 				order.OrderDate = DateTime.Now;
@@ -300,7 +301,7 @@ namespace MarelibuSoft.WebStore.Controllers
 						   $"Ship Price:\t\t{order.ShippingPrice}\n" +
 						   $"Ship Price id:\t\t{order.ShippingPriceId}\n" +
 						   $"Paymend id:\t\t{order.PaymentID}\n" +
-						   $"FreeText:\t\t{order.FreeText}\n"+
+						   $"FreeText:\t\t{order.FreeText}\n" +
 						   $"customer id:\t\t{order.CustomerID}\n", null);
 
 					await _context.SaveChangesAsync();
@@ -310,7 +311,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					HttpContext.Session.SetString("ShoppingCartId", string.Empty);
 
-					if(order.PaymentID == 2)
+					if (order.PaymentID == 2)
 					{
 						return RedirectToAction("PayWithPayPal", new { id = order.ID });
 					}
@@ -319,20 +320,20 @@ namespace MarelibuSoft.WebStore.Controllers
 				{
 					return NotFound();
 				}
-            }
+			}
 
-			return RedirectToAction("WeHaveYourOrder",new { id = order.ID });
+			return RedirectToAction("WeHaveYourOrder", new { id = order.ID });
 			//return View(order);
 		}
 
-		public async Task<IActionResult>PayWithPayPal(Guid? id)
+		public async Task<IActionResult> PayWithPayPal(Guid? id)
 		{
 			if (id == null)
 			{
 				return NotFound();
 			}
 			var order = await _context.Orders.SingleAsync(o => o.ID.Equals(id));
-			
+
 			return View(order);
 		}
 
@@ -360,12 +361,12 @@ namespace MarelibuSoft.WebStore.Controllers
 			return View();
 		}
 
-        private bool OrderExists(Guid id)
-        {
-            return _context.Orders.Any(e => e.ID == id);
-        }
+		private bool OrderExists(Guid id)
+		{
+			return _context.Orders.Any(e => e.ID == id);
+		}
 
-		private	async Task<string>CreateOrderMail(Guid? id)
+		private async Task<string> CreateOrderMail(Guid? id)
 		{
 			string mail = string.Empty;
 
@@ -381,7 +382,7 @@ namespace MarelibuSoft.WebStore.Controllers
 								"<th align=\"center\">Menge</th>" +
 								"<th align=\"center\">Preis in &euro;</th>" +
 							"</tr>";
-				foreach(var item in order.OrderLines)
+				foreach (var item in order.OrderLines)
 				{
 					table += $"<tr>" +
 								$"<td align=\"center\">{item.Position}</td>" +
@@ -391,7 +392,7 @@ namespace MarelibuSoft.WebStore.Controllers
 								$"<td align=\"center\">{item.Price}</td>" +
 							$"</tr>";
 				}
-				
+
 				table += $"<tr>" +
 							$"<td align=\"center\"></td>" +
 							$"<td align=\"center\">Versand</td>" +
@@ -504,7 +505,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			return thankyou;
 		}
 
-		private	async Task<WeHaveYourOrderViewModel>GetViewModel(Guid id)
+		private async Task<WeHaveYourOrderViewModel> GetViewModel(Guid id)
 		{
 			var myorder = await _context.Orders.SingleAsync(o => o.ID == id);
 			var paymend = await _context.Paymends.SingleAsync(p => p.ID == myorder.PaymentID);
@@ -529,10 +530,10 @@ namespace MarelibuSoft.WebStore.Controllers
 					ID = item.OrderLineID,
 					ImagePath = img.ImageUrl,
 					Position = item.Position,
-					Price = Math.Round((item.SellBasePrice * item.Quantity),2),
+					Price = Math.Round((item.SellBasePrice * item.Quantity), 2),
 					ProductName = prod.Name,
 					ProductNumber = prod.ProductNumber,
-					Quantity = Math.Round(item.Quantity,2),
+					Quantity = Math.Round(item.Quantity, 2),
 					ProductUnit = unit.Name
 				};
 
@@ -559,9 +560,9 @@ namespace MarelibuSoft.WebStore.Controllers
 				OrderInvoiceAddress = invioceAddress,
 				OrderShippingPeriod = period.Decription,
 				Bank = bank,
-				OrderTotal = Math.Round(myorder.Total,2),
+				OrderTotal = Math.Round(myorder.Total, 2),
 				OrderThankYou = thankyou,
-				ShipPrice = Math.Round(myorder.ShippingPrice,2),
+				ShipPrice = Math.Round(myorder.ShippingPrice, 2),
 				ShipPriceName = shipPrice.Name,
 				CountryName = country.Name,
 				InvoiceCountryName = incountry.Name,

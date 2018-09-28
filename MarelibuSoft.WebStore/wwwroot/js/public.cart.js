@@ -349,7 +349,7 @@ function checkIsQuantityAvailable(id, productId) {
 	if (quant > avaiQuant) {
 		//$("div.failure").html("Die die eingegebene Megene &uuml;bersteigt die Verf&uuml;gbaremenge!").fadeIn(300).delay(1500).fadeOut(400);
 		//alert("Die die eingegebene Megene &uuml;bersteigt die Verf&uuml;gbaremenge!");
-		marelibusoft.common.showModalAlert("alert", "Die die eingegebene Megene &uuml;bersteigt die Verf&uuml;gbaremenge!", "danger");
+		marelibusoft.common.showModalAlert("alert", "Die die eingegebene Megene &uuml;bersteigt die verf&uuml;gbare Menge!", "danger");
 		return false;
 	}
 	return true;
