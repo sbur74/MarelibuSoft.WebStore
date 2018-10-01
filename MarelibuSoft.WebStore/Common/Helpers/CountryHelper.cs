@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MarelibuSoft.WebStore.Common.ViewModels;
 using MarelibuSoft.WebStore.Data;
+using MarelibuSoft.WebStore.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarelibuSoft.WebStore.Common.Helpers
 {
@@ -60,8 +62,6 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 		{
 			List<SelectItemViewModel> selectItemViewModels = new List<SelectItemViewModel>();
 
-			var none = new SelectItemViewModel { ID = "", Name = "nicht zu gewiesen" };
-			selectItemViewModels.Add(none);
 			var coutries = _context.Countries.ToList();
 
 			foreach (var item in coutries)
@@ -72,6 +72,31 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 			}
 
 			return selectItemViewModels;
+		}
+
+		public List<SelectItemViewModel> GetShippingCountries()
+		{
+			var result = new List<SelectItemViewModel>();
+
+			var countries = _context.Countries.Where(c => c.IsAllowedShipping).ToList();
+
+			foreach (var item in countries)
+			{
+				var shipToCountry = new SelectItemViewModel
+				{
+					ID = item.ID.ToString(),
+					IsSelected = (item.ID == 1),
+					Name = item.Name
+				};
+				result.Add(shipToCountry);
+			}
+
+			return result;
+		}
+
+		public async Task<List<Country>> GetCountries()
+		{
+			return await _context.Countries.ToListAsync();
 		}
 	}
 }
