@@ -92,6 +92,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				if (shipDefaultPrice < productShipPrice.Price) 
 				{
 					shipDefaultPrice = productShipPrice.Price;
+					shipTypeDefault = productShipPrice.ShippingPriceTypeId;
 				}
 
 				decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
