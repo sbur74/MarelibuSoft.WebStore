@@ -43,6 +43,16 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 			return code;
 		}
 
+		public async Task<bool> GetAllowedForShipping(int id)
+		{
+			bool result = false;
+
+			var country = await _context.Countries.SingleAsync(c => c.ID == id);
+			result = country.IsAllowedShipping;
+
+			return result;
+		}
+
 		public List<SelectItemViewModel> GetVmList()
 		{
 			List<SelectItemViewModel> selectItemViewModels  = new List<SelectItemViewModel>();
@@ -74,7 +84,7 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 			return selectItemViewModels;
 		}
 
-		public List<SelectItemViewModel> GetShippingCountries()
+		public List<SelectItemViewModel> GetShippingCountries(int id)
 		{
 			var result = new List<SelectItemViewModel>();
 
@@ -85,7 +95,7 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 				var shipToCountry = new SelectItemViewModel
 				{
 					ID = item.ID.ToString(),
-					IsSelected = (item.ID == 1),
+					IsSelected = (item.ID == id),
 					Name = item.Name
 				};
 				result.Add(shipToCountry);
@@ -94,7 +104,12 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 			return result;
 		}
 
-		public async Task<List<Country>> GetCountries()
+		public List<Country> GetCountries()
+		{
+			return _context.Countries.ToList();
+		}
+
+		public async Task<List<Country>> GetCountriesAsync()
 		{
 			return await _context.Countries.ToListAsync();
 		}

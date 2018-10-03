@@ -29,6 +29,7 @@ namespace MarelibuSoft.WebStore.Controllers
 		private readonly ILoggerFactory factory;
 		private readonly IEmailSender _emailSender;
 		private ShoppingCartHelper cartHelper;
+		private ShippingAddressHelper addressHelper;
 
 		public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser>userManager, ILoggerFactory loggerFactory, IEmailSender emailSender)
         {
@@ -38,6 +39,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			this.logger = factory.CreateLogger<OrdersController>();
 			_emailSender = emailSender;
 			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
+			addressHelper = new ShippingAddressHelper(_context);
 		}
 
         // GET: Orders
@@ -423,14 +425,14 @@ namespace MarelibuSoft.WebStore.Controllers
 								$"<p>{order.OrderShippingAddress.Address}</p>" +
 								$"<p>{order.OrderShippingAddress.AdditionalAddress}</p>" +
 								$"<p>{order.OrderShippingAddress.PostCode} {order.OrderShippingAddress.City}</p>" +
-								$"<p>{order.CountryName}</p>";
+								$"<p>{order.OrderShippingAddress.CountryName}</p>";
 
 				var invoice = $"<h4>Rechnungsadresse</h4>" +
 							$"<p>{order.OrderInvoiceAddress.FirstName} {order.OrderInvoiceAddress.LastName}</p>" +
 							$"<p>{order.OrderInvoiceAddress.CompanyName}</p>" +
 							$"<p>{order.OrderInvoiceAddress.Address}</p>" +
 							$"<p>{order.OrderInvoiceAddress.PostCode} {order.OrderInvoiceAddress.City}</p>" +
-							$"<p>{order.InvoiceCountryName}</p>";
+							$"<p>{order.OrderInvoiceAddress.CountryName}</p>";
 
 
 				string bank = string.Empty;
@@ -510,9 +512,8 @@ namespace MarelibuSoft.WebStore.Controllers
 			var myorder = await _context.Orders.SingleAsync(o => o.ID == id);
 			var paymend = await _context.Paymends.SingleAsync(p => p.ID == myorder.PaymentID);
 			var shippingAddress = await _context.ShippingAddresses.SingleAsync(a => a.ID == myorder.ShippingAddressId);
-			var invioceAddress = await _context.ShippingAddresses.SingleAsync(a => a.CustomerID == myorder.CustomerID && a.IsInvoiceAddress);
-			var country = await _context.Countries.SingleAsync(c => c.ID == shippingAddress.CountryID);
-			var incountry = await _context.Countries.SingleAsync(c => c.ID == invioceAddress.CountryID);
+			var invioceAddress = await _context.ShippingAddresses.FirstOrDefaultAsync(a => a.CustomerID == myorder.CustomerID && a.IsInvoiceAddress);
+			
 			var period = await _context.ShpippingPeriods.SingleAsync(p => p.ShippingPeriodID == myorder.ShippingPeriodId);
 			var shipPrice = await _context.ShippingPrices.SingleAsync(p => p.ID == myorder.ShippingPriceId);
 
@@ -543,10 +544,19 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			BankAcccount bank = null;
 
-			//if (paymend.PaymendType == Enums.PaymendTypeEnum.Prepay)
-			//{
-			//	bank = await _context.BankAcccounts.FirstAsync();
-			//}
+			var shipTo = addressHelper.GetViewModel(shippingAddress);
+
+			ShippingAddressViewModel invoiceVm = null;
+		
+			if(invioceAddress == null)
+			{
+				var customer = await _context.Customers.SingleAsync(c => c.CustomerID == myorder.CustomerID);
+				invoiceVm = addressHelper.GetViewModel(customer);
+			}
+			else
+			{
+				invoiceVm = addressHelper.GetViewModel(invioceAddress);
+			}
 
 			string thankyou = await GetThankyou(paymend);
 
@@ -556,16 +566,14 @@ namespace MarelibuSoft.WebStore.Controllers
 				OrderDate = myorder.OrderDate,
 				OrderNo = myorder.Number,
 				OrderPaymend = paymend.Name,
-				OrderShippingAddress = shippingAddress,
-				OrderInvoiceAddress = invioceAddress,
+				OrderShippingAddress = shipTo,
+				OrderInvoiceAddress = invoiceVm,
 				OrderShippingPeriod = period.Decription,
 				Bank = bank,
 				OrderTotal = Math.Round(myorder.Total,2),
 				OrderThankYou = thankyou,
 				ShipPrice = Math.Round(myorder.ShippingPrice,2),
 				ShipPriceName = shipPrice.Name,
-				CountryName = country.Name,
-				InvoiceCountryName = incountry.Name,
 				OrderLines = lineViewModels,
 				FreeText = myorder.FreeText
 			};

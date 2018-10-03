@@ -49,18 +49,6 @@ namespace MarelibuSoft.WebStore.Controllers
 				Console.WriteLine(e);
 			}
 
-			if (addresses.Count == 0)
-			{
-				Customer customer = await _context.Customers.SingleAsync(c => c.CustomerID == id);
-				
-				ShippingAddress main = new ShippingAddress() { CustomerID = customer.CustomerID, AdditionalAddress = customer.AdditionalAddress, Address = customer.Address, City = customer.City, FirstName = customer.FirstName, IsMainAddress = true, LastName = customer.Name, PostCode = customer.PostCode, CompanyName = customer.CompanyName };
-
-				_context.Add(main);
-				await _context.SaveChangesAsync();
-
-				addresses = await _context.ShippingAddresses.Where(sh => sh.CustomerID.Equals(id)).ToListAsync();
-			}
-
 			List<CustomerShipToAddressVm> vms = new List<CustomerShipToAddressVm>();
 
 			foreach (var item in addresses)
@@ -109,7 +97,7 @@ namespace MarelibuSoft.WebStore.Controllers
         // GET: ShippingAddresses/Create
         public IActionResult Create(Guid? id)
         {
-			var countries = new CountryHelper(_context).GetVmList();
+			var countries = new CountryHelper(_context).GetShippingCountries(1); //default 1 deutschland
 			ViewData["Countries"] = new SelectList(countries, "ID", "Name");
 			ViewData["CustomerId"] = id;
 			
@@ -157,7 +145,7 @@ namespace MarelibuSoft.WebStore.Controllers
                 return NotFound();
             }
 
-			var countries = new CountryHelper(_context).GetVmList(shippingAddress.CountryID);
+			var countries = new CountryHelper(_context).GetShippingCountries(shippingAddress.CountryID);
 
 			ViewData["CountryID"] = new SelectList(countries,"ID","Name");
 
@@ -223,8 +211,8 @@ namespace MarelibuSoft.WebStore.Controllers
                 }
                 return RedirectToAction(nameof(CustomerIndex), new { id = shippingAddress.CustomerID});
             }
-            return View(shippingAddress);
-        }
+			return RedirectToAction(nameof(Edit), new { shippingAddress.ID });
+		}
 
         // GET: ShippingAddresses/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -197,7 +197,16 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			var customer = await _context.Customers.SingleAsync(c => c.CustomerID == id);
 			var user = await _context.Users.SingleAsync(u => u.Id == customer.UserId);
 			var countries = await _context.Countries.ToListAsync();
-			var shipToAddresses = await _context.ShippingAddresses.Where(sh => sh.CustomerID == customer.CustomerID).ToListAsync();
+			List<ShippingAddress> shipToAddresses = null;
+
+			try
+			{
+				shipToAddresses = await _context.ShippingAddresses.Where(sh => sh.CustomerID == customer.CustomerID).ToListAsync();
+			}
+			catch (Exception e)
+			{
+				shipToAddresses = null;
+			}
 
 			result.CustomerID = customer.CustomerID;
 			result.CustomerNo = customer.CustomerNo;
@@ -214,25 +223,28 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			result.CountryId = customer.CountryId;
 			result.CountryName = countries.Single(c => c.ID == customer.CountryId).Name;
 
-			foreach (var item in shipToAddresses)
+			if (shipToAddresses != null)
 			{
-				var shipTo = new ShippingAddressViewModel
+				foreach (var item in shipToAddresses)
 				{
-					ID = item.ID,
-					Address = item.Address,
-					AdditionalAddress = item.AdditionalAddress,
-					City = item.City,
-					CountryID = item.CountryID,
-					CountryName = countries.Single(c => c.ID == item.CountryID).Name,
-					CustomerID = item.CustomerID,
-					FirstName = item.FirstName,
-					IsMainAddress = item.IsMainAddress,
-					LastName = item.LastName,
-					PostCode = item.PostCode,
-					IsInvoiceAddress = item.IsInvoiceAddress
-				};
-				result.Addresses.Add(shipTo);
-				
+					var shipTo = new ShippingAddressViewModel
+					{
+						ID = item.ID,
+						Address = item.Address,
+						AdditionalAddress = item.AdditionalAddress,
+						City = item.City,
+						CountryID = item.CountryID,
+						CountryName = countries.Single(c => c.ID == item.CountryID).Name,
+						CustomerID = item.CustomerID,
+						FirstName = item.FirstName,
+						IsMainAddress = item.IsMainAddress,
+						LastName = item.LastName,
+						PostCode = item.PostCode,
+						IsInvoiceAddress = item.IsInvoiceAddress
+					};
+					result.Addresses.Add(shipTo);
+
+				} 
 			}
 		
 

@@ -30,6 +30,7 @@ namespace MarelibuSoft.WebStore.Controllers
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
 		private readonly ApplicationDbContext _context;
+		private CountryHelper countryHelper;
 
 		private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
@@ -46,6 +47,7 @@ namespace MarelibuSoft.WebStore.Controllers
             _logger = logger;
             _urlEncoder = urlEncoder;
 			_context = context;
+			countryHelper = new CountryHelper(_context);
         }
 
         [TempData]
@@ -79,10 +81,9 @@ namespace MarelibuSoft.WebStore.Controllers
 				Name = customer.Name,
 				CustomerID = customer.CustomerID,
 				CountryID = customer.CountryId,
-				CountryName = new CountryHelper(_context).GetNameByID(customer.CountryId)
+				CountryName = countryHelper.GetNameByID(customer.CountryId),
+				Countries = countryHelper.GetCountries()
             };
-
-			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList(customer.CountryId), "ID", "Name");
 
             return View(model);
         }
@@ -135,11 +136,13 @@ namespace MarelibuSoft.WebStore.Controllers
 				customer.City = model.City;
 				customer.CountryId = model.CountryID;
 				customer.PostCode = model.PostCode;
-				
+
+				bool countryIsAllowedForSipping = await countryHelper.GetAllowedForShipping(model.CountryID);
+
 
 				_context.Entry(customer).State = EntityState.Modified;
 
-				if (shipping != null)
+				if (shipping != null && countryIsAllowedForSipping)
 				{
 					shipping.LastName = model.Name;
 					shipping.FirstName = model.FirstName;
@@ -153,7 +156,11 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					_context.Entry(shipping).State = EntityState.Modified;
 				}
-				else
+				if (shipping != null && !countryIsAllowedForSipping)
+				{
+					_context.Remove(shipping);
+				}
+				if (shipping == null && countryIsAllowedForSipping)
 				{
 					shipping = new ShippingAddress { CustomerID = model.CustomerID, AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CountryID = model.CountryID, FirstName = model.FirstName, LastName = model.Name, PostCode = model.PostCode, IsMainAddress = true, IsInvoiceAddress = true, CompanyName = model.CompanyName };
 					_context.ShippingAddresses.Add(shipping);
