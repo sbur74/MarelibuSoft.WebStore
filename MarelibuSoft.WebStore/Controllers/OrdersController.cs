@@ -50,7 +50,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				return NotFound();
 			}
 			WeHaveYourOrderViewModel viewModel = await GetViewModel((Guid)id);
-			string subject = "Ihre Bestellung bei marelibuDesign";
+			string subject = "Deine Bestellung bei marelibuDesign";
 			string mailContent = await CreateOrderMail(viewModel.OrderID);
 
 			var agb = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.AGB);
@@ -84,7 +84,13 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			if (customer.CustomerID != Guid.Empty)
 			{
-				var shipping = _context.ShippingAddresses.Single(c => c.CustomerID == customer.CustomerID && c.IsMainAddress);
+				var shipping = await _context.ShippingAddresses.SingleOrDefaultAsync(c => c.CustomerID == customer.CustomerID && c.IsMainAddress);
+
+				if (shipping == null)
+				{
+					return RedirectToAction("CustomerIndex", "ShippingAddresses", new { id = customer.CustomerID });
+				}
+
 				countryDefault = shipping.CountryID;
 			}
 

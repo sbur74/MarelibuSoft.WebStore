@@ -58,11 +58,13 @@ namespace MarelibuSoft.WebStore.Controllers
 				return NotFound();
 			}
 
-			
-
 			if(shoppingCart.CustomerId != Guid.Empty)
 			{
-				var shipping = _context.ShippingAddresses.Single(c => c.CustomerID == shoppingCart.CustomerId && c.IsMainAddress);
+				var shipping = await _context.ShippingAddresses.SingleOrDefaultAsync(c => c.CustomerID == shoppingCart.CustomerId && c.IsMainAddress);
+				if (shipping == null)
+				{
+					return RedirectToAction("CustomerIndex", "ShippingAddresses", new { id = shoppingCart.CustomerId });
+				}
 				countryDefault = shipping.CountryID;
 			}
 
