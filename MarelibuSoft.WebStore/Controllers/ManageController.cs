@@ -124,7 +124,6 @@ namespace MarelibuSoft.WebStore.Controllers
             }
 
 			Customer customer = await _context.Customers.SingleAsync(c => c.UserId.Equals(user.Id));
-			ShippingAddress shipping = await _context.ShippingAddresses.SingleAsync(s => s.CustomerID.Equals(customer.CustomerID) && s.IsInvoiceAddress);
 
 			if (customer.CustomerID.Equals(model.CustomerID))
 			{
@@ -141,30 +140,6 @@ namespace MarelibuSoft.WebStore.Controllers
 
 
 				_context.Entry(customer).State = EntityState.Modified;
-
-				if (shipping != null && countryIsAllowedForSipping)
-				{
-					shipping.LastName = model.Name;
-					shipping.FirstName = model.FirstName;
-					shipping.CompanyName = model.CompanyName;
-					shipping.City = model.City;
-					shipping.CountryID = model.CountryID;
-					shipping.AdditionalAddress = model.AdditionalAddress;
-					shipping.Address = model.Address;
-					shipping.PostCode = model.PostCode;
-					shipping.IsInvoiceAddress = true;
-
-					_context.Entry(shipping).State = EntityState.Modified;
-				}
-				if (shipping != null && !countryIsAllowedForSipping)
-				{
-					_context.Remove(shipping);
-				}
-				if (shipping == null && countryIsAllowedForSipping)
-				{
-					shipping = new ShippingAddress { CustomerID = model.CustomerID, AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CountryID = model.CountryID, FirstName = model.FirstName, LastName = model.Name, PostCode = model.PostCode, IsMainAddress = true, IsInvoiceAddress = true, CompanyName = model.CompanyName };
-					_context.ShippingAddresses.Add(shipping);
-				}
 
 				await _context.SaveChangesAsync();
 			}

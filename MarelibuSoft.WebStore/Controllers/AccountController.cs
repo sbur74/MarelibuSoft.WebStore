@@ -276,12 +276,6 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}C{customers.Count + 1}",  FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID, CompanyName = model.CompanyName };
 					_context.Add(customer);
-
-					if (countryIsAllowedForSipping)
-					{
-						ShippingAddress shipping = new ShippingAddress { AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, FirstName = model.FirstName, IsMainAddress = true, CustomerID = customer.CustomerID, LastName = model.Name, PostCode = model.PostCode, CountryID = model.CountryID, IsInvoiceAddress = true, CompanyName = model.CompanyName };
-						_context.Add(shipping); 
-					}
 					
 					await _context.SaveChangesAsync();
 
