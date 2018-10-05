@@ -27,6 +27,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		private readonly ILogger _logger;
 		private readonly IEmailSender _emailSender;
 		private IHostingEnvironment _environment;
+		private ShippingAddressHelper addressHelper;
 
 		public OrdersController(ApplicationDbContext context,ILogger<OrdersController>logger, IEmailSender emailSender, IHostingEnvironment environment)
         {
@@ -34,6 +35,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			_logger = logger;
 			_emailSender = emailSender;
 			_environment = environment;
+			addressHelper = new ShippingAddressHelper(_context);
         }
 
         // GET: Admin/Orders
@@ -349,40 +351,27 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				var customer = await _context.Customers.SingleAsync(c => c.CustomerID.Equals(order.CustomerID));
 				var user = await _context.Users.SingleAsync(u => u.Id.Equals(customer.UserId));
 
-				var shippingAddress = await _context.ShippingAddresses.SingleAsync(s => s.ID == order.ShippingAddressId);
-				var country = await _context.Countries.SingleAsync(c => c.ID == shippingAddress.CountryID);
+				var shippingAddress = await _context.ShippingAddresses.FirstOrDefaultAsync(s => s.ID == order.ShippingAddressId);
 
-				var invoiceaddress = await _context.ShippingAddresses.SingleAsync(c => c.CustomerID == order.CustomerID && c.IsInvoiceAddress);
+				var invoiceaddress = await _context.ShippingAddresses.FirstOrDefaultAsync(c => c.CustomerID == order.CustomerID && c.IsInvoiceAddress);
 
-				var invoicecountry = await _context.Countries.SingleAsync(c => c.ID == invoiceaddress.CountryID);
+				ShippingAddressViewModel shipToAddress = null;
 
-				var shipToAddress = new ShippToAddressViewModel
+				if (shippingAddress != null)
 				{
-					ID = shippingAddress.ID,
-					AdditionalAddress = shippingAddress.AdditionalAddress,
-					Address = shippingAddress.Address,
-					City = shippingAddress.City,
-					CountryName = country.Name,
-					FirstName = shippingAddress.FirstName,
-					IsMainAddress = shippingAddress.IsMainAddress,
-					LastName = shippingAddress.LastName,
-					PostCode = shippingAddress.PostCode,
-					CompanyName = shippingAddress.CompanyName
-				};
+					shipToAddress = addressHelper.GetViewModel(shippingAddress);
+				}
 
-				var invoiceVm = new ShippToAddressViewModel
+				ShippingAddressViewModel invoiceVm = null;
+
+				if (invoiceaddress == null)
 				{
-					ID = invoiceaddress.ID,
-					AdditionalAddress = invoiceaddress.AdditionalAddress,
-					Address = invoiceaddress.Address,
-					City = invoiceaddress.City,
-					CompanyName = invoiceaddress.CompanyName,
-					CountryName = invoicecountry.Name,
-					FirstName = invoiceaddress.FirstName,
-					IsMainAddress = invoiceaddress.IsMainAddress,
-					LastName = invoiceaddress.LastName,
-					PostCode = invoiceaddress.PostCode
-				};
+					invoiceVm = addressHelper.GetViewModel(customer);
+				}
+				else
+				{
+					invoiceVm = addressHelper.GetViewModel(invoiceaddress);
+				}
 
 				vm = new OrderViewModel {
 					ID = order.ID,

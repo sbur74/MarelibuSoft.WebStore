@@ -18,10 +18,6 @@
 	@Html.AntiForgeryToken()
 </div>
 
-<div class="toogler">
-	<div id="myalert"></div>
-</div>
-
 <div>
 	<div class="row">
 
@@ -96,7 +92,7 @@
 				</dl>
 			</div>
 			<section>
-				<p class="label label-default" id="@qunitityPrice" style="font-size:initial;">@startPrice &euro; <b>*</b></p>
+				<p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
 				<br />
 				<div class="input-group col-md-4">
 					<span class="input-group-btn">
@@ -130,7 +126,7 @@
 </div>
 <hr />
 <p class="small">
-	*Angegebene Preise sind Gesamtpreise (zzgl. Versandkosten). Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
+	* Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
 	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
 </p>
 <p class="small">

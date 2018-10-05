@@ -56,6 +56,7 @@ namespace MarelibuSoft.WebStore.Models.ManageViewModels
 		public int CountryID { get; set; }
 		public string CountryName { get; set; }
 
+		public List<Country> Countries { get; set; }
 
 		public Guid CustomerID { get; set; }
 	}

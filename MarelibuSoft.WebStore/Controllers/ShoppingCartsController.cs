@@ -44,7 +44,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			int countryDefault = 1;//Country 1 Deutschland
 			int periodDefault = 1;
 
-
+			
 
 			if (id == null)
 			{
@@ -58,11 +58,13 @@ namespace MarelibuSoft.WebStore.Controllers
 				return NotFound();
 			}
 
-
-
-			if (shoppingCart.CustomerId != Guid.Empty)
+			if(shoppingCart.CustomerId != Guid.Empty)
 			{
-				var shipping = _context.ShippingAddresses.Single(c => c.CustomerID == shoppingCart.CustomerId && c.IsMainAddress);
+				var shipping = await _context.ShippingAddresses.SingleOrDefaultAsync(c => c.CustomerID == shoppingCart.CustomerId && c.IsMainAddress);
+				if (shipping == null)
+				{
+					return RedirectToAction("CustomerIndex", "ShippingAddresses", new { id = shoppingCart.CustomerId });
+				}
 				countryDefault = shipping.CountryID;
 			}
 
@@ -89,9 +91,10 @@ namespace MarelibuSoft.WebStore.Controllers
 
 				var productShipPrice = await _context.ShippingPrices.SingleAsync(s => s.ShippingPriceTypeId == product.ShippingPriceType && s.CountryId == countryDefault);
 
-				if (shipDefaultPrice < productShipPrice.Price)
+				if (shipDefaultPrice < productShipPrice.Price) 
 				{
 					shipDefaultPrice = productShipPrice.Price;
+					shipTypeDefault = productShipPrice.ShippingPriceTypeId;
 				}
 
 				decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;

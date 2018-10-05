@@ -65,7 +65,14 @@
 			</div>
 			<div class="form-group">
 				<label asp-for="CountryID"></label>
-				<select asp-for="CountryID" asp-items="ViewBag.CountryID" class="form-control" required></select>
+				<select id="selectCountry" asp-for="CountryID"  class="form-control" required onchange="marelibusoft.invioceaddress.onSelectionChange();">
+				@foreach(Country country in Model.Countries)
+				{
+					<option id="country_@country.ID" value="@country.ID" data-allowed-for-shipping="@country.IsAllowedShipping">
+						@country.Name
+					</option>
+				}
+				</select>
 				<span asp-validation-for="CountryID" class="text-danger"></span>
 			</div>
 			<button type="submit" class="btn btn-default">Registrieren</button>

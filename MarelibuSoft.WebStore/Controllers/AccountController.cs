@@ -30,6 +30,7 @@ namespace MarelibuSoft.WebStore.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 		private readonly ApplicationDbContext _context;
+		private CountryHelper countryHelper;
 
 		public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -42,6 +43,7 @@ namespace MarelibuSoft.WebStore.Controllers
             _emailSender = emailSender;
             _logger = logger;
 			_context = context;
+			countryHelper = new CountryHelper(_context);
         }
 
         [TempData]
@@ -75,7 +77,7 @@ namespace MarelibuSoft.WebStore.Controllers
 					if (!await _userManager.IsEmailConfirmedAsync(user))
 					{
 						ModelState.AddModelError(string.Empty,
-						"You must have a confirmed email to log in.");
+						"Du musst deine E-Mail-Adresse bestätigen!");
 						return View(model);
 					}
 				}
@@ -86,6 +88,12 @@ namespace MarelibuSoft.WebStore.Controllers
                 {
 					var userid = _userManager.Users.Single(u => u.Email == model.Email).Id;
 					AddUserCustomerToShoppingCart(userid, HttpContext.Session.GetString("ShoppingCartId"));
+					var customer = await _context.Customers.SingleAsync(c => c.UserId == userid);
+					var shipTo = await _context.ShippingAddresses.FirstOrDefaultAsync(s => s.CustomerID == customer.CustomerID);
+					if (shipTo == null)
+					{
+						return RedirectToAction("CustomerIndex", "ShippingAddresses", new { id = customer.CustomerID });
+					}
                     _logger.LogInformation("User logged in.");
                     return RedirectToLocal(returnUrl);
                 }
@@ -232,10 +240,14 @@ namespace MarelibuSoft.WebStore.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
+			var vm = new RegisterViewModel
+			{
+				Countries = countryHelper.GetCountries(),
+				ShoppingCartId = HttpContext.Session.GetString("ShoppingCartId")
+			};
             ViewData["ReturnUrl"] = returnUrl;
-			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList(), "ID", "Name");
-			ViewData["ShoppingCartId"] = HttpContext.Session.GetString("ShoppingCartId");
-			return View();
+			
+			return View(vm);
         }
 
         [HttpPost]
@@ -258,25 +270,13 @@ namespace MarelibuSoft.WebStore.Controllers
 					var cartId = HttpContext.Session.GetString("ShoppingCartId");
 					var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 					var callbackUrl = Url.EmailConfirmationLink(user.Id, code, cartId,Request.Scheme);
-					//var callbackUrl = Url.Page(
-					//					"/Account/ConfirmEmail",
-					//					pageHandler: null,
-					//					values: new { userId = user.Id, code = code },
-					//					protocol: Request.Scheme);
-
-
-					//await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-					//await _signInManager.SignInAsync(user, isPersistent: false);
 
 					var customers = await _context.Customers.ToListAsync();
+					bool countryIsAllowedForSipping = await countryHelper.GetAllowedForShipping(model.CountryID);
 
 					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}C{customers.Count + 1}",  FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID, CompanyName = model.CompanyName };
-
-					ShippingAddress shipping = new ShippingAddress { AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, FirstName = model.FirstName, IsMainAddress = true, CustomerID = customer.CustomerID, LastName = model.Name, PostCode = model.PostCode, CountryID = model.CountryID, IsInvoiceAddress = true, CompanyName = model.CompanyName };
-
 					_context.Add(customer);
-					_context.Add(shipping);
+					
 					await _context.SaveChangesAsync();
 
 					AddUserCustomerToShoppingCart(user.Id, HttpContext.Session.GetString("ShoppingCartId"));
@@ -297,7 +297,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			// If we got this far, something failed, redisplay form
 			ViewData["ReturnUrl"] = returnUrl;
-			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList(), "ID", "Name");
+			ViewData["CountryID"] = new SelectList(countryHelper.GetVmList(), "ID", "Name");
 			ViewData["ShoppingCartId"] = HttpContext.Session.GetString("ShoppingCartId");
 			return View(model);
         }

@@ -30,6 +30,7 @@ namespace MarelibuSoft.WebStore.Controllers
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
 		private readonly ApplicationDbContext _context;
+		private CountryHelper countryHelper;
 
 		private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
@@ -46,6 +47,7 @@ namespace MarelibuSoft.WebStore.Controllers
             _logger = logger;
             _urlEncoder = urlEncoder;
 			_context = context;
+			countryHelper = new CountryHelper(_context);
         }
 
         [TempData]
@@ -79,10 +81,9 @@ namespace MarelibuSoft.WebStore.Controllers
 				Name = customer.Name,
 				CustomerID = customer.CustomerID,
 				CountryID = customer.CountryId,
-				CountryName = new CountryHelper(_context).GetNameByID(customer.CountryId)
+				CountryName = countryHelper.GetNameByID(customer.CountryId),
+				Countries = countryHelper.GetCountries()
             };
-
-			ViewData["CountryID"] = new SelectList(new CountryHelper(_context).GetVmList(customer.CountryId), "ID", "Name");
 
             return View(model);
         }
@@ -123,7 +124,6 @@ namespace MarelibuSoft.WebStore.Controllers
             }
 
 			Customer customer = await _context.Customers.SingleAsync(c => c.UserId.Equals(user.Id));
-			ShippingAddress shipping = await _context.ShippingAddresses.SingleAsync(s => s.CustomerID.Equals(customer.CustomerID) && s.IsInvoiceAddress);
 
 			if (customer.CustomerID.Equals(model.CustomerID))
 			{
@@ -135,34 +135,16 @@ namespace MarelibuSoft.WebStore.Controllers
 				customer.City = model.City;
 				customer.CountryId = model.CountryID;
 				customer.PostCode = model.PostCode;
-				
+
+				bool countryIsAllowedForSipping = await countryHelper.GetAllowedForShipping(model.CountryID);
+
 
 				_context.Entry(customer).State = EntityState.Modified;
-
-				if (shipping != null)
-				{
-					shipping.LastName = model.Name;
-					shipping.FirstName = model.FirstName;
-					shipping.CompanyName = model.CompanyName;
-					shipping.City = model.City;
-					shipping.CountryID = model.CountryID;
-					shipping.AdditionalAddress = model.AdditionalAddress;
-					shipping.Address = model.Address;
-					shipping.PostCode = model.PostCode;
-					shipping.IsInvoiceAddress = true;
-
-					_context.Entry(shipping).State = EntityState.Modified;
-				}
-				else
-				{
-					shipping = new ShippingAddress { CustomerID = model.CustomerID, AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CountryID = model.CountryID, FirstName = model.FirstName, LastName = model.Name, PostCode = model.PostCode, IsMainAddress = true, IsInvoiceAddress = true, CompanyName = model.CompanyName };
-					_context.ShippingAddresses.Add(shipping);
-				}
 
 				await _context.SaveChangesAsync();
 			}
 
-            StatusMessage = "Dein Konto wurde aktualiest!";
+            StatusMessage = "Dein Konto wurde aktualisiert!";
             return RedirectToAction(nameof(Index));
         }
 

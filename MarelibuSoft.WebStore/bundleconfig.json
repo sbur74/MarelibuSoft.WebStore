@@ -40,5 +40,9 @@
 	{
 		"outputFileName": "wwwroot/js/commonjs.min.js",
 		"inputFiles": [ "wwwroot/js/commonjs.js" ]
+	},
+	{
+		"outputFileName": "wwwroot/js/invoiceaddress.min.js",
+		"inputFiles": [ "wwwroot/js/invoiceaddress.js" ]
 	}
 ]

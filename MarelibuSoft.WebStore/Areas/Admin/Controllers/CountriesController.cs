@@ -55,7 +55,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Code,Name")] Country country)
+        public async Task<IActionResult> Create([Bind("ID,Code,Name,IsAllowedShipping")] Country country)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Code,Name")] Country country)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Code,Name,IsAllowedShipping")] Country country)
         {
             if (id != country.ID)
             {

@@ -77,7 +77,7 @@ namespace MarelibuSoft.WebStore
 			services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
 			services.AddMvc(options =>
 			{
-				options.SslPort = 8001;
+				options.SslPort = 5001;
 				options.Filters.Add(new RequireHttpsAttribute());
 				options.RespectBrowserAcceptHeader = true;
 			})
@@ -85,7 +85,7 @@ namespace MarelibuSoft.WebStore
 			services.AddHttpsRedirection(options =>
 			{
 				options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-				options.HttpsPort = 8001;
+				options.HttpsPort = 5001;
 			});
 
 

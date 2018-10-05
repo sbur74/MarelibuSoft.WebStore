@@ -17,7 +17,7 @@ marelibusoft.common.showModalAlert = function (elementId, message, type) {
 			//alertMessage.addClass("failure");
 			break;
 		case "warning":
-			alertMessage.append("<div class='media - body'><div class ='alert alert-warning'>" + message + "</div></div>");
+			alertMessage.append("<div class='media - body'><div class ='alert alert-warning'><span class='glyphicon glyphicon-warning-sign'></span> " + message + "</div></div>");
 			//alertMessage.addClass("warning");
 			break;
 		
@@ -30,4 +30,10 @@ marelibusoft.common.showModalAlert = function (elementId, message, type) {
 			$("#myalert").hide("fade", null, 1500, null).empty();
 		}, 1500);
 	});
+}
+
+marelibusoft.common.showModalInfo = function (titel, message) {
+	$("#myModalTitle").html(titel);
+	$("#myModalBody").append(message);
+	$("#myModal").modal("show");
 }

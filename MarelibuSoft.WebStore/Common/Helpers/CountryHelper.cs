@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MarelibuSoft.WebStore.Common.ViewModels;
 using MarelibuSoft.WebStore.Data;
+using MarelibuSoft.WebStore.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarelibuSoft.WebStore.Common.Helpers
 {
@@ -41,6 +43,16 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 			return code;
 		}
 
+		public async Task<bool> GetAllowedForShipping(int id)
+		{
+			bool result = false;
+
+			var country = await _context.Countries.SingleAsync(c => c.ID == id);
+			result = country.IsAllowedShipping;
+
+			return result;
+		}
+
 		public List<SelectItemViewModel> GetVmList()
 		{
 			List<SelectItemViewModel> selectItemViewModels  = new List<SelectItemViewModel>();
@@ -60,8 +72,6 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 		{
 			List<SelectItemViewModel> selectItemViewModels = new List<SelectItemViewModel>();
 
-			var none = new SelectItemViewModel { ID = "", Name = "nicht zu gewiesen" };
-			selectItemViewModels.Add(none);
 			var coutries = _context.Countries.ToList();
 
 			foreach (var item in coutries)
@@ -72,6 +82,36 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 			}
 
 			return selectItemViewModels;
+		}
+
+		public List<SelectItemViewModel> GetShippingCountries(int id)
+		{
+			var result = new List<SelectItemViewModel>();
+
+			var countries = _context.Countries.Where(c => c.IsAllowedShipping).ToList();
+
+			foreach (var item in countries)
+			{
+				var shipToCountry = new SelectItemViewModel
+				{
+					ID = item.ID.ToString(),
+					IsSelected = (item.ID == id),
+					Name = item.Name
+				};
+				result.Add(shipToCountry);
+			}
+
+			return result;
+		}
+
+		public List<Country> GetCountries()
+		{
+			return _context.Countries.ToList();
+		}
+
+		public async Task<List<Country>> GetCountriesAsync()
+		{
+			return await _context.Countries.ToListAsync();
 		}
 	}
 }

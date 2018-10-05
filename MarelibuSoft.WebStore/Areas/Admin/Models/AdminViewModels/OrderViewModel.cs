@@ -28,9 +28,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd}")]
 		public DateTime Shippingdate { get; set; }
 		[Display(Name = "Rechnungsadresse")]
-		public ShippToAddressViewModel InvoiceAddress { get; set; }
+		public ShippingAddressViewModel InvoiceAddress { get; set; }
 		[Display(Name = "Versandadresse")]
-		public ShippToAddressViewModel ShippToAddress { get; set; }
+		public ShippingAddressViewModel ShippToAddress { get; set; }
 		[Display(Name = "Auftrag abgeschlossen")]
 		public bool IsClosed { get; set; }
 		[Display(Name ="E-Mail Adresse")]

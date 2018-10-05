@@ -128,9 +128,25 @@
 
 	<h4>Lieferadresse</h4>
 	<p>@Model.OrderShippingAddress.FirstName @Model.OrderShippingAddress.LastName</p>
+	@if (!string.IsNullOrWhiteSpace(Model.OrderShippingAddress.CompanyName))
+	{
+		<p>@Model.OrderShippingAddress.CompanyName</p>
+	}
 	<p>@Model.OrderShippingAddress.Address</p>
 	<p>@Model.OrderShippingAddress.AdditionalAddress</p>
 	<p>@Model.OrderShippingAddress.PostCode @Model.OrderShippingAddress.City</p>
-	<p>@Model.CountryName</p>
+	<p>@Model.OrderShippingAddress.CountryName</p>
+	<br />
+	<br />
+	<h4>Rechnungsadresse</h4>
+	<p>@Model.OrderInvoiceAddress.FirstName @Model.OrderInvoiceAddress.LastName</p>
+	@if (!string.IsNullOrWhiteSpace(Model.OrderInvoiceAddress.CompanyName))
+	{
+		<p>@Model.OrderInvoiceAddress.CompanyName</p>
+	}
+	<p>@Model.OrderInvoiceAddress.Address</p>
+	<p>@Model.OrderInvoiceAddress.AdditionalAddress</p>
+	<p>@Model.OrderInvoiceAddress.PostCode @Model.OrderInvoiceAddress.City</p>
+	<p>@Model.OrderInvoiceAddress.CountryName</p>
 </div>
 

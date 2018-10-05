@@ -22,10 +22,6 @@
 	<h4>Keine Artikel zu dieser Kategorie verf&uuml;gbar</h4>
 }
 
-	<div class="toogler">
-		<div id="myalert"></div>
-	</div>
-
 <div class="row equal-height">
 	@foreach (var item in Model)
 	{
@@ -53,14 +49,14 @@
 					<table>
 						<tbody>
 							<tr>
-								<td>@Html.DisplayNameFor(modelItem => item.Price): </td>
-								<td class="right"> @Html.DisplayFor(modelItem => item.Price)/@Html.DisplayFor(modelItem => item.BasesUnit)</td>
+								<td class="small">@Html.DisplayNameFor(modelItem => item.Price): </td>
+								<td class="small right"> @Html.DisplayFor(modelItem => item.Price)/@Html.DisplayFor(modelItem => item.BasesUnit)</td>
 							</tr>
 							@if (!string.IsNullOrWhiteSpace(item.SecondPriceUnit))
 							{
 								<tr>
 									<td></td>
-									<td class="right"> @Html.DisplayFor(modelItem => item.SecondPriceUnit)</td>
+									<td class="small right"> @Html.DisplayFor(modelItem => item.SecondPriceUnit)</td>
 								</tr>
 							}
 						</tbody>
@@ -77,7 +73,7 @@
 							<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
 						</span>
 					</div>
-					<p class="label label-default" id="@qunitityPrice" style="font-size:medium">@startPrice &euro; <b>*</b></p>
+					<p class="label label-default"  style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
 					<a id="@btnItemCart" class="btn btn-primary" role="button" onclick="postCartLine(@item.ProductID, '@item.BasesUnitID', '@item.Price');">
 						<span class="glyphicon glyphicon-shopping-cart"></span> in den Warenkorb
 					</a>
@@ -92,7 +88,7 @@
 </div>
 <hr />
 <p class="small">
-	*Angegebene Preise sind Gesamtpreise (zzgl. Versandkosten). Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
+	* Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
 	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
 </p>
 <p class="small">

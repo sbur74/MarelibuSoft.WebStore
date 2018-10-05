@@ -55,6 +55,8 @@ namespace MarelibuSoft.WebStore.Models.AccountViewModels
 		[Display(Name = "Land")]
 		public int CountryID { get; set; }
 
+		public List<Country> Countries { get; set; }
+
 		public string ShoppingCartId { get; set; }
 	}
 }

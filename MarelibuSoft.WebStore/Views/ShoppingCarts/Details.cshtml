@@ -16,9 +16,7 @@
 <div class="hidden">
 	@Html.AntiForgeryToken()
 </div>
-<div class="toogler">
-	<div id="myalert"></div>
-</div>
+
 <div id="cartDetail">
 	@foreach (var item in Model.Lines)
 	{
@@ -123,7 +121,7 @@
 					@Html.DisplayFor(model => model.ShippingPeriodName)
 				</div>
 				<div class="col-md-4">
-					<p>Versand: <span id="shipPrice">@Math.Round(shippingPrice.Price, 2)</span> &euro;</p>
+					<p>Versand: <span id="shipPrice">@Math.Round(shippingPrice.Price,2)</span> &euro;</p>
 				</div>
 			</div>
 		</div>
@@ -165,7 +163,7 @@
 </div>
 <br />
 <p class="small">
-	*Angegebene Preise sind Gesamtpreise (zzgl. Versandkosten). Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
+	* Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
 	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
 </p>
 <p class="small">
