@@ -144,7 +144,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				await _context.SaveChangesAsync();
 			}
 
-            StatusMessage = "Dein Konto wurde aktualiest!";
+            StatusMessage = "Dein Konto wurde aktualisiert!";
             return RedirectToAction(nameof(Index));
         }
 
