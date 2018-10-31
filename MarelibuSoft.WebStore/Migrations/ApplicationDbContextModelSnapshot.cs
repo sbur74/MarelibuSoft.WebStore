@@ -14,7 +14,7 @@ namespace MarelibuSoft.WebStore.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.2-rtm-30932")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ApplicationUser", b =>
@@ -90,7 +90,14 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("HtmlDescription");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(155);
+
+                    b.Property<string>("SeoKeywords");
 
                     b.HasKey("ID");
 
@@ -124,7 +131,14 @@ namespace MarelibuSoft.WebStore.Migrations
 
                     b.Property<int>("CategorySubID");
 
+                    b.Property<string>("HtmlDescription");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(155);
+
+                    b.Property<string>("SeoKeywords");
 
                     b.HasKey("ID");
 
@@ -140,7 +154,14 @@ namespace MarelibuSoft.WebStore.Migrations
 
                     b.Property<int>("CategoryID");
 
+                    b.Property<string>("HtmlDescription");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(155);
+
+                    b.Property<string>("SeoKeywords");
 
                     b.HasKey("ID");
 
@@ -417,6 +438,10 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.Property<decimal>("SecondBasePrice");
 
                     b.Property<int>("SecondBaseUnit");
+
+                    b.Property<string>("SeoDescription");
+
+                    b.Property<string>("SeoKeywords");
 
                     b.Property<int>("ShippingPeriod");
 

@@ -1,7 +1,6 @@
 @model MarelibuSoft.WebStore.Models.ViewModels.ProductDetailViewModel
 
 @{
-	ViewData["Title"] = "Details";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	string plus = Model.ProductID + "_plus";
 	string minus = Model.ProductID + "_minus";
@@ -11,6 +10,7 @@
 	decimal startPrice = Math.Round((Model.Price * Model.MinimumPurchaseQuantity), 2);
 	string mainImg = Model.MainImageUrl;
 }
+@*@Html.SpMetaDescription(Model.SeoDescription)*@
 
 <h2>@Html.DisplayFor(model => model.Name)</h2>
 
@@ -18,7 +18,7 @@
 	@Html.AntiForgeryToken()
 </div>
 
-<div>
+<div onload="marelibusoft.common.changeMetaDesc('@Model.Description');">
 	<div class="row">
 
 	</div>

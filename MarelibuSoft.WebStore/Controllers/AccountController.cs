@@ -273,10 +273,27 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					var customers = await _context.Customers.ToListAsync();
 					bool countryIsAllowedForSipping = await countryHelper.GetAllowedForShipping(model.CountryID);
-
-					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}C{customers.Count + 1}",  FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID, CompanyName = model.CompanyName };
+					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}C{customers.Count + 1}", FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID, CompanyName = model.CompanyName };
 					_context.Add(customer);
-					
+
+					if (countryIsAllowedForSipping)
+					{
+						var shipToAddress = new ShippingAddress
+						{
+							AdditionalAddress = model.AdditionalAddress,
+							Address = model.Address,
+							City = model.City,
+							CompanyName = model.CompanyName,
+							CountryID = model.CountryID,
+							CustomerID = customer.CustomerID,
+							FirstName = model.FirstName,
+							IsInvoiceAddress = true,
+							IsMainAddress = true,
+							LastName = model.Name,
+							PostCode = model.PostCode
+						};
+						_context.ShippingAddresses.Add(shipToAddress);
+					}
 					await _context.SaveChangesAsync();
 
 					AddUserCustomerToShoppingCart(user.Id, HttpContext.Session.GetString("ShoppingCartId"));

@@ -3,17 +3,19 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="google-site-verification" content="5zOaix-UJTRGmY9xG8lUedINzt3VoG8AqwN4RJEgZ1I" />
+
 	<title>@ViewData["Title"] - marelibuDesign</title>
-	
+
 	<environment include="Development">
-		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<link rel="icon" type="image/x-icon" href="~/favicon.ico">
 		<link rel="stylesheet" href="~/css/bootstrap.css" />
 		<link rel="stylesheet" href="~/css/site.css" />
 		<link rel="stylesheet" href="~/css/main.css" />
 		<link rel="stylesheet" href="~/lib/jquery-ui/themes/base/jquery-ui.css" />
 	</environment>
 	<environment exclude="Development">
-		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<link rel="icon" type="image/x-icon" href="~/favicon.ico">
 		<link rel="stylesheet" href="~/css/bootstrap.min.css"
 			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
 			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
@@ -25,7 +27,7 @@
 </head>
 <body>
 	<div class="container" style="margin-bottom: 30px; margin-top:0px;">
-		<img src="~/images/logoMarelibuDesign1.svg" class="img-responsive" style="height:200px;" />
+		<img src="~/images/logoMarelibuDesign1.svg" class="img-responsive" style="max-height: 200px;" />
 	</div>
 	<nav class="navbar navbar-default">
 		<div class="container">
@@ -54,7 +56,7 @@
 	<div class="toogler">
 		<div id="myalert"></div>
 	</div>
-	<button onclick="topFunction()" id="myBtn" title="nach oben">Top</button>
+	<button onclick="topFunction()" style="display:inline;" id="myBtn" title="nach oben"><span class="glyphicon glyphicon-arrow-up"></span></button>
 
 	<div id="myModal" class="modal fade" role="dialog">
 		<div class="modal-dialog">
@@ -177,6 +179,13 @@
 		<script src="~/js/cookie_notice.min.js"></script>
 		<script src="~/js/invoiceaddress.min.js"></script>
 		<script type="text/javascript" src="~/js/shop.js"></script>
+		<script src="https://widgets.shopvote.de/js/reputation-badge-v2.min.js"></script>
+		<script>
+			var myShopID = 11906;
+			var myBadgetType = 1;
+			var mySrc = ('https:' === document.location.protocol ? 'https' : 'http');
+			createRBadge(myShopID, myBadgetType, mySrc);
+		</script>
 	</environment>
 
 	@RenderSection("Scripts", required: false)

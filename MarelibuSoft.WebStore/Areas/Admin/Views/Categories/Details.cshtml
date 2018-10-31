@@ -3,22 +3,22 @@
 @model MarelibuSoft.WebStore.Models.Category
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Kategorie - " + Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>@ViewBag.Title</h2>
 
 <div>
     <h4>Kategorie</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
 		<dt>
 			@Html.DisplayNameFor(model => model.Subs)
 		</dt>
@@ -27,7 +27,7 @@
 			{
 				<ul>
 					@foreach (CategorySub item in Model.Subs)
-				{
+					{
 						<li>
 							@Html.DisplayFor(modelItem => item.Name)
 							@if (item.Details.Count > 0)
@@ -45,17 +45,33 @@
 								<ul><li>Keine Detail-Kategorien vorhanden</li></ul>
 							}
 						</li>
-				}
+					}
 				</ul>
 			}
 			else
 			{
 				<ul><li>Keine Unterkategorien vorhanden</li></ul>
 			}
-
-
 		</dd>
-    </dl>
+		<dt>
+			@Html.DisplayNameFor(model => model.SeoDescription)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.SeoDescription)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.SeoKeywords)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.SeoKeywords)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.HtmlDescription)
+		</dt>
+		<dd>
+			@Html.Raw(Model.HtmlDescription)
+		</dd>
+	</dl>
 </div>
 <div>
     <a class="btn btn-success" asp-action="Edit" asp-route-id="@Model.ID">Kategorie bearbeiten</a> <br />

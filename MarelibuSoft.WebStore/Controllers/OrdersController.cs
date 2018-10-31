@@ -42,14 +42,21 @@ namespace MarelibuSoft.WebStore.Controllers
 			addressHelper = new ShippingAddressHelper(_context);
 		}
 
-		// GET: Orders
-		public async Task<IActionResult> WeHaveYourOrder(Guid? id)
+		public IActionResult Checkout()
 		{
+			return View();
+		}
+
+		// GET: Orders
+		public async Task<IActionResult> WeHaveYourOrder()
+		{
+			Guid id = Guid.Parse(HttpContext.Session.GetString("myOrder"));
 			if (id == null)
 			{
 				return NotFound();
 			}
 			WeHaveYourOrderViewModel viewModel = await GetViewModel((Guid)id);
+			viewModel.Email = User.Identity.Name;
 			string subject = "Deine Bestellung bei marelibuDesign";
 			string mailContent = await CreateOrderMail(viewModel.OrderID);
 
@@ -60,6 +67,8 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			await _emailSender.SendEmailWithAttachmentsAsync(User.Identity.Name, subject, mailContent, attachments);
 			await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft", $"<p>Verkauf an: {User.Identity.Name}</p>");
+
+			//ViewData["Landing"] = viewModel;
 
 			return View(viewModel);
 		}
@@ -330,7 +339,9 @@ namespace MarelibuSoft.WebStore.Controllers
 				}
 			}
 
-			return RedirectToAction("WeHaveYourOrder", new { id = order.ID });
+			HttpContext.Session.SetString("myOrder", order.ID.ToString());
+			return RedirectToAction("WeHaveYourOrder");
+			//return RedirectToAction("Checkout", new { id = order.ID });
 			//return View(order);
 		}
 

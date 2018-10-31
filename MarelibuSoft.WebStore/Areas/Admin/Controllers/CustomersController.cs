@@ -10,6 +10,7 @@ using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Common.Helpers;
 using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
 using MarelibuSoft.WebStore.Models.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -17,10 +18,14 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
     public class CustomersController : Controller
     {
         private readonly ApplicationDbContext _context;
+		private readonly ILoggerFactory factory;
+		private readonly ILogger logger;
 
-        public CustomersController(ApplicationDbContext context)
+        public CustomersController(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
+			factory = loggerFactory;
+			logger = factory.CreateLogger<CustomersController>();
         }
 
         // GET: Admin/Customers
@@ -205,6 +210,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			}
 			catch (Exception e)
 			{
+				logger.LogError(e, "Fehler beim abrufen einer Lieferadresse.");
 				shipToAddresses = null;
 			}
 

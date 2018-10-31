@@ -18,6 +18,9 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Logging;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System.Threading;
+using System.IO;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using MarelibuSoft.WebStore.TagHelpers;
 
 namespace MarelibuSoft.WebStore
 {
@@ -32,8 +35,8 @@ namespace MarelibuSoft.WebStore
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
         {
 			_logger.LogInformation("Startup.ConfigureServices -> start");
 
@@ -74,10 +77,13 @@ namespace MarelibuSoft.WebStore
                 .AddDefaultTokenProviders();
 
 			services.AddTransient<IEmailSender, EmailSender>();
+			services.AddSingleton<IMetaService, MetaService>();
+			services.AddSingleton<ITagHelperComponent, MetaDataTagHelperComponent>();
+
 			services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
 			services.AddMvc(options =>
 			{
-				options.SslPort = 5001;
+				options.SslPort = 6001;
 				options.Filters.Add(new RequireHttpsAttribute());
 				options.RespectBrowserAcceptHeader = true;
 			})
@@ -85,9 +91,8 @@ namespace MarelibuSoft.WebStore
 			services.AddHttpsRedirection(options =>
 			{
 				options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-				options.HttpsPort = 5001;
+				options.HttpsPort = 6001;
 			});
-
 
 			services.AddDistributedMemoryCache();
 			services.AddSession(options =>
@@ -149,10 +154,12 @@ namespace MarelibuSoft.WebStore
 					name: "areaRoute",
 					template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 					);
+
 				routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+					name: "default",
+					template: "{controller=Home}/{action=Index}/{id?}");
+			});
+
 			_logger.LogInformation("Startup.Configure -> end");
 
 		}

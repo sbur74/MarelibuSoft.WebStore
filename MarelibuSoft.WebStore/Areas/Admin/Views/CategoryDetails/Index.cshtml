@@ -19,6 +19,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Sub)
             </th>
+			<th>
+				@Html.DisplayNameFor(model => model.SeoDescription)
+			</th>
             <th></th>
         </tr>
     </thead>
@@ -31,6 +34,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Sub.Name)
             </td>
+			<td>
+				@Html.DisplayFor(modelItem => item.SeoDescription)
+			</td>
             <td>
 				<a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Bearbeiten" asp-action="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-edit"></span></a> |
 				<a class="btn btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a> |

@@ -17,8 +17,18 @@
 		</div>
 		<div class="container-fluid">
 			<strong class="col-md-2">@Html.DisplayNameFor(model => model.Description)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.Description)</p>
+			<p class="col-md-6 ">@Html.Raw(Model.Description)</p>
 		</div>
+		<hr />
+		<div class="container-fluid">
+			<strong class="col-md-2">@Html.DisplayNameFor(model => model.SeoDescription)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.SeoDescription)</p>
+		</div>
+		<div class="container-fluid">
+			<strong class="col-md-2">@Html.DisplayNameFor(model => model.SeoKeywords)</strong>
+			<p class="col-md-6 ">@Html.DisplayFor(model => model.SeoKeywords)</p>
+		</div>
+		<hr />
 		<div class="container-fluid">
 			<strong class="col-md-2">@Html.DisplayNameFor(model => model.Price)</strong>
 			<p class="col-md-6 ">@Html.DisplayFor(model => model.Price) &euro;/@Html.DisplayFor(model => model.BasesUnit)</p>

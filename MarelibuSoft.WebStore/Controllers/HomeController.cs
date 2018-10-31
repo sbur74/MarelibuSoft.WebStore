@@ -18,13 +18,15 @@ namespace MarelibuSoft.WebStore.Controllers
 		private readonly ApplicationDbContext _context;
 		private readonly ILoggerFactory factory;
 		private readonly ILogger _logger;
+		private readonly IMetaService metaService;
 		private ShoppingCartHelper cartHelper;
 
-		public HomeController(ApplicationDbContext context, ILoggerFactory loggerFactory)
+		public HomeController(ApplicationDbContext context, ILoggerFactory loggerFactory, IMetaService service)
 		{
 			_context = context;
 			factory = loggerFactory;
 			_logger = factory.CreateLogger<HomeController>();
+			metaService = service;
 			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
 		}
 
@@ -32,6 +34,9 @@ namespace MarelibuSoft.WebStore.Controllers
         {
 			var productImages = _context.ProductImages.Where(i => i.IsMainImage).ToList();
 			var urls = new List<string>();
+
+			metaService.AddMetadata("description", "Verkauf von Eislaufasseoirs, Stoffen und mehr.");
+			metaService.AddMetadata("keywords", "Asseoirs,Eiskunstlauf,Stoffe,Webrare,Taschen");
 
 			cartHelper.CheckAndRemove();
 

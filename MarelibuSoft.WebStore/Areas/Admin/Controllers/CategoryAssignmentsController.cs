@@ -61,7 +61,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             return View(vms);
         }
 
-        // GET: Admin/CategoryAssignments/Details/5
+        // GET: Admin/CategoryAssignments/Artile/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

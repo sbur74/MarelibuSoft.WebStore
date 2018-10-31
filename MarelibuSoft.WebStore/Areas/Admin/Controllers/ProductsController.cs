@@ -129,7 +129,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				//CategoryDetailID = product.CategoryDetailID,
 				//CategoryDetailName = new CategoryDetailHelper(_context).GetNameByID(product.CategoryDetailID)
 				ShippingPriceTypeID = product.ShippingPriceType,
-				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType)
+				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
+				SeoDescription = product.SeoDescription
 			};
             if (product == null)
             {
@@ -182,7 +183,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,SecondBaseUnitID,SecondBasePrice,ShortDescription,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive")] AdminProductViewModel vm)
+        public async Task<IActionResult> Create([Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,SecondBaseUnitID,SecondBasePrice,ShortDescription,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive,SeoDescription")] AdminProductViewModel vm)
        {
 			
 			
@@ -202,7 +203,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				SecondBaseUnit = vm.SecondBaseUnitID,
 				BasesUnitID = vm.BasesUnitID,
 				ShippingPriceType = vm.ShippingPriceTypeID,
-				IsActive = vm.IsActive
+				IsActive = vm.IsActive,
+				SeoDescription = vm.SeoDescription
 			};
 
 			if (ModelState.IsValid)
@@ -250,7 +252,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				Size = new SizeHelper(_context).GetName(product.Size),
 				ImageUrls = new ProductImageHelper(_context, factory).GetUrls(product.ProductID),
 				ShippingPriceTypeID = product.ShippingPriceType,
-				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType)
+				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
+				SeoDescription = product.SeoDescription
 			};
 
 			List<UnitViewModel> vmunits = new UnitHelper(_context, factory).GetVmUnits();
@@ -278,7 +281,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int ProductID, [Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,ShortDescription,SecondBasePrice,SecondBaseUnitID,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive")] AdminProductViewModel vm)
+        public async Task<IActionResult> Edit(int ProductID, [Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,ShortDescription,SecondBasePrice,SecondBaseUnitID,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive,SeoDescription")] AdminProductViewModel vm)
         {
 			Product product = new Product() {
 				ProductID = vm.ProductID,
@@ -295,7 +298,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				SecondBasePrice = StaticDecimalHelper.PaseString( vm.SecondBasePrice),
 				SecondBaseUnit = vm.SecondBaseUnitID,
 				IsActive = vm.IsActive,
-				ShippingPriceType = vm.ShippingPriceTypeID
+				ShippingPriceType = vm.ShippingPriceTypeID,
+				SeoDescription = vm.SeoDescription
 			};
 
 			if (ProductID != vm.ProductID)

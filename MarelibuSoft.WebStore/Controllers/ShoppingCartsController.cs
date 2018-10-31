@@ -9,6 +9,7 @@ using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Models.ViewModels;
 using MarelibuSoft.WebStore.Common.Helpers;
+using MarelibuSoft.WebStore.Common.Statics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -131,7 +132,7 @@ namespace MarelibuSoft.WebStore.Controllers
 					ShoppingCartID = shoppingCart.ID,
 					SellBasePrice = Math.Round(item.SellBasePrice, 2),
 					SellSekPrice = Math.Round(product.SecondBasePrice, 2),
-					SekUnit = sekunit
+					SekUnit = sekunit, SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}"
 				};
 				vmcLines.Add(cvml);
 				total = total + pPrice;
