@@ -43,7 +43,7 @@
 		<div class="form-group">
 			<label asp-for="SeoDescription" class="col-md-2 control-label"></label>
 			<div class="col-md-10">
-				<textarea id="seodescription" asp-for="SeoDescription" data-max-chars="155" class="col-md-10 form-control counted"></textarea>
+				<textarea id="seodescription" asp-for="SeoDescription" data-max-chars="155" class="col-md-10 form-control counted" onkeyup="marelibusoft.common.countChar(this);"></textarea>
 				<span asp-validation-for="SeoDescription" class="text-danger"></span>
 			</div>
 		</div>

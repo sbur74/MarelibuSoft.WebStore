@@ -37,3 +37,11 @@ marelibusoft.common.showModalInfo = function (titel, message) {
 	$("#myModalBody").append(message);
 	$("#myModal").modal("show");
 }
+
+marelibusoft.common.countChar = function (object) {
+	var textLength = object.val();
+
+	if (textLength.Length >= 155) {
+		marelibusoft.common.showModalAlert("myalert", "Du darfst nur 155 Zeichen verwenden!", "wanring");
+	}
+}

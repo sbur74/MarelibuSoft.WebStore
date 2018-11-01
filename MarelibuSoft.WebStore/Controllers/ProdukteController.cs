@@ -41,6 +41,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 
 			string metadescription = string.Empty;
 			string metakeywords = string.Empty;
+			string categorieDescription = string.Empty;
 
 			int catId = 0;
 			int catSubId = 0;
@@ -73,6 +74,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				titel = category.Name;
 				metadescription = category.SeoDescription;
 				metakeywords = category.SeoKeywords;
+				categorieDescription = category.HtmlDescription;
 
 				if (catSubId > 0)
 				{
@@ -81,6 +83,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 					titel += $"-{categorySub.Name}";
 					metadescription = categorySub.SeoDescription;
 					metakeywords = categorySub.SeoKeywords;
+					categorieDescription = categorySub.HtmlDescription;
 
 					if (catDetId > 0)
 					{
@@ -89,6 +92,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 						titel += $"-{categoryDetail.Name}";
 						metadescription = categoryDetail.SeoDescription;
 						metakeywords = categoryDetail.SeoKeywords;
+						categorieDescription = categoryDetail.HtmlDescription;
 
 						categoryAssignments = await _context.CategoryAssignments.Where(ca => ca.CategoryID == catId && ca.CategorySubID == catSubId && ca.CategoryDetailID == catDetId).ToListAsync();
 					}
@@ -180,6 +184,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				thubnails.Add(vmProduct);
 			}
 
+			ViewData["CategorieDescription"] = categorieDescription;
 			ViewData["Title"] = titel;
 			if (!string.IsNullOrWhiteSpace(metadescription))
 			{
@@ -217,12 +222,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 
 			List<ProductImage> imgs = product.ImageList;
 
-			List<string> imgUrls = new List<string>();
-			foreach (ProductImage item in imgs)
-			{
-				imgUrls.Add(item.ImageUrl);
-			}
-			string mainImg = GetMainImageUrl(imgs);
+			ProductImage mainImg = GetMainImageUrl(imgs);
 
 			string secondPriceUnit = "";
 			if (product.SecondBasePrice != 0.0M && product.SecondBaseUnit != 0)
@@ -247,7 +247,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				ShippingTime = new ShippingPeriodHelper(_context).GetDescription(product.ShippingPeriod),
 				ShortDescription = product.ShortDescription,
 				Size = new SizeHelper(_context).GetName(product.Size),
-				ImageUrls = imgUrls,
+				ImageUrls = imgs,
 				MainImageUrl = mainImg,
 				SecondPriceUnit = secondPriceUnit,
 				SeoDescription = product.SeoDescription,
@@ -272,22 +272,22 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
             return _context.Products.Any(e => e.ProductID == id);
         }
 
-		private string GetMainImageUrl(List<ProductImage> images)
+		private ProductImage GetMainImageUrl(List<ProductImage> images)
 		{
-			string restult = "noImage.svg";
+			ProductImage restult = new ProductImage { ImageUrl = "noImage.svg", Name = "Kein Bild zugeordent" };
 
 			foreach (ProductImage item in images)
 			{
 				if (item.IsMainImage)
 				{
-					restult = item.ImageUrl;
+					restult = item;
 					break;
 				}
 			}
 
-			if (restult.Equals("noImage.svg") && images.Count >0)
+			if (restult.ImageUrl.Equals("noImage.svg") && images.Count >0)
 			{
-				restult = images.First().ImageUrl;
+				restult = images.First();
 			}
 			return restult;
 		}

@@ -48,10 +48,10 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public int CategorySubID { get; set; }
 		public int CategoryDetailID { get; set; }
 
-		public string MainImageUrl { get; set; }
+		public ProductImage MainImageUrl { get; set; }
 
 		public string SlugUrl { get; set; }
 
-		public List<string> ImageUrls { get; set; }
+		public List<ProductImage> ImageUrls { get; set; }
 	}
 }
