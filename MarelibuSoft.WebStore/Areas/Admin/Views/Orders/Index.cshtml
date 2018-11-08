@@ -41,16 +41,13 @@
                 @Html.DisplayFor(modelItem => item.Number)
             </td>
             <td>
-                @item.OrderDate.ToShortDateString()
+				@Html.DisplayFor(modelItem => item.OrderDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EMail)
             </td>
 			<td>
-				@if ( !string.IsNullOrWhiteSpace(item.FreeText))
-				{
-					<span class="glyphicon glyphicon-warning"></span>
-				}
+				@Html.DisplayFor(modelItem => item.FreeText)
 			</td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsPayed)
@@ -64,7 +61,7 @@
             <td>
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
-				<a asp-action="EMailSend" asp-route-id="@item.ID">Email Senden</a>
+				<a asp-action="EMailSend" asp-route-id="@item.ID">Rechungs-Email Senden</a>
             </td>
         </tr>
 }

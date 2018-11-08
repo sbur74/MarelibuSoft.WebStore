@@ -35,7 +35,8 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string ShippingTime { get; set; }
 		[Display(Name = "Sekundäre Preis")]
 		public string SecondPriceUnit { get; set; }
-
+		[Display(Name = "Versand")]
+		public string Shipping { get; set; }
 		[Display(Name = "SEO Beschreibung")]
 		[StringLength(155, ErrorMessage = "Du darfst nicht mehr als 155 Zeichen vervenden!")]
 		public string SeoDescription { get; set; }

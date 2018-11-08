@@ -9,7 +9,7 @@ namespace MarelibuSoft.WebStore.Common.Statics
 	{
 		public static string GetEmailSignature()
 		{
-			return $"<p>Petra Buron<br />"+
+			return $"<hr /><p>Petra Buron<br />"+
 					$"Graf-von-Stauffenberg-Weg 5A<br />" +
 					$"59379 Selm <br />" +
 					$"Deutschland </p >" +

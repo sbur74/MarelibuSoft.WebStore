@@ -475,9 +475,8 @@ namespace MarelibuSoft.WebStore.Controllers
 				mail += "<br />";
 				mail += shipTo;
 				mail += "<br />";
-				mail += $"<p>Vielen Dank für deinen Einkauf.</p>";
+				mail += $"<p>Vielen Dank für Ihren Einkauf.</p>";
 				mail += $"<p>Viele Gr&uuml;&szlig;e<br /> Petra Buron<br /><a href=\"www.marelibuDesign.de\">www.marelibuDesign.de</a>";
-				mail += "<hr />";
 			}
 
 			return mail;

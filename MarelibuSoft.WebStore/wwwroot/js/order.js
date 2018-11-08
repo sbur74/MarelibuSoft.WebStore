@@ -28,22 +28,22 @@ marelibusoft.order.shopFileChecked = function () {
 }
 marelibusoft.order.onSubmitUeberweisung = function () {
 	$("#paymentId").val(1);
-	$("#payment2").removeAttr("checked");
-	$("#payment3").removeAttr("checked");
+	//$("#payment2").removeAttr("checked");
+	//$("#payment3").removeAttr("checked");
 	marelibusoft.order.shopFileChecked();
 }
 
 marelibusoft.order.onSubmitPayPal = function () {
 	$("#paymentId").val(2);
-	$("#payment1").removeAttr("checked");
-	$("#payment3").removeAttr("checked");
+	//$("#payment1").removeAttr("checked");
+	//$("#payment3").removeAttr("checked");
 	marelibusoft.order.shopFileChecked();
 }
 
 marelibusoft.order.onSubmitBill = function () {
 	$("#paymentId").val(3);
-	$("#payment2").removeAttr("checked");
-	$("#payment1").removeAttr("checked");
+	//$("#payment2").removeAttr("checked");
+	//$("#payment1").removeAttr("checked");
 	marelibusoft.order.shopFileChecked();
 }
 

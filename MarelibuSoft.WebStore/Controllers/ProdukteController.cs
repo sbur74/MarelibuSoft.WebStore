@@ -251,7 +251,8 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				MainImageUrl = mainImg,
 				SecondPriceUnit = secondPriceUnit,
 				SeoDescription = product.SeoDescription,
-				SeoKeywords = product.SeoKeywords
+				SeoKeywords = product.SeoKeywords,
+				Shipping = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType)
 				
 			};
 

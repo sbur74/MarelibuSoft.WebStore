@@ -46,7 +46,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			foreach (var order in orders)
 			{
 				var vm = await GetOrderViewModel(order.ID);
-				vms.Add(vm);
+				if (vm != null)
+				{
+					vms.Add(vm); 
+				}
 			}
 			return View(vms);
         }
@@ -80,7 +83,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			var customer = await _context.Customers.SingleAsync(c => c.CustomerID.Equals(order.CustomerID));
 			var user = await _context.Users.SingleAsync(u => u.Id.Equals(customer.UserId));
 			OrderEmailViewModel vm = new OrderEmailViewModel {
-				OrderID = order.ID, Subject = $"Auftrags-Nr.: {order.Number}, am {order.OrderDate.Day}.{order.OrderDate.Month}.{order.OrderDate.Year}", Email = user.Email, Message = "<h3>Rechnung</h3>"
+				OrderID = order.ID, Subject = $"Rechung zu Auftrags-Nr.: {order.Number}, am {order.OrderDate.Day}.{order.OrderDate.Month}.{order.OrderDate.Year}", Email = user.Email, Message = ""
 			};
 			return View(vm);
 		}
@@ -91,21 +94,76 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var files = HttpContext.Request.Form.Files;
-				if (files != null && files.Count > 0)
-				{
-					//var file = files.First();
-					var helper = new UploadHelper(_environment);
-					var todel = new List<string>();
-					var attachments = new List<string>();
+				OrderViewModel vm = null;
+				BankAcccount bank = null;
 
-					foreach (var file in files)
+				if (orderEmail.OrderID == null)
+				{
+					return NotFound();
+				}
+				else
+				{
+					vm = await GetOrderViewModel(orderEmail.OrderID);
+					bank = await _context.BankAcccounts.FirstOrDefaultAsync();
+
+					string bill = $"<h2>Hallo Frau/Herr {vm.CutomerLastName},</h2>" +
+						$"<p>noch einmal vielen Dank für Ihren Einkauf.</p>" +
+						$"<p>Bitte überweisen Sie den Gesamtbetrag von <b>{Math.Round(vm.Total, 2)} &euro;</b> innerhalb von 7 Tagen unter Angabe der Rechungsnummer:<br/>" +
+						$"<b>{orderEmail.Message}</b><br />" +
+						$"auf das folgende Konto:</p>" +
+						$"<br />" +
+						$"<p>Kontoinhaber:<b> {bank.AccountOwner}</b><br />" +
+						$"IBAN: <b>{bank.Iban}</b><br />" +
+						$"SWIFT-BIC: <b>{bank.SwiftBic}</b><br />" +
+						$"Bank: <b>{bank.Institute}</b></p><br />";
+					bill += $"<hr /><h3>Rechungsdetails</h3>" +
+							$"<p>Ihre Bestellung vom {vm.OrderDate.ToShortDateString()}</p>";
+					if (!string.IsNullOrWhiteSpace(vm.FreeText))
 					{
-						var fnames = await helper.FileUploadAsync(file, "files", false);
-						todel.Add(fnames.Filename);
-						attachments.Add(fnames.Filename);
+						bill += $"<p>Ihre Angaben zur Bestellung: <b>{vm.FreeText}</b></p>";
 					}
-					
+					bill += $"<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" height=\"15%\" width=\"75%\"><tr><th>Position</th><th>Artikel-Nr.</th><th>Artikelname</th><th>Menge</th><th>Betrag</th></tr>";
+					foreach (var item in vm.OderLines)
+					{
+						bill += $"<tr><td align=\"center\">{item.Position}</td>" +
+									$"<td align=\"center\">{item.ProductNumber}</td>" +
+									$"<td align=\"center\">{item.ProductName}</td>" +
+									$"<td align=\"center\">{Math.Round(item.OrderQuantity, 2)} {item.OrderUnit}</td>" +
+									$"<td align=\"center\">{Math.Round(item.OrderLineTotal,2)} &euro;</td></tr>";
+					}
+					bill += $"</table><br />" +
+							$"<table cellpadding=\"0\" cellspacing=\"1\" height=\"5%\" width=\"85%\">" +
+							$"<tr>" +
+								$"<td align=\"right\" colspan=\"4\">Versand, {vm.ShippingPriceName}:</td>" +
+								$"<td>{Math.Round(vm.ShippingPriceAtOrder,2)} &euro;</td></tr>" +
+							$"<tr>" +
+								$"<td align=\"right\" colspan=\"4\">Gesamtbetrag:</td><td>{Math.Round(vm.Total,2)} &euro;</td></tr>" +
+							$"</table>" +
+							$"<br />" +
+							$"<p>Die Lieferfrist beginnt mit der Zahlungsanweisung.</p>" +
+							$"<br />" +
+							$"<p>Viele Gr&uuml;&szlig;e,</p><p>Petra Buron</p><br />";
+					var attachments = new List<string>();
+					var files = HttpContext.Request.Form.Files;
+					if (files != null && files.Count > 0)
+					{
+						//var file = files.First();
+						var helper = new UploadHelper(_environment);
+						var todel = new List<string>();
+						
+
+						foreach (var file in files)
+						{
+							var fnames = await helper.FileUploadAsync(file, "files", false);
+							todel.Add(fnames.Filename);
+							attachments.Add(fnames.Filename);
+						}
+
+						foreach (string file in todel)
+						{
+							helper.DeleteFile("files", file);
+						}
+					}
 
 					var agb = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.AGB);
 					var wiederruf = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.WRB);
@@ -115,15 +173,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					attachments.Add(wiederruf.Filename);
 					attachments.Add(datenschutz.Filename);
 
-					
-					await _emailSender.SendEmailWithAttachmentsAsync(orderEmail.Email, orderEmail.Subject, orderEmail.Message, attachments);
-					foreach (string file in todel)
-					{
-						helper.DeleteFile("files", file);
-					}
+					await _emailSender.SendEmailWithAttachmentsAsync(orderEmail.Email, orderEmail.Subject, bill, attachments);
+
+					return RedirectToAction(nameof(Index));
 				}
-				
-				return RedirectToAction(nameof(Index));
 			}
 			return View(orderEmail);
 		}
@@ -242,8 +295,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 
 			string subject = "Versand von Auftrag " + ordervm.Number;
 			string email = ordervm.EMail;
-			string message = $"<p>Hallo {ordervm.CustomerFirstName},</p>" +
-				$"<p>ich habe die Ware zu deinem Auftrag {ordervm.Number} vom {ordervm.OrderDate.ToShortDateString()} am {DateTime.Now.ToShortDateString()} versendet:</p>" +
+			string message = $"<p>Hallo Frau/Herr {ordervm.CutomerLastName},</p>" +
+				$"<p>ich habe die Ware zum Auftrag {ordervm.Number} vom {ordervm.OrderDate.ToShortDateString()} am {DateTime.Now.ToShortDateString()} versendet:</p>" +
 				$"<table><tr><th>Position</th><th>Artikel-Nr.</th><th>Artikelname</th><th>Menge</th></tr>";
 			foreach (var item in ordervm.OderLines)
 			{
@@ -252,8 +305,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			message += $"</table>";
 			message += $"<p><strong>Sendungsinformationen:</strong></p>";
 			message += $"<p>{viewModel.Message}</p>";
-			message += $"<p>Vielen Dank für deinen Einkauf.</p>";
-			message += $"<p>Viele Gr&uuml;&szlig;e<br /> Petra Buron<br />";
+			message += $"<p>Vielen Dank für den Einkauf.</p>";
+			message += $"<p>Viele Gr&uuml;&szlig;e,<br /> Petra Buron</p><br />";
 
 			var agb = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.AGB);
 			var wiederuf = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.WRB);

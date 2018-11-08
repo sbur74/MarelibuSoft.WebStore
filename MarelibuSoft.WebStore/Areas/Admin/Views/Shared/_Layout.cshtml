@@ -9,12 +9,14 @@
 	<environment names="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 		<link rel="stylesheet" href="~/css/site.css" />
+		<link rel="stylesheet" href="~/lib/summernote/dist/summernote-lite.css" />
 	</environment>
 	<environment names="Staging,Production">
 		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
 			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
 			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
 		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-lite.css" asp-fallback-href="~/lib/summernote/dist/summernote.css" />
 	</environment>
 	@*@Html.Raw(JavaScriptSnippet.FullScript)*@
 </head>
@@ -131,6 +133,8 @@
 	</environment>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
 	<script src="~/js/jquery.charactercounter.js"></script>
+	<script src="~/lib/summernote/dist/summernote-lite.js" ></script>
+	<script src="~/lib/summernote/dist/lang/summernote-de-DE.js"></script>
 	@RenderSection("Scripts", required: false)
 </body>
 </html>

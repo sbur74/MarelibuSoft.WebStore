@@ -15,7 +15,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string Number { get; set; }
 		[Display(Name = "Auftragsdatum")]
 		[DataType(DataType.Date)]
-		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd}")]
+		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
 		public DateTime OrderDate { get; set; }
 		[Display(Name = "Zahlungsart")]
 		public string Payment { get; set; }
