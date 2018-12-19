@@ -42,7 +42,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
 			List<OrderViewModel> vms = new List<OrderViewModel>();
-			var orders = await _context.Orders.OrderByDescending(o => o.OrderDate).ToListAsync();
+			var orders = await _context.Orders.Where(o => !o.IsClosed).OrderByDescending(o => o.OrderDate).ToListAsync();
 			foreach (var order in orders)
 			{
 				var vm = await GetOrderViewModel(order.ID);
@@ -54,8 +54,23 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			return View(vms);
         }
 
-        // GET: Admin/Orders/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+		public async Task<IActionResult> Closed()
+		{
+			List<OrderViewModel> vms = new List<OrderViewModel>();
+			var orders = await _context.Orders.Where(o => o.IsClosed).OrderByDescending(o => o.OrderDate).ToListAsync();
+			foreach (var order in orders)
+			{
+				var vm = await GetOrderViewModel(order.ID);
+				if (vm != null)
+				{
+					vms.Add(vm);
+				}
+			}
+			return View(vms);
+		}
+
+		// GET: Admin/Orders/Details/5
+		public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {

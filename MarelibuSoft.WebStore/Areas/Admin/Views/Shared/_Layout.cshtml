@@ -41,7 +41,10 @@
 					<li class="dropdown">
 						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Auftr&auml;ge<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a asp-area="Admin" asp-controller="Orders" asp-action="Index">Auftrags&auml;bersicht</a></li>
+							<li><a asp-area="Admin" asp-controller="Orders" asp-action="Index">Offene Auftr&auml;ge</a></li>
+							<li>
+								<a asp-area="Admin" asp-controller="Orders" asp-action="Closed">Geschlossene Auftr&auml;ge</a>
+							</li>
 							<li><a asp-area="Admin" asp-controller="OrderCompletionTexts" asp-action="Index">Auftragsabschlusstexte</a></li>
 						</ul>
 					</li>

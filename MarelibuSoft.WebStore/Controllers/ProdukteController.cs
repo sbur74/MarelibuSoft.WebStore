@@ -12,6 +12,7 @@ using MarelibuSoft.WebStore.Common.Helpers;
 using Microsoft.Extensions.Logging;
 using MarelibuSoft.WebStore.Common.Statics;
 using MarelibuSoft.WebStore.Services;
+using MarelibuSoft.WebStore.Extensions;
 
 namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 {
@@ -63,7 +64,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				catDetId = int.Parse(catDetSplit[0]);
 			}
 
-			var products = await _context.Products.Include(p => p.ImageList).Include(ca => ca.CategoryAssignments).ToListAsync();
+			var products = await _context.Products.Include(p => p.ImageList).Include(ca => ca.CategoryAssignments).OrderByDescending(p => p.ProductID).ToListAsync();
 			List<Product> filterProducts = new List<Product>();
 			List<ProductThumbnailsViewModel> thubnails = new List<ProductThumbnailsViewModel>();
 			var categoryAssignments = new List<CategoryAssignment>();
@@ -122,6 +123,8 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 					}
 				}
 			}
+
+			
 
 			foreach (Product item in filterProducts)
 			{
@@ -194,6 +197,8 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 			{
 				metaService.AddMetadata("keywords", metakeywords);
 			}
+
+			thubnails.Shuffle();
  
 			return View(thubnails);
 		}

@@ -65,6 +65,8 @@ namespace MarelibuSoft.WebStore.Controllers
 			var datenschutz = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.DSK);
 			var attachments = new List<string> { agb.Filename, wiederuf.Filename, datenschutz.Filename };
 
+			logger.LogDebug("WeHaveYourOrderViewModel -> try to send email",null);
+
 			await _emailSender.SendEmailWithAttachmentsAsync(User.Identity.Name, subject, mailContent, attachments);
 			await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft", $"<p>Verkauf an: {User.Identity.Name}</p>");
 

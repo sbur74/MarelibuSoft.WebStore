@@ -50,6 +50,8 @@ namespace MarelibuSoft.WebStore.Services
 					message += StaticEmailSignature.GetEmailSignature();
 					emailMessage.IsBodyHtml = true;
 					emailMessage.To.Add(new MailAddress(email));
+					emailMessage.Bcc.Add(new MailAddress("petra@marelibudesign.de"));
+					emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
 					emailMessage.From = new MailAddress(_configuration["Email:Email"]);
 					emailMessage.Subject = subject;
 					emailMessage.Body = message;
@@ -59,16 +61,15 @@ namespace MarelibuSoft.WebStore.Services
 								 X509Chain chain, SslPolicyErrors sslPolicyErrors)
 						{ return true; };
 
-					//try
-					//{
-					_logger.LogDebug("Try send EMail");
+					try
+					{
+						_logger.LogDebug("Try send EMail");
 						client.Send(emailMessage);
-					//}
-					//catch (Exception e)
-					//{
-					//	_logger.LogError(e, "Error on sending E-Mail", null);
-					//	throw e;
-					//}
+					}
+					catch (Exception e)
+					{
+						_logger.LogError(e, "Error on sending E-Mail", null);
+					}
 				}
 			}
             return Task.CompletedTask;
@@ -97,6 +98,8 @@ namespace MarelibuSoft.WebStore.Services
 					emailMessage.IsBodyHtml = true;
 					emailMessage.To.Add(new MailAddress(email));
 					emailMessage.Bcc.Add(new MailAddress("petra@marelibudesign.de"));
+					emailMessage.Bcc.Add(new MailAddress("service@marelibudesign.de"));
+					emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
 					emailMessage.From = new MailAddress(_configuration["Email:Email"]);
 					emailMessage.Subject = subject;
 					emailMessage.Body = message;
@@ -120,8 +123,15 @@ namespace MarelibuSoft.WebStore.Services
 								 X509Chain chain, SslPolicyErrors sslPolicyErrors)
 						{ return true; };
 
-					_logger.LogDebug("Try send EMail");
-					client.Send(emailMessage);
+					try
+					{
+						_logger.LogDebug("Try send EMail");
+						client.Send(emailMessage);
+					}
+					catch (Exception e)
+					{
+						_logger.LogError(e, "Fehler beim E-Mail Versand:", null);
+					}
 				}
 			}
 			return Task.CompletedTask;
