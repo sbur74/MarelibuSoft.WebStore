@@ -51,7 +51,7 @@ namespace MarelibuSoft.WebStore.Services
 					emailMessage.IsBodyHtml = true;
 					emailMessage.To.Add(new MailAddress(email));
 					emailMessage.Bcc.Add(new MailAddress("petra@marelibudesign.de"));
-					emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
+					//emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
 					emailMessage.From = new MailAddress(_configuration["Email:Email"]);
 					emailMessage.Subject = subject;
 					emailMessage.Body = message;
@@ -98,8 +98,8 @@ namespace MarelibuSoft.WebStore.Services
 					emailMessage.IsBodyHtml = true;
 					emailMessage.To.Add(new MailAddress(email));
 					emailMessage.Bcc.Add(new MailAddress("petra@marelibudesign.de"));
-					emailMessage.Bcc.Add(new MailAddress("service@marelibudesign.de"));
-					emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
+					//emailMessage.Bcc.Add(new MailAddress("service@marelibudesign.de"));
+					//emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
 					emailMessage.From = new MailAddress(_configuration["Email:Email"]);
 					emailMessage.Subject = subject;
 					emailMessage.Body = message;

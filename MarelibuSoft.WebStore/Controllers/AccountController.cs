@@ -302,7 +302,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					string subject = "Registrierung abschließen";
 					string message = $"<h2>Herzlich Willkommen bei marelibuDesign!</h2>" +
-						$"<p>Bitte bestätige deine Registrierung durch Klicken dieses Links: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Registrierung abschließen.</a><br />Danach kannst du dich in dein Kundenkonto einloggen.Danach kannst du dich in dein Kundenkonto einloggen.</p><p>Du hast dich nicht auf www.marelibuDesign.de angemeldet? Dann klicke den Link bitte nicht, die eingegebenen Daten werden nach Ablauf von 7 Tagen automatisch gelöscht.</p><br /> ";
+						$"<p>Bitte bestätigen Sie Ihre Registrierung durch Klicken dieses Links: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Registrierung abschließen.</a><br />Danach können Sie Sich in Ihr Kundenkonto einloggen.</p><p>Sie haben Sich nicht auf www.marelibuDesign.de angemeldet? Dann klicken Sie den Link bitte nicht, die eingegebenen Daten werden nach Ablauf von 7 Tagen automatisch gelöscht.</p><br /> ";
 
 					await _emailSender.SendEmailAsync(user.Email, subject, message);
 

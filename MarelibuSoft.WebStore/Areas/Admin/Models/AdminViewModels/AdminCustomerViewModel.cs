@@ -27,6 +27,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 
 		[Display(Name = "Benutzer")]
 		public string UserEmail { get; set; }
+		
+		[Display(Name = "Registriert")]
+		public bool IsEmailConfirmed { get; set; }
 
 		[Display(Name = "Darf auf Rechnung kaufen")]
 		public bool AllowedPayByBill { get; set; }

@@ -55,7 +55,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					FirstName = item.FirstName,
 					PostCode = item.PostCode,
 					UserEmail = user.Email,
-					UserId = item.UserId
+					UserId = item.UserId,
+					IsEmailConfirmed = user.EmailConfirmed
 				};
 				vms.Add(custVm);
 			}
@@ -221,6 +222,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			result.PostCode = customer.PostCode;
 			result.UserEmail = user.Email;
 			result.UserId = user.Id;
+			result.IsEmailConfirmed = user.EmailConfirmed;
 			result.City = customer.City;
 			result.AdditionalAddress = customer.AdditionalAddress;
 			result.Address = customer.Address;
