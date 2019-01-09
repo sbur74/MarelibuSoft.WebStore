@@ -43,5 +43,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 
 		[Display(Name ="Lieferadressen")]
 		public List<ShippingAddressViewModel> Addresses{ get; set; }
+
+		[Display(Name = "Offene Aufträge")]
+		public List<OrderViewModel> OpenOrders { get; set; }
+
+		[Display(Name = "Abgeschlossne Aufträge")]
+		public List<OrderViewModel> ClosedOrders { get; set; }
 	}
 }

@@ -32,6 +32,8 @@ namespace MarelibuSoft.WebStore.Data
 		public DbSet<CategoryAssignment> CategoryAssignments { get; set; }
 		public DbSet<Country> Countries { get; set; }
 		public DbSet<Customer> Customers { get; set; }
+		public DbSet<CustomerGroup> CustomerGroups { get; set; }
+		public DbSet<CustomerGroupAssignment> CustomerGroupAssignments { get; set; }
 		public DbSet<Ebook> Ebooks { get; set; }
 		public DbSet<Guest> Guests { get; set; }
 		public DbSet<Order> Orders { get; set; }

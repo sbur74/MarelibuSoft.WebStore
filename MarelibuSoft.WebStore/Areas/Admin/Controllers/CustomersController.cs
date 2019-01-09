@@ -204,7 +204,21 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			var user = await _context.Users.SingleAsync(u => u.Id == customer.UserId);
 			var countries = await _context.Countries.ToListAsync();
 			List<ShippingAddress> shipToAddresses = null;
+			var openorders = await _context.Orders.Where(o => o.CustomerID == id && !o.IsClosed).ToListAsync();
+			var closedorders = await _context.Orders.Where(o => o.CustomerID == id && o.IsClosed).ToListAsync();
+			var vmOpenOrders = new List<OrderViewModel>();
+			var vmClosedOrders = new List<OrderViewModel>();
 
+			foreach (var item in openorders)
+			{
+				var op = new OrderViewModel { ID = item.ID, Number = item.Number, OrderDate = item.OrderDate };
+				vmOpenOrders.Add(op);
+			}
+			foreach (var item in closedorders)
+			{
+				var cl = new OrderViewModel { ID = item.ID, Number = item.Number, OrderDate = item.OrderDate };
+				vmClosedOrders.Add(cl);
+			}
 			try
 			{
 				shipToAddresses = await _context.ShippingAddresses.Where(sh => sh.CustomerID == customer.CustomerID).ToListAsync();
@@ -230,6 +244,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			result.Addresses = new List<ShippingAddressViewModel>();
 			result.CountryId = customer.CountryId;
 			result.CountryName = countries.Single(c => c.ID == customer.CountryId).Name;
+			result.OpenOrders = vmOpenOrders;
+			result.ClosedOrders = vmClosedOrders;
 
 			if (shipToAddresses != null)
 			{
