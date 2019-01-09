@@ -34,35 +34,84 @@
     <PackageReference Include="bootstrap" Version="3.3.7" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
     <PackageReference Include="BundlerMinifier.Core" Version="2.8.391" />
-    <PackageReference Include="Certes" Version="2.3.0" />
+    <PackageReference Include="Certes" Version="2.3.2" />
     <PackageReference Include="jQuery" Version="3.3.1" />
+    <PackageReference Include="jquery-globalize.0.1.3" Version="0.1.3" />
     <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
     <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.2" PrivateAssets="all">
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.3" PrivateAssets="All" />
-	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.2" />
 	  <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
-	  <PackageReference Include="Serilog.Settings.Configuration" Version="2.6.1" />
+	  <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.1" />
 	  <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
 	  <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
 	  <PackageReference Include="Serilog.Sinks.MySQL.NetCore2" Version="2.7.5" />
 	  <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
   </ItemGroup>
 
- <!-- <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
-  </ItemGroup>-->
-
   <ItemGroup>
     <Folder Include="Areas\Identity\" />
     <Folder Include="Common\CustomValidations\" />
+    <Folder Include="Routings\" />
     <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\images\admin\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-ar-AR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-bg-BG.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-ca-ES.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-cs-CZ.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-da-DK.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-de-DE.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-el-GR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-es-ES.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-es-EU.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-fa-IR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-fi-FI.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-fr-FR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-gl-ES.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-he-IL.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-hr-HR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-hu-HU.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-id-ID.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-it-IT.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-ja-JP.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-ko-KR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-lt-LT.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-lt-LV.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-mn-MN.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-nb-NO.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-nl-NL.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-pl-PL.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-pt-BR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-pt-PT.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-ro-RO.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-ru-RU.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-sk-SK.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-sl-SI.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-sr-RS-Latin.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-sr-RS.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-sv-SE.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-ta-IN.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-th-TH.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-tr-TR.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-uk-UA.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-vi-VN.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-zh-CN.js" />
+    <None Include="wwwroot\lib\summernote\dist\lang\summernote-zh-TW.js" />
+    <None Include="wwwroot\lib\summernote\dist\plugin\databasic\summernote-ext-databasic.js" />
+    <None Include="wwwroot\lib\summernote\dist\plugin\hello\summernote-ext-hello.js" />
+    <None Include="wwwroot\lib\summernote\dist\plugin\specialchars\summernote-ext-specialchars.js" />
+    <None Include="wwwroot\lib\summernote\dist\summernote-bs4.js" />
+    <None Include="wwwroot\lib\summernote\dist\summernote-bs4.min.js" />
+    <None Include="wwwroot\lib\summernote\dist\summernote-lite.js" />
+    <None Include="wwwroot\lib\summernote\dist\summernote.js" />
+    <None Include="wwwroot\lib\summernote\dist\summernote.min.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,7 +119,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\favicon.ico">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\images\favicon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

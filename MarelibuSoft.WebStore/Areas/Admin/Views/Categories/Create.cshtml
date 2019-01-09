@@ -1,31 +1,51 @@
 ﻿@model MarelibuSoft.WebStore.Models.Category
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Kategorie anlegen";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>Kategorie anlegen</h2>
 
 <h4>Kategorie</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-success" />
-            </div>
-        </form>
-    </div>
+	<div class="col-md-4">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="SeoDescription" class="control-label"></label>
+				<textarea rows="5" asp-for="SeoDescription" class="form-control counted" data-max-chars="155"></textarea>
+				<span asp-validation-for="SeoDescription" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="SeoKeywords" class="control-label"></label>
+				<textarea rows="5" asp-for="SeoKeywords" class="form-control" onkeyup="marelibusoft.common.countChar(this);"></textarea>
+				<span asp-validation-for="SeoKeywords" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="HtmlDescription" class="control-label"></label>
+				<textarea rows="20" asp-for="HtmlDescription" class="form-control"></textarea>
+				<span asp-validation-for="HtmlDescription" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Anlegen" class="btn btn-success" />
+			</div>
+		</form>
+	</div>
 </div>
 
 <div>
 	<a class="btn btn-primary" asp-action="Index">zur &Uuml;bersicht</a>
 </div>
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
 

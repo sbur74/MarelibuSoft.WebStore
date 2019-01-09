@@ -138,6 +138,26 @@ namespace MarelibuSoft.WebStore.Controllers
 
 				bool countryIsAllowedForSipping = await countryHelper.GetAllowedForShipping(model.CountryID);
 
+				var shipTo = await _context.ShippingAddresses.SingleOrDefaultAsync(s => s.IsInvoiceAddress && s.CustomerID == model.CustomerID);
+
+				if (countryIsAllowedForSipping && shipTo != null)
+				{
+					shipTo.CompanyName = model.CompanyName;
+					shipTo.AdditionalAddress = model.AdditionalAddress;
+					shipTo.Address = model.Address;
+					shipTo.City = model.City;
+					shipTo.PostCode = model.PostCode;
+					shipTo.LastName = model.Name;
+					shipTo.FirstName = model.FirstName;
+
+					_context.Entry(shipTo).State = EntityState.Modified;
+				}
+				if (countryIsAllowedForSipping && shipTo == null)
+				{
+					shipTo = new ShippingAddress { CountryID = model.CountryID, AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CompanyName = model.CompanyName, CustomerID = customer.CustomerID, FirstName = model.FirstName, IsInvoiceAddress = true, LastName = model.Name, PostCode = model.PostCode };
+					_context.ShippingAddresses.Add(shipTo);
+				}
+
 
 				_context.Entry(customer).State = EntityState.Modified;
 

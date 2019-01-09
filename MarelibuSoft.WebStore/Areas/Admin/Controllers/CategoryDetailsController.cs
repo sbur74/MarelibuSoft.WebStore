@@ -70,7 +70,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,CategorySubID")] CategoryDetail categoryDetail)
+        public async Task<IActionResult> Create([Bind("ID,Name,CategorySubID,SeoDescription,HtmlDescription,SeoKeywords")] CategoryDetail categoryDetail)
         {
             if (ModelState.IsValid)
             {
@@ -104,7 +104,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CategorySubID")] CategoryDetail categoryDetail)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CategorySubID,SeoDescription,HtmlDescription,SeoKeywords")] CategoryDetail categoryDetail)
         {
             if (id != categoryDetail.ID)
             {

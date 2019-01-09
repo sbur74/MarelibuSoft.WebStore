@@ -9,31 +9,32 @@ using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Models.ViewModels;
 using MarelibuSoft.WebStore.Common.Helpers;
+using MarelibuSoft.WebStore.Common.Statics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Controllers
 {
-    public class ShoppingCartsController : Controller
-    {
-        private readonly ApplicationDbContext _context;
+	public class ShoppingCartsController : Controller
+	{
+		private readonly ApplicationDbContext _context;
 		private readonly ILoggerFactory factory;
 		private readonly ILogger logger;
 		private ShoppingCartHelper cartHelper;
 
 		public ShoppingCartsController(ApplicationDbContext context, ILoggerFactory loggerFactory)
-        {
-            _context = context;
+		{
+			_context = context;
 			factory = loggerFactory;
 			logger = factory.CreateLogger<ShoppingCartsController>();
 			cartHelper = new ShoppingCartHelper(_context, factory.CreateLogger<ShoppingCartHelper>());
 		}
 
-        // GET: ShoppingCarts
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.ShoppingCarts.ToListAsync());
-        }
+		// GET: ShoppingCarts
+		public async Task<IActionResult> Index()
+		{
+			return View(await _context.ShoppingCarts.ToListAsync());
+		}
 
 		// GET: ShoppingCarts/Details/5
 		public async Task<IActionResult> Details(Guid? id)
@@ -52,7 +53,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			}
 
 			var shoppingCart = await _context.ShoppingCarts.SingleOrDefaultAsync(m => m.ID == id);
-			
+
 			if (shoppingCart == null)
 			{
 				return NotFound();
@@ -84,7 +85,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				}
 				var product = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault();
 
-				if(periodDefault < product.ShippingPeriod)
+				if (periodDefault < product.ShippingPeriod)
 				{
 					periodDefault = product.ShippingPeriod;
 				}
@@ -126,12 +127,12 @@ namespace MarelibuSoft.WebStore.Controllers
 					ProductName = product.Name,
 					ProductNo = product.ProductNumber.ToString(),
 					ShortDescription = product.ShortDescription,
-					MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity,2),
-					AvailableQuantity = Math.Round( product.AvailableQuantity, 2),
+					MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity, 2),
+					AvailableQuantity = Math.Round(product.AvailableQuantity, 2),
 					ShoppingCartID = shoppingCart.ID,
-					SellBasePrice = Math.Round(item.SellBasePrice,2),
-					SellSekPrice = Math.Round(product.SecondBasePrice,2),
-					SekUnit = sekunit
+					SellBasePrice = Math.Round(item.SellBasePrice, 2),
+					SellSekPrice = Math.Round(product.SecondBasePrice, 2),
+					SekUnit = sekunit, SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}"
 				};
 				vmcLines.Add(cvml);
 				total = total + pPrice;
@@ -158,44 +159,44 @@ namespace MarelibuSoft.WebStore.Controllers
 			cartHelper.CheckAndRemove();
 
 			return View(vm);
-        }
+		}
 
-        // GET: ShoppingCarts/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+		// GET: ShoppingCarts/Create
+		public IActionResult Create()
+		{
+			return View();
+		}
 
-        // POST: ShoppingCarts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Number,CustomerId,GustId,OrderId")] ShoppingCart shoppingCart)
-        {
-            if (ModelState.IsValid)
-            {
-                shoppingCart.ID = Guid.NewGuid();
-                _context.Add(shoppingCart);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(shoppingCart);
-        }
+		// POST: ShoppingCarts/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("ID,Number,CustomerId,GustId,OrderId")] ShoppingCart shoppingCart)
+		{
+			if (ModelState.IsValid)
+			{
+				shoppingCart.ID = Guid.NewGuid();
+				_context.Add(shoppingCart);
+				await _context.SaveChangesAsync();
+				return RedirectToAction("Index");
+			}
+			return View(shoppingCart);
+		}
 
-        // GET: ShoppingCarts/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		// GET: ShoppingCarts/Edit/5
+		public async Task<IActionResult> Edit(Guid? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var shoppingCart = await _context.ShoppingCarts.SingleOrDefaultAsync(m => m.ID == id);
-            if (shoppingCart == null)
-            {
-                return NotFound();
-            }
+			var shoppingCart = await _context.ShoppingCarts.SingleOrDefaultAsync(m => m.ID == id);
+			if (shoppingCart == null)
+			{
+				return NotFound();
+			}
 
 			var lines = _context.ShoppingCartLines.Where(l => l.ShoppingCartID.Equals(shoppingCart.ID));
 			List<CartLineViewModel> vmcLines = new List<CartLineViewModel>();
@@ -207,7 +208,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
 
 				decimal pPrice = 0.0M;
-				if ( baseprice != 0.0M)
+				if (baseprice != 0.0M)
 				{
 					pPrice = baseprice * item.Quantity;
 				}
@@ -245,76 +246,76 @@ namespace MarelibuSoft.WebStore.Controllers
 			};
 
 
-            return View(vm);
-        }
+			return View(vm);
+		}
 
-        // POST: ShoppingCarts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("ID,Number,OrderId")] ShoppingCart shoppingCart)
-        {
-            if (id != shoppingCart.ID)
-            {
-                return NotFound();
-            }
+		// POST: ShoppingCarts/Edit/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(Guid id, [Bind("ID,Number,OrderId")] ShoppingCart shoppingCart)
+		{
+			if (id != shoppingCart.ID)
+			{
+				return NotFound();
+			}
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(shoppingCart);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ShoppingCartExists(shoppingCart.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(shoppingCart);
-        }
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Update(shoppingCart);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!ShoppingCartExists(shoppingCart.ID))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
+				return RedirectToAction("Index");
+			}
+			return View(shoppingCart);
+		}
 
-        // GET: ShoppingCarts/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		// GET: ShoppingCarts/Delete/5
+		public async Task<IActionResult> Delete(Guid? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var shoppingCart = await _context.ShoppingCarts
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (shoppingCart == null)
-            {
-                return NotFound();
-            }
+			var shoppingCart = await _context.ShoppingCarts
+				.SingleOrDefaultAsync(m => m.ID == id);
+			if (shoppingCart == null)
+			{
+				return NotFound();
+			}
 
-            return View(shoppingCart);
-        }
+			return View(shoppingCart);
+		}
 
-        // POST: ShoppingCarts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var shoppingCart = await _context.ShoppingCarts.SingleOrDefaultAsync(m => m.ID == id);
-            _context.ShoppingCarts.Remove(shoppingCart);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
+		// POST: ShoppingCarts/Delete/5
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteConfirmed(Guid id)
+		{
+			var shoppingCart = await _context.ShoppingCarts.SingleOrDefaultAsync(m => m.ID == id);
+			_context.ShoppingCarts.Remove(shoppingCart);
+			await _context.SaveChangesAsync();
+			return RedirectToAction("Index");
+		}
 
-        private bool ShoppingCartExists(Guid id)
-        {
-            return _context.ShoppingCarts.Any(e => e.ID == id);
-        }
-    }
+		private bool ShoppingCartExists(Guid id)
+		{
+			return _context.ShoppingCarts.Any(e => e.ID == id);
+		}
+	}
 }

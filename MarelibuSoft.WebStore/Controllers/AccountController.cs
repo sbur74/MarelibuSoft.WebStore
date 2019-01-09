@@ -273,10 +273,27 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					var customers = await _context.Customers.ToListAsync();
 					bool countryIsAllowedForSipping = await countryHelper.GetAllowedForShipping(model.CountryID);
-
-					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}C{customers.Count + 1}",  FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID, CompanyName = model.CompanyName };
+					Customer customer = new Customer { CustomerID = Guid.NewGuid(), AdditionalAddress = model.AdditionalAddress, Address = model.Address, City = model.City, CustomerNo = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}C{customers.Count + 1}", FirstName = model.FirstName, Name = model.Name, PostCode = model.PostCode, UserId = user.Id, CountryId = model.CountryID, CompanyName = model.CompanyName };
 					_context.Add(customer);
-					
+
+					if (countryIsAllowedForSipping)
+					{
+						var shipToAddress = new ShippingAddress
+						{
+							AdditionalAddress = model.AdditionalAddress,
+							Address = model.Address,
+							City = model.City,
+							CompanyName = model.CompanyName,
+							CountryID = model.CountryID,
+							CustomerID = customer.CustomerID,
+							FirstName = model.FirstName,
+							IsInvoiceAddress = true,
+							IsMainAddress = true,
+							LastName = model.Name,
+							PostCode = model.PostCode
+						};
+						_context.ShippingAddresses.Add(shipToAddress);
+					}
 					await _context.SaveChangesAsync();
 
 					AddUserCustomerToShoppingCart(user.Id, HttpContext.Session.GetString("ShoppingCartId"));
@@ -285,7 +302,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					string subject = "Registrierung abschließen";
 					string message = $"<h2>Herzlich Willkommen bei marelibuDesign!</h2>" +
-						$"<p>Bitte bestätige deine Registrierung durch Klicken dieses Links: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Registrierung abschließen.</a><br />Danach kannst du dich in dein Kundenkonto einloggen.Danach kannst du dich in dein Kundenkonto einloggen.</p><p>Du hast dich nicht auf www.marelibuDesign.de angemeldet? Dann klicke den Link bitte nicht, die eingegebenen Daten werden nach Ablauf von 7 Tagen automatisch gelöscht.</p><br /> ";
+						$"<p>Bitte bestätigen Sie Ihre Registrierung durch Klicken dieses Links: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Registrierung abschließen.</a><br />Danach können Sie Sich in Ihr Kundenkonto einloggen.</p><p>Sie haben Sich nicht auf www.marelibuDesign.de angemeldet? Dann klicken Sie den Link bitte nicht, die eingegebenen Daten werden nach Ablauf von 7 Tagen automatisch gelöscht.</p><br /> ";
 
 					await _emailSender.SendEmailAsync(user.Email, subject, message);
 

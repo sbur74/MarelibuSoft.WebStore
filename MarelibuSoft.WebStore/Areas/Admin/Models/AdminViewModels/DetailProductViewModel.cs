@@ -31,6 +31,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string SecondBasePrice { get; set; }
 		[Display(Name = "Lieferzeit")]
 		public string ShippingPeriod { get; set; }
+		[Display(Name = "SEO Beschreibung")]
+		[StringLength(155, ErrorMessage = "Du darfst nicht mehr als 155 Zeichen vervenden!")]
+		public string SeoDescription { get; set; }
+		[Display(Name = "SEO Schlagworte(Keywords)")]
+		public string SeoKeywords { get; set; }
 		public List<string> ImageUrls { get; set; }
 	}
 }

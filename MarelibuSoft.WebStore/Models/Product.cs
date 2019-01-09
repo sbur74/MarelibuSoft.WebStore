@@ -12,6 +12,8 @@ namespace MarelibuSoft.WebStore.Models
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public string ShortDescription { get; set; }
+		public string SeoDescription { get; set; }
+		public string SeoKeywords { get; set; }
 		public decimal Price { get; set; }
 		public decimal AvailableQuantity { get; set; }
 		public decimal MinimumPurchaseQuantity { get; set; }

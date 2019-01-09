@@ -59,7 +59,7 @@ namespace MarelibuSoft.WebStore
 
 						var certificate = new X509Certificate2(certificateFileName, certificatePassword);
 						
-						options.Listen(IPAddress.Loopback, 5001, listenOptions =>
+						options.Listen(IPAddress.Loopback, 6001, listenOptions =>
 						{
 							Log.Debug("Listen options -> start");
 							listenOptions.UseHttps(certificate);
@@ -72,6 +72,6 @@ namespace MarelibuSoft.WebStore
 					.UseContentRoot(Directory.GetCurrentDirectory())
 					.UseStartup<Startup>()
 					.UseSerilog()
-					.UseUrls("https://localhost:5001");
+					.UseUrls("https://localhost:6001");
 	}
 }

@@ -1,7 +1,7 @@
 ﻿@model MarelibuSoft.WebStore.Models.Category
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Kategorie löschen";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,14 +11,32 @@
 <div>
     <h4>Kategorie</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.SeoDescription)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.SeoDescription)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.SeoKeywords)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.SeoKeywords)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.HtmlDescription)
+		</dt>
+		<dd>
+			@Html.Raw(Model.HtmlDescription)
+		</dd>
+	</dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />

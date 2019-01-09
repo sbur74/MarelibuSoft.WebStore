@@ -27,6 +27,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 
 		[Display(Name = "Benutzer")]
 		public string UserEmail { get; set; }
+		
+		[Display(Name = "Registriert")]
+		public bool IsEmailConfirmed { get; set; }
 
 		[Display(Name = "Darf auf Rechnung kaufen")]
 		public bool AllowedPayByBill { get; set; }
@@ -40,5 +43,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 
 		[Display(Name ="Lieferadressen")]
 		public List<ShippingAddressViewModel> Addresses{ get; set; }
+
+		[Display(Name = "Offene Aufträge")]
+		public List<OrderViewModel> OpenOrders { get; set; }
+
+		[Display(Name = "Abgeschlossne Aufträge")]
+		public List<OrderViewModel> ClosedOrders { get; set; }
 	}
 }

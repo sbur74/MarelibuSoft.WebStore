@@ -35,6 +35,8 @@
 			<div class="thumbnail">
 				<div class="caption">
 					<h4>Lieferadresse</h4>
+					@if (item.IsInvoiceAddress) { <p class="small">(Rechnungsadresse)</p>}
+					else{ <p>&nbsp;</p>}
 					@if (item.IsMainAddress)
 					{
 						<p><input type="checkbox" checked="checked" disabled="disabled" />aktive Lieferadresse</p>

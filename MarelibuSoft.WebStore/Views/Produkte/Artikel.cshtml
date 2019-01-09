@@ -1,7 +1,6 @@
 @model MarelibuSoft.WebStore.Models.ViewModels.ProductDetailViewModel
 
 @{
-	ViewData["Title"] = "Details";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	string plus = Model.ProductID + "_plus";
 	string minus = Model.ProductID + "_minus";
@@ -9,8 +8,9 @@
 	string qunitityPrice = Model.ProductID + "_quantityPrice";
 	string availableQunitity = Model.ProductID + "_availableQuantity";
 	decimal startPrice = Math.Round((Model.Price * Model.MinimumPurchaseQuantity), 2);
-	string mainImg = Model.MainImageUrl;
+	
 }
+@*@Html.SpMetaDescription(Model.SeoDescription)*@
 
 <h2>@Html.DisplayFor(model => model.Name)</h2>
 
@@ -18,7 +18,7 @@
 	@Html.AntiForgeryToken()
 </div>
 
-<div>
+<div onload="marelibusoft.common.changeMetaDesc('@Model.Description');">
 	<div class="row">
 
 	</div>
@@ -26,14 +26,23 @@
 	<hr />
 	<div class="row">
 		<div class="col-md-5">
-			<img src="~/images/store/@mainImg" class="img-responsive" style="max-height: 75%; max-width: 75%;" />
+			<img id="expandedImg" src="~/images/store/@Model.MainImageUrl.ImageUrl" alt="@Model.MainImageUrl.Name" class="img-responsive" style="max-height: 75%; max-width: 75%;" />
 			<br />
 			<div class="table table-responsive">
 				@foreach (var item in Model.ImageUrls)
 				{
-					<img src="~/images/store/@Html.DisplayFor(modelitem => item)" class="img-rounded tab-content" style="max-height:100px; max-width:100px;" />
+					<img src="~/images/store/@Html.DisplayFor(modelitem => item.ImageUrl)" alt="@Html.DisplayFor(modelItem => item.Name)" class="img-rounded tab-content" style="max-height:100px; max-width:100px; cursor:pointer;" onclick="myFunction(this);" />
 				}
 			</div>
+			<script>
+				function myFunction(imgs) {
+					var expandImg = document.getElementById("expandedImg");
+					var imgText = document.getElementById("imgtext");
+					expandImg.src = imgs.src;
+					imgText.innerHTML = imgs.alt;
+					expandImg.parentElement.style.display = "block";
+				}
+			</script>
 		</div>
 		<div class="col-md-7">
 			<div class="jumbotron">
@@ -89,6 +98,12 @@
 					<dd>
 						</span> <span id="@availableQunitity">@Math.Round(Model.AvailableQuantity, 2)</span> <span>@Model.BasesUnit</span>
 					</dd>
+					<dt>
+						@Html.DisplayNameFor(model => model.Shipping)
+					</dt>
+					<dd>
+						@Html.DisplayFor(model => model.Shipping)
+					</dd>
 				</dl>
 			</div>
 			<section>
@@ -127,7 +142,7 @@
 <hr />
 <p class="small">
 	* Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
-	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
+	Bei Bestellungen aus der Schweiz k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.
 </p>
 <p class="small">
 	Technisch bedingt kann es zu Farbabweichungen kommen.

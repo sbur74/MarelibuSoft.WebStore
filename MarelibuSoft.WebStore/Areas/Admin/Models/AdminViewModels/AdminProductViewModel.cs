@@ -56,6 +56,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public int CategoryDetailID { get; set; }
 		[Display(Name = "Aktiv")]
 		public bool IsActive { get; set; }
+		[Display(Name = "SEO Beschreibung")]
+		[StringLength(155, ErrorMessage = "Du darfst nicht mehr als 155 Zeichen vervenden!")]
+		public string SeoDescription { get; set; }
+		[Display(Name = "SEO Schlagworte(Keywords), Trenzeich Komma")]
+		public string SeoKeywords { get; set; }
 
 		public List<string> ImageUrls { get; set; }
 	}

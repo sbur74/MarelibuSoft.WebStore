@@ -8,6 +8,7 @@ using MarelibuSoft.WebStore.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using MarelibuSoft.WebStore.Models;
 using Microsoft.Extensions.Logging;
+using MarelibuSoft.WebStore.Common.Statics;
 
 namespace MarelibuSoft.WebStore.ViewComponents
 {
@@ -33,7 +34,7 @@ namespace MarelibuSoft.WebStore.ViewComponents
 				{
 
 					var subs = _context.CategorySubs.Where(s => s.CategoryID == category.ID).ToList();
-					var nav = new NavItemViewModel { Id = category.ID, Name = category.Name, PerentId = 0 };
+					var nav = new NavItemViewModel { Id = category.ID, Name = category.Name, PerentId = 0 , SlugUrl = $"{category.ID}-{FriendlyUrlHelper.ReplaceUmlaute(category.Name)}" };
 
 					if (subs != null)
 					{
@@ -41,14 +42,14 @@ namespace MarelibuSoft.WebStore.ViewComponents
 						foreach (CategorySub categorysub in subs)
 						{
 							var details = _context.CategoryDetails.Where(d => d.CategorySubID == categorysub.ID).ToList();
-							var navsub = new NavItemViewModel { Id = categorysub.ID, Name = categorysub.Name, PerentId = categorysub.CategoryID };
+							var navsub = new NavItemViewModel { Id = categorysub.ID, Name = categorysub.Name, PerentId = categorysub.CategoryID, SlugUrl = $"{categorysub.ID}-{FriendlyUrlHelper.ReplaceUmlaute(categorysub.Name)}" };
 
 							if (details != null)
 							{
 								navsub.Childs = new List<NavItemViewModel>();
 								foreach (CategoryDetail categorydetail in details)
 								{
-									var navdetail = new NavItemViewModel { Id = categorydetail.ID, Name = categorydetail.Name, PerentId = categorydetail.CategorySubID, Childs = null };
+									var navdetail = new NavItemViewModel { Id = categorydetail.ID, Name = categorydetail.Name, PerentId = categorydetail.CategorySubID, Childs = null, SlugUrl = $"{categorydetail.ID}-{FriendlyUrlHelper.ReplaceUmlaute(categorydetail.Name)}" };
 
 									_logger.LogDebug($"NavigationViewComponent.InvokeAsync -> add detail category: {navdetail.Name}");
 									navsub.Childs.Add(navdetail);

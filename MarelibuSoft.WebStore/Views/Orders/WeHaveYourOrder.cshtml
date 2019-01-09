@@ -1,8 +1,8 @@
 ﻿@model MarelibuSoft.WebStore.Models.ViewModels.WeHaveYourOrderViewModel
 
 @{
-    ViewData["Title"] = "Auftrag erhalten";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Auftrag erhalten";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div>
@@ -150,3 +150,17 @@
 	<p>@Model.OrderInvoiceAddress.CountryName</p>
 </div>
 
+<!-- BEGIN - EasyReviews Addon | www.shopvote.de -->
+<div id="srt-customer-data" style="display:none;">
+	<span id="srt-customer-email">@Model.Email</span>
+	<span id="srt-customer-reference">@Model.OrderNo</span>
+</div>
+<!-- END - EasyReviews Addon | www.shopvote.de -->
+<!-- BEGIN - EasyReviews Addon | www.shopvote.de -->
+<script src="https://feedback.shopvote.de/srt-v3.min.js"></script>
+<script type="text/javascript">
+	var myToken = "9e696696afdfc1798d3f657f8b708094";
+	var mySrc = ('https:' === document.location.protocol ? 'https' : 'http');
+	loadSRT(myToken, mySrc);
+</script>
+<!-- END - EasyReviews Addon | www.shopvote.de -->

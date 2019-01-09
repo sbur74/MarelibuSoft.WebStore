@@ -35,14 +35,24 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string ShippingTime { get; set; }
 		[Display(Name = "Sekundäre Preis")]
 		public string SecondPriceUnit { get; set; }
+		[Display(Name = "Versand")]
+		public string Shipping { get; set; }
+		[Display(Name = "SEO Beschreibung")]
+		[StringLength(155, ErrorMessage = "Du darfst nicht mehr als 155 Zeichen vervenden!")]
+		public string SeoDescription { get; set; }
 
-		 //TODO: hide this fields in view
+		[Display(Name = "SEO Schlagworte(Keywords)")]
+		public string SeoKeywords { get; set; }
+
+		//TODO: hide this fields in view
 		public int CategoryID { get; set; }
 		public int CategorySubID { get; set; }
 		public int CategoryDetailID { get; set; }
 
-		public string MainImageUrl { get; set; }
+		public ProductImage MainImageUrl { get; set; }
 
-		public List<string> ImageUrls { get; set; }
+		public string SlugUrl { get; set; }
+
+		public List<ProductImage> ImageUrls { get; set; }
 	}
 }

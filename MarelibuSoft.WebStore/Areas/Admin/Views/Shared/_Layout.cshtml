@@ -8,99 +8,98 @@
 
 	<environment names="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-		<link rel="stylesheet" href="~/css/site.css" />
+		<link rel="stylesheet" href="~/css/admin.css" />
+		<link rel="stylesheet" href="~/lib/summernote/dist/summernote-lite.css" />
 	</environment>
 	<environment names="Staging,Production">
 		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
 			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
 			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+		<link rel="stylesheet" href="~/css/admin.min.css" asp-append-version="true" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-lite.css" asp-fallback-href="~/lib/summernote/dist/summernote.css" />
 	</environment>
 	@*@Html.Raw(JavaScriptSnippet.FullScript)*@
 </head>
 <body>
-	<nav class="navbar navbar-inverse">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
-					<img src="~/images/favicon.svg" width="30" height="30" />
-				</a>
-			</div>
-			<div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-					<li><a asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
-					<li><a asp-area="Admin" asp-controller="BankAcccounts" asp-action="Index">Bankverbindung</a></li>
-					<li class="dropdown">
-						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Auftr&auml;ge<b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a asp-area="Admin" asp-controller="Orders" asp-action="Index">Auftrags&auml;bersicht</a></li>
-							<li><a asp-area="Admin" asp-controller="OrderCompletionTexts" asp-action="Index">Auftragsabschlusstexte</a></li>
-						</ul>
-					</li>
-					<li><a asp-area="Admin" asp-controller="Customers" asp-action="Index">Kunden</a></li>
-					@*<li class="dropdown">
-			<a href="#" data-toggle="dropdown" class="dropdown-toggle">Benutzer und Kunden<b class="caret"></b></a>
-			<ul class="dropdown-menu">
-				<li><a asp-area="Admin" asp-controller="AdminUsers" asp-action="Index">Benutzer</a></li>
+	<button onclick="topFunction()" id="myBtn" title="nach oben">Top</button>
+	<!--css wrapper-->
+	<div id="wrapper">
+		<!--css sidebar wrapper-->
+		<!-- Sidebar -->
+		<div id="sidebar-wrapper">
+			<ul class="sidebar-nav">
+				<li class="sidebar-brand">
+					<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+						<img src="~/images/favicon.svg" width="30" height="30" /> Shop
+					</a>
+				</li>
+				<li><a asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
+				<li><a asp-area="Admin" asp-controller="BankAcccounts" asp-action="Index">Bankverbindung</a></li>
+				<li>
+					<a href="#ordersmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Auftr&auml;ge<b class="caret"></b></a>
+					<ul class="collapse list-unstyled" id="ordersmenu"> 
+						<li><a asp-area="Admin" asp-controller="Orders" asp-action="Index">Offene Auftr&auml;ge</a></li>
+						<li>
+							<a asp-area="Admin" asp-controller="Orders" asp-action="Closed">Geschlossene Auftr&auml;ge</a>
+						</li>
+						<li><a asp-area="Admin" asp-controller="OrderCompletionTexts" asp-action="Index">Auftragsabschlusstexte</a></li>
+					</ul>
+				</li>
 				<li><a asp-area="Admin" asp-controller="Customers" asp-action="Index">Kunden</a></li>
+				<li>
+					<a href="#categoriesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Kategorien<b class="caret"></b></a>
+					<ul id="categoriesmenu" class="collapse list-unstyled">
+						<li><a asp-area="Admin" asp-controller="Categories" asp-action="Index">Kategorien</a></li>
+						<li><a asp-area="Admin" asp-controller="CategorySubs" asp-action="Index">Unterkategorien</a></li>
+						<li><a asp-area="Admin" asp-controller="CategoryDetails" asp-action="Index">Detail-Kategorien</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#productmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Artikelinfomationen<b class="caret"></b></a>
+					<ul id="productmenu" class="collapse list-unstyled">
+						<li><a asp-area="Admin" asp-controller="Products" asp-action="Index">Artikel</a></li>
+						<li><a asp-area="Admin" asp-controller="ProductImages" asp-action="Index">Artikelbilder</a></li>
+						<li><a asp-area="Admin" asp-controller="CategoryAssignments" asp-action="Index">Artikel Kategoriezuordnung</a></li>
+						<li><a asp-area="Admin" asp-controller="Units" asp-action="Index">Einheiten</a></li>
+						<li><a asp-area="Admin" asp-controller="Sizes" asp-action="Index">Gr&ouml;&szlig;en</a></li>
+						<li><a asp-area="Admin" asp-controller="AdditionalPriceInformations" asp-action="Index">Preis Zusatzinformationen</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#lawmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Rechtstexte<b class="caret"></b></a>
+					<ul id="lawmenu" class="collapse list-unstyled">
+						<li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte Shop HTML</a></li>
+						<li><a asp-area="Admin" asp-controller="ShopFiles" asp-action="Index">Rechtstexte PDF</a> </li>
+					</ul>
+				</li>
+				<li>
+					<a href="#settingsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Shop-Einstellungen<b class="caret"></b></a>
+					<ul id="settingsmenu" class="collapse list-unstyled">
+						<li><a asp-area="Admin" asp-controller="Countries" asp-action="Index">L&auml;nder</a></li>
+						<li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte</a></li>
+						<li><a asp-area="Admin" asp-controller="ShippingPeriods" asp-action="Index">Lieferzeiten</a></li>
+						<li><a asp-area="Admin" asp-controller="ShippingPriceTypes" asp-action="Index">Lieferpreistypen</a></li>
+						<li><a asp-area="Admin" asp-controller="ShippingPrices" asp-action="Index">Lieferpreise</a></li>
+						<li><a asp-area="Admin" asp-controller="Paymends" asp-action="Index">Zahlungsarten</a></li>
+						<li><a asp-area="Admin" asp-controller="Impressums" asp-action="Index">Impressum</a></li>
+					</ul>
+				</li>
 			</ul>
-		</li>*@
-					<li class="dropdown">
-						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Kategorien<b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a asp-area="Admin" asp-controller="Categories" asp-action="Index">Kategorien</a></li>
-							<li><a asp-area="Admin" asp-controller="CategorySubs" asp-action="Index">Unterkategorien</a></li>
-							<li><a asp-area="Admin" asp-controller="CategoryDetails" asp-action="Index">Detail-Kategorien</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Artikelinfomationen<b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a asp-area="Admin" asp-controller="Products" asp-action="Index">Artikel</a></li>
-							<li><a asp-area="Admin" asp-controller="ProductImages" asp-action="Index">Artikelbilder</a></li>
-							<li><a asp-area="Admin" asp-controller="CategoryAssignments" asp-action="Index">Artikel Kategoriezuordnung</a></li>
-							<li><a asp-area="Admin" asp-controller="Units" asp-action="Index">Einheiten</a></li>
-							<li><a asp-area="Admin" asp-controller="Sizes" asp-action="Index">Gr&ouml;&szlig;en</a></li>
-							<li><a asp-area="Admin" asp-controller="AdditionalPriceInformations" asp-action="Index">Preis Zusatzinformationen</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Rechtstexte<b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte Shop HTML</a></li>
-							<li><a asp-area="Admin" asp-controller="ShopFiles" asp-action="Index">Rechtstexte PDF</a> </li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Shop-Einstellungen<b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a asp-area="Admin" asp-controller="Countries" asp-action="Index">L&auml;nder</a></li>
-							<li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte</a></li>
-							<li><a asp-area="Admin" asp-controller="ShippingPeriods" asp-action="Index">Lieferzeiten</a></li>
-							<li><a asp-area="Admin" asp-controller="ShippingPriceTypes" asp-action="Index">Lieferpreistypen</a></li>
-							<li><a asp-area="Admin" asp-controller="ShippingPrices" asp-action="Index">Lieferpreise</a></li>
-							<li><a asp-area="Admin" asp-controller="Paymends" asp-action="Index">Zahlungsarten</a></li>
-							<li><a asp-area="Admin" asp-controller="Impressums" asp-action="Index">Impressum</a></li>
-						</ul>
-					</li>
-				</ul>
-				@*@await Html.PartialAsync("_LoginPartial")*@
+		</div>
+		<!-- /#sidebar-wrapper -->
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<div class="container-fluid body-content">
+				<div class="row">
+					<div class="col-lg-12">
+						<a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+						@RenderBody()
+					</div>
+				</div>
 			</div>
 		</div>
-	</nav>
-	<button onclick="topFunction()" id="myBtn" title="nach oben">Top</button>
-	<div class="container body-content">
-		@RenderBody()
-		<hr />
-		<footer>
-			<p>&copy; @DateTime.Now.Year - marelibuDesign</p>
-		</footer>
+		<!-- /#page-content-wrapper -->
+
 	</div>
 
 	<environment names="Development">
@@ -109,6 +108,7 @@
 		<script src="~/js/site.js" asp-append-version="true"></script>
 		<script src="~/js/admin.js" asp-append-version="true"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+		<script src="~/js/commonjs.js"></script>
 	</environment>
 	<environment names="Staging,Production">
 		<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -126,9 +126,20 @@
 		<script src="~/js/site.min.js" asp-append-version="true"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
 		<script src="~/js/admin.min.js" asp-append-version="true"></script>
+		<script src="~/js/commonjs.min.js"></script>
 	</environment>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-
+	<script src="~/js/jquery.charactercounter.js"></script>
+	<script src="~/lib/summernote/dist/summernote-lite.js"></script>
+	<script src="~/lib/summernote/dist/lang/summernote-de-DE.js"></script>
 	@RenderSection("Scripts", required: false)
+
+		<!-- Menu Toggle Script -->
+	<script>
+		$("#menu-toggle").click(function (e) {
+			e.preventDefault();
+			$("#wrapper").toggleClass("toggled");
+		});
+	</script>
 </body>
 </html>

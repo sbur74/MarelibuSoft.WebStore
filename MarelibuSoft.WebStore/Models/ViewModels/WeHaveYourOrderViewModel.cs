@@ -33,5 +33,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public decimal ShipPrice { get; set; }
 		[Display(Name = "Zusätzliche Angaben")]
 		public string FreeText { get; set; }
+		[Display(Name = "E-Mail-Adresse")]
+		public string Email { get; set; }
 	}
 }

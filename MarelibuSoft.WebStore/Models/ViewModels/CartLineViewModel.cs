@@ -22,5 +22,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public decimal SellBasePrice { get; set; }
 		public decimal SellSekPrice { get; set; }
 		public string SekUnit { get; set; }
+
+		public string SlugUrl{ get; set; }
 	}
 }

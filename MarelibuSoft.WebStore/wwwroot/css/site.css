@@ -39,9 +39,9 @@ body {
 #myBtn {
 	display: none;
 	position: fixed;
-	bottom: 20px;
+	top: 220px;
 	right: 30px;
-	z-index: 99;
+	z-index: 9999;
 	font-size: 18px;
 	border: none;
 	outline: none;
@@ -58,7 +58,7 @@ body {
 
 #myalert{
 	position:fixed;
-	bottom: 60px;
+	top: 280px;
 	right: 30px;
 	z-index: 99;
 }

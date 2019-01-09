@@ -17,6 +17,9 @@
 				@Html.DisplayNameFor(model => model.UserEmail)
 			</th>
 			<th>
+				@Html.DisplayNameFor(model => model.IsEmailConfirmed)
+			</th>
+			<th>
 				@Html.DisplayNameFor(model => model.CustomerNo)
 			</th>
 			<th>
@@ -51,6 +54,9 @@
 		<tr>
 			<td>
 				@Html.DisplayFor(modelItem => item.UserEmail)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.IsEmailConfirmed)
 			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.CustomerNo)

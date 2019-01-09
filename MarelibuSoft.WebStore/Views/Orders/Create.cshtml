@@ -1,7 +1,7 @@
 ﻿@model MarelibuSoft.WebStore.Models.ViewModels.OrderCreateViewModel
 
 @{
-	ViewData["Title"] = "Create";
+	ViewData["Title"] = "KASSE";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	ShippingPrice shippingPrice = Model.ShippingPrice;
 	var orderobj = Model.Order;
@@ -22,14 +22,14 @@
 		string availableQunitity = item.ProductID + "_availableQuantity";
 		<div class="row">
 			<div class="col-md-1">
-				<a asp-action="Details" asp-controller="Products" asp-route-id="@item.ProductID">
+				<a asp-action="Artikel" asp-controller="Produkte" asp-route-id="@item.SlugUrl">
 					<img src="~/images/store/@Html.DisplayFor(modelItem => item.ImgPath)" width="100" height="100" />
 				</a>
 			</div>
 			<div class="col-md-10" style="margin-left: 10px;">
 				<div class="row">
 					<div class="col-md-4">
-						<a asp-action="Details" asp-controller="Products" asp-route-id="@item.ProductID">@Html.DisplayFor(modelItem => item.ProductName)</a>
+						<a asp-action="Artikel" asp-controller="Produkte" asp-route-id="@item.SlugUrl">@Html.DisplayFor(modelItem => item.ProductName)</a>
 					</div>
 					<div class="col-md-3">
 						Menge: <span id="@quantity">@Html.DisplayFor(modelItem => item.Quantity)</span>&nbsp;<span>@Html.DisplayFor(modelItem => item.Unit)</span>
@@ -120,7 +120,7 @@
 			@*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
 			<input id="isPayed" type="hidden" asp-for="Order.IsPayed" value="false" />
 			<input id="cartId" type="hidden" asp-for="Order.CartID" value="@Model.Cart.ID" />
-			<input id="paymentId" type="hidden" asp-for="Order.PaymentID" value="0" onchange="marelibusoft.order.shopFileChecked();" />
+			<input id="paymentId" type="hidden" value="0" onchange="marelibusoft.order.shopFileChecked();" />
 			<input id="shippingPriceId" type="hidden" asp-for="Order.ShippingPriceId" value="@Model.ShippingPrice.ID" />
 			<input id="shippingPrice" type="hidden" asp-for="Order.ShippingPrice" value="@Model.ShippingPrice.Price" />
 			<input id="orderTotal" type="hidden" asp-for="Order.Total" value="@Model.Cart.Total" />
@@ -175,14 +175,14 @@
 			<div class="container" onload="marelibusoft.order.initPaymendOnload()">
 				@if (ViewBag.CustomerCountryCode != "CH")
 				{
-					<input id="payment1" type="radio" value="1" onclick="marelibusoft.order.onSubmitUeberweisung();" /> <span>&Uuml;berweisung (Vorkasse)</span>
+					<input id="payment1" type="radio" asp-for="Order.PaymentID" value="1" onclick="marelibusoft.order.onSubmitUeberweisung();" /> <span>&Uuml;berweisung (Vorkasse)</span>
 					<br />
 				}
-				<input id="payment2" type="radio" value="2" onclick="marelibusoft.order.onSubmitPayPal();" /> <img src="~/images/ico-paypal.svg" />
+				<input id="payment2" type="radio" asp-for="Order.PaymentID" value="2" onclick="marelibusoft.order.onSubmitPayPal();" /> <img src="~/images/ico-paypal.svg" />
 				@if (Model.CanBuyWithBill && ViewBag.CustomerCountryCode != "CH")
 				{
 					<br />
-					<input id="payment3" type="radio" value="3" onclick="marelibusoft.order.onSubmitBill();" /> <span>Rechnung</span>
+					<input id="payment3" type="radio"  value="3" onclick="marelibusoft.order.onSubmitBill();" /> <span>Rechnung</span>
 				}
 			</div>
 			<div class="form-group">
@@ -194,7 +194,7 @@
 
 <p class="small">
 	*Angegebene Preise sind Gesamtpreise (zzgl. Versandkosten). Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
-	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
+	Bei Bestellungen aus der Schweiz k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.
 </p>
 <p class="small">
 	Technisch bedingt kann es zu Farbabweichungen kommen.

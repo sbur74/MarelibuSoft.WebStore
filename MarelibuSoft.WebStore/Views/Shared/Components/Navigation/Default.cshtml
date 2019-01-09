@@ -7,17 +7,19 @@
 			<li>
 				<a href="#" data-toggle="dropdown" class="dropdown-toggle">@item.Name</a>
 				<ul id="main_@item.Name@item.Id" class="dropdown-menu multi-level">
-					<li><a href="@Url.Action("Index", "Products", new { categoryId = item.Id })">@Html.DisplayFor(modelItem => item.Name)</a></li>
+					<li>
+					<a href="@Url.Action("Kategorie", "Produkte", new { categoryId = item.SlugUrl })">@Html.DisplayFor(modelItem => item.Name)</a>
+					</li>
 					@if (item.Childs != null && item.Childs.Count > 0)
 					{
 						@foreach (var sub in item.Childs)
 						{
-							<li><a href="@Url.Action("Index", "Products", new { categoryId = item.Id, categorySubId = sub.Id })"> &ensp;@Html.DisplayFor(modelItem => sub.Name)</a></li>
+							<li><a href="@Url.Action("Kategorie", "Produkte", new { categoryId = item.SlugUrl, categorySubId = sub.SlugUrl })"> &ensp;@Html.DisplayFor(modelItem => sub.Name)</a></li>
 							@if (sub.Childs != null && sub.Childs.Count > 0)
 							{
 								@foreach (var details in sub.Childs)
 								{
-									<li><a href="@Url.Action("Index", "Products", new { categoryId = item.Id, categorySubId = sub.Id, categoryDetailId = details.Id })">&emsp;@Html.DisplayFor(modelItem => details.Name)</a></li>
+									<li><a href="@Url.Action("Kategorie", "Produkte", new { categoryId = item.SlugUrl, categorySubId = sub.SlugUrl, categoryDetailId = details.SlugUrl })">&emsp;@Html.DisplayFor(modelItem => details.Name)</a></li>
 								}
 							}
 						}

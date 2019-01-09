@@ -10,6 +10,7 @@ using MarelibuSoft.WebStore.Models;
 using MarelibuSoft.WebStore.Common.Helpers;
 using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
 using MarelibuSoft.WebStore.Models.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -17,10 +18,14 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
     public class CustomersController : Controller
     {
         private readonly ApplicationDbContext _context;
+		private readonly ILoggerFactory factory;
+		private readonly ILogger logger;
 
-        public CustomersController(ApplicationDbContext context)
+        public CustomersController(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
+			factory = loggerFactory;
+			logger = factory.CreateLogger<CustomersController>();
         }
 
         // GET: Admin/Customers
@@ -50,7 +55,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					FirstName = item.FirstName,
 					PostCode = item.PostCode,
 					UserEmail = user.Email,
-					UserId = item.UserId
+					UserId = item.UserId,
+					IsEmailConfirmed = user.EmailConfirmed
 				};
 				vms.Add(custVm);
 			}
@@ -198,13 +204,28 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			var user = await _context.Users.SingleAsync(u => u.Id == customer.UserId);
 			var countries = await _context.Countries.ToListAsync();
 			List<ShippingAddress> shipToAddresses = null;
+			var openorders = await _context.Orders.Where(o => o.CustomerID == id && !o.IsClosed).ToListAsync();
+			var closedorders = await _context.Orders.Where(o => o.CustomerID == id && o.IsClosed).ToListAsync();
+			var vmOpenOrders = new List<OrderViewModel>();
+			var vmClosedOrders = new List<OrderViewModel>();
 
+			foreach (var item in openorders)
+			{
+				var op = new OrderViewModel { ID = item.ID, Number = item.Number, OrderDate = item.OrderDate };
+				vmOpenOrders.Add(op);
+			}
+			foreach (var item in closedorders)
+			{
+				var cl = new OrderViewModel { ID = item.ID, Number = item.Number, OrderDate = item.OrderDate };
+				vmClosedOrders.Add(cl);
+			}
 			try
 			{
 				shipToAddresses = await _context.ShippingAddresses.Where(sh => sh.CustomerID == customer.CustomerID).ToListAsync();
 			}
 			catch (Exception e)
 			{
+				logger.LogError(e, "Fehler beim abrufen einer Lieferadresse.");
 				shipToAddresses = null;
 			}
 
@@ -215,6 +236,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			result.PostCode = customer.PostCode;
 			result.UserEmail = user.Email;
 			result.UserId = user.Id;
+			result.IsEmailConfirmed = user.EmailConfirmed;
 			result.City = customer.City;
 			result.AdditionalAddress = customer.AdditionalAddress;
 			result.Address = customer.Address;
@@ -222,6 +244,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			result.Addresses = new List<ShippingAddressViewModel>();
 			result.CountryId = customer.CountryId;
 			result.CountryName = countries.Single(c => c.ID == customer.CountryId).Name;
+			result.OpenOrders = vmOpenOrders;
+			result.ClosedOrders = vmClosedOrders;
 
 			if (shipToAddresses != null)
 			{
