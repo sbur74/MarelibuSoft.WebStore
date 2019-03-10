@@ -7,47 +7,70 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models;
+using MarelibuSoft.WebStore.Areas.Api.ViewModels;
 
 namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Products")]
-    public class ProductsController : Controller
-    {
-        private readonly ApplicationDbContext _context;
+	[Produces("application/json")]
+	[Route("api/Products")]
+	public class ProductsController : Controller
+	{
+		private readonly ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		public ProductsController(ApplicationDbContext context)
+		{
+			_context = context;
+		}
 
-        // GET: api/Products
-        [HttpGet]
+		// GET: api/Products
+		[HttpGet]
 		[ValidateAntiForgeryToken]
 		public IEnumerable<Product> GetProducts()
-        {
-            return _context.Products;
-        }
+		{
+			return _context.Products;
+		}
 
-        // GET: api/Products/5
-        [HttpGet("{id}")]
+		// GET: api/Products/5
+		[HttpGet("{id}")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> GetProduct([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-            var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductID == id);
+			var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductID == id);
 
-            if (product == null)
-            {
-                return NotFound();
-            }
+			if (product == null)
+			{
+				return NotFound();
+			}
 
-            return Ok(product);
-        }
+			return Ok(product);
+		}
+
+		[HttpPut("{id}")]
+		public async Task<IActionResult> PutActiveProduct([FromRoute] int id, [FromBody] ActiveViewModel myactive)
+		{
+			if (id == 0)
+			{
+				return BadRequest("Kein Produkt gefunden");
+			}
+			var product = await _context.Products.SingleAsync(p => p.ProductID == id);
+
+			if (product == null)
+			{
+				return NotFound("Kein Produkt gefunden");
+			}
+
+			product.IsActive = myactive.IsActive;
+			_context.Products.Update(product);
+			await _context.SaveChangesAsync(product.IsActive);
+
+
+			return Ok(new { statusCode = 200 });
+		}
 
 		// PUT: api/Products/5
 		//[HttpPut("{id}")]

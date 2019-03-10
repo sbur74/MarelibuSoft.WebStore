@@ -1,0 +1,67 @@
+﻿@model MarelibuSoft.WebStore.Models.CmsPage
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+<h4>CmsPage</h4>
+<hr />
+<div class="row">
+	<div class="col-md-9">
+		<form asp-action="Create" onload="marelibusoft.admin.cms.renderContentEditor()">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Titel" class="control-label"></label>
+				<input asp-for="Titel" class="form-control" />
+				<span asp-validation-for="Titel" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PageDesciption" class="control-label"></label>
+				<input asp-for="PageDesciption" class="form-control" />
+				<span asp-validation-for="PageDesciption" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PageEnum" class="control-label"></label>
+				<select asp-for="PageEnum" class="form-control" asp-items="@Html.GetEnumSelectList<CmsPageEnum>()" onchange="marelibusoft.admin.cms.renderContentEditor()"></select>
+				<span asp-validation-for="PageEnum" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="LayoutEnum" class="control-label"></label>
+				<select asp-for="LayoutEnum" class="form-control" asp-items="@Html.GetEnumSelectList<CmsPageLayoutEnum>()"></select>
+				<span asp-validation-for="LayoutEnum" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="StatusEnum" class="control-label"></label>
+				<select asp-for="StatusEnum" class="form-control" asp-items="@Html.GetEnumSelectList<CmsPageStatusEnum>()"></select>
+				<span asp-validation-for="StatusEnum" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PageContent" class="control-label"></label>
+				<textarea id="summernote" asp-for="PageContent" class="form-control" rows="20"></textarea>
+				<span asp-validation-for="PageContent" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-default" />
+			</div>
+		</form>
+
+		<div id="cms-page-content" class="container-fluid"></div>
+	</div>
+
+	<div class="col-md-3">
+		@await Component.InvokeAsync("CmsFilesLoaded")
+	</div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

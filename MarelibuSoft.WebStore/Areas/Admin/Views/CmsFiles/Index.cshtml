@@ -1,0 +1,39 @@
+﻿@model IEnumerable<string>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>CMS Bilder &amp; Filme</h2>
+
+<form method="post" enctype="multipart/form-data" asp-area="Admin" asp-controller="CmsFiles" asp-action="Post">
+	<div class="form-group">
+		<div class="col-md-10">
+			<p>Upload one or more files using this form:</p>
+			<input type="file" name="files" multiple />
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-10">
+			<input type="submit" value="Upload" />
+		</div>
+	</div>
+</form>
+<hr />
+@*<h3>Hochgeladene CMS-Dateien</h3>
+<ul>
+	@foreach (string file in Model)
+	{
+		<li>
+			<a href="@file">@file</a>
+		</li>
+	}
+</ul>*@
+<hr />
+<div class="row">
+	<div class="col-md-10">
+		@await Component.InvokeAsync("CmsFilesLoaded")
+	</div>
+</div>
+
+

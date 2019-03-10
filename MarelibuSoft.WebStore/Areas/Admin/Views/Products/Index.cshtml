@@ -54,6 +54,8 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+	var senderid = item.ProductID;
+	var sendername = "product" + item.ProductID;
         <tr>
 			<td>
 				<img src="~/images/store/@item.MainImage" style="max-width:80px; max-height:80px;" class="img-responsive" />
@@ -80,7 +82,7 @@
                 @Html.DisplayFor(modelItem => item.ShippingPriceTypeName)
             </td>
 			<td>
-				@Html.DisplayFor(modelItem => item.IsActive)
+				<input id="@sendername" type="checkbox" checked="@item.IsActive"  onchange="marelibusoft.admin.product.sendActive('@senderid')" />
 			</td>
             <td>
 				<a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Bearbeiten" asp-action="Edit" asp-route-id="@item.ProductID"><span class="glyphicon glyphicon-edit"></span></a>

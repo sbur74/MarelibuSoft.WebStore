@@ -1,0 +1,19 @@
+﻿@using MarelibuSoft.WebStore.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+	if (User.IsInRole("Administrator"))
+	{
+		@*<div class="navbar-collapse collapse navbar-fixed-top">*@
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+				<a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">
+				 <i class="fa fa-cogs"></i> Admin
+				</a>
+			</li>
+		</ul>
+	}
+}

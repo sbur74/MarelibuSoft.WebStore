@@ -1,0 +1,69 @@
+﻿@model IEnumerable<MarelibuSoft.WebStore.Models.CmsStartPage>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+@if (Model.Count() < 1)
+{
+<p>
+    <a asp-action="Create">Startseite erstellen</a>
+</p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HeadContent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeftContent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RightContent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SeoKeywords)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SeoDescription)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HeadContent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LeftContent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RightContent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SeoKeywords)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SeoDescription)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                @*<a asp-action="Details" asp-route-id="@item.ID">Details</a> |*@
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

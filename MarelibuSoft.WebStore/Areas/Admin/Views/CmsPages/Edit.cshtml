@@ -1,0 +1,84 @@
+﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.CmsPageWorkViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>CmsPage</h4>
+<hr />
+<div class="row">
+	<div class="col-md-9">
+		<form asp-action="Edit" onload="marelibusoft.admin.cms.renderContentEditor()">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="Id" />
+			<input type="hidden" asp-for="DraftOfPageId" />
+			<input id="mycmscontent" type="hidden" asp-for="PageContent" />
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Titel" class="control-label"></label>
+				<input asp-for="Titel" class="form-control" />
+				<span asp-validation-for="Titel" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PageEnum" class="control-label"></label>
+				<select id="pageenum" asp-for="PageEnum" class="form-control" asp-items="@Html.GetEnumSelectList<CmsPageEnum>()" onchange="marelibusoft.admin.cms.renderContentEditor()"></select>
+				<span asp-validation-for="PageEnum" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="LayoutEnum" class="control-label"></label>
+				<select id="pagelayoutenum" asp-for="LayoutEnum" class="form-control" asp-items="@Html.GetEnumSelectList<CmsPageLayoutEnum>()"></select>
+				<span asp-validation-for="LayoutEnum" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="StatusEnum" class="control-label"></label>
+				<select asp-for="StatusEnum" class="form-control" asp-items="@Html.GetEnumSelectList<CmsPageStatusEnum>()"></select>
+				<span asp-validation-for="StatusEnum" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="SeoDescription" class="control-label"></label>
+				<input asp-for="SeoDescription" class="form-control" />
+				<span asp-validation-for="SeoDescription" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="SeoKeywords" class="control-label"></label>
+				<input asp-for="SeoKeywords" class="form-control" />
+				<span asp-validation-for="SeoKeywords" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PageDesciption" class="control-label"></label>
+				<input asp-for="PageDesciption" class="form-control" />
+				<span asp-validation-for="PageDesciption" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PageContent" class="control-label"></label>
+				<label class="control-label">Oben</label>
+				<textarea id="summernoteHead" rows="20" asp-for="PageContent" class="summernote"></textarea>
+				<label class="control-label">Links</label>
+				<textarea id="summernoteLeft" rows="20" asp-for="PageContent" class="summernote"></textarea>
+				<label class="control-label">Rechts</label>
+				<textarea id="summernoteRight" rows="20" asp-for="PageContent" class="summernote"></textarea>
+				<span asp-validation-for="PageContent" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-default" />
+			</div>
+		</form>
+
+		<div id="cms-page-content" class="container-fluid"></div>
+	</div>
+	<div class="col-md-3">
+		@await Component.InvokeAsync("CmsFilesLoaded")
+	</div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

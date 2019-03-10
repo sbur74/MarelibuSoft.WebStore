@@ -7,12 +7,14 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 {
     public class HomeViewModel
     {
-		public List<string> ImageUrls { get; set; }
+		public List<SliderViewModel> SliderViews { get; set; }
 		public string NewsImage { get; set; }
 		public string SectionTreeText { get; set; }
 		public HomeViewModel()
 		{
-			ImageUrls = new List<string>();
+			SliderViews = new List<SliderViewModel>();
 		}
+
+		public CmsStartPage StartPage { get; set; }
 	}
 }

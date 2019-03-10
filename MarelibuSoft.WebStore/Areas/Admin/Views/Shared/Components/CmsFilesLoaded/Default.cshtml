@@ -1,0 +1,11 @@
+﻿@model IEnumerable<string>
+
+<h3>Dateien</h3>
+<ul class="pre-scrollable">
+	@foreach (string file in Model)
+	{
+		<li>
+		<img src="@file" style="height:40px;width:40px;" /><a href="@file">@file</a>
+		</li>
+	}
+</ul>

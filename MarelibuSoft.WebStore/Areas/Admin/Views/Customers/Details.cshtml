@@ -118,6 +118,79 @@
 		</div>
 	}
 </div>
+
+<hr />
+
+<div class="row">
+	<h3>Offene Aufträge</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>
+					Auftragsnummer
+				</th>
+				<th>
+					Auftragsdatum
+				</th>
+				<th>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var open in Model.OpenOrders)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(openItem => open.Number)
+					</td>
+					<td>
+						@Html.DisplayFor(openItem => open.OrderDate)
+					</td>
+					<td>
+						<a class="btn btn-primary" asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@open.ID">Details</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+<hr />
+
+<div class="row">
+	<h3>Abgeschlossene Aufträge</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>
+					Auftragsnummer
+				</th>
+				<th>
+					Auftragsdatum
+				</th>
+				<th>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var closed in Model.ClosedOrders)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(closedItem => closed.Number)
+					</td>
+					<td>
+						@Html.DisplayFor(closedItem => closed.OrderDate)
+					</td>
+					<td>
+						<a class="btn btn-primary" asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@closed.ID">Details</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
 <div>
 	<a asp-action="Edit" asp-route-id="@Model.CustomerID">Edit</a> |
 	<a asp-action="Index">Back to List</a>

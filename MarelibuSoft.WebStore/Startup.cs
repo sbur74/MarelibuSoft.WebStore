@@ -87,7 +87,7 @@ namespace MarelibuSoft.WebStore
 				options.Filters.Add(new RequireHttpsAttribute());
 				options.RespectBrowserAcceptHeader = true;
 			})
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 			services.AddHttpsRedirection(options =>
 			{
 				options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;

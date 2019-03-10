@@ -2,17 +2,36 @@
 @{
 	ViewData["Title"] = "Willkommen bei marelibuDesign";
 	Random random = new Random();
-}
-@if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
-{
-	int idx0 = random.Next(0, Model.ImageUrls.Count - 1);
-	int idx1 = random.Next(0, Model.ImageUrls.Count - 1);
-	int idx2 = random.Next(0, Model.ImageUrls.Count - 1);
-	int idx3 = random.Next(0, Model.ImageUrls.Count - 1);
+	string headercontent = string.Empty;
+	string leftcontent = string.Empty;
+	string rightcontent = string.Empty;
 
-	if (idx1 == idx0) { idx1 = random.Next(0, Model.ImageUrls.Count - 1); }
-	if (idx2 == idx0 || idx2 == idx1) { idx2 = random.Next(0, Model.ImageUrls.Count - 1); }
-	if (idx3 == idx0 || idx3 == idx1 || idx3 == idx2) { idx3 = random.Next(0, Model.ImageUrls.Count - 1); }
+	if (Model.StartPage != null)
+	{
+		if (!string.IsNullOrWhiteSpace( Model.StartPage.HeadContent))
+		{
+			headercontent = Model.StartPage.HeadContent;
+		}
+		if (!string.IsNullOrWhiteSpace(Model.StartPage.LeftContent))
+		{
+			leftcontent = Model.StartPage.LeftContent;
+		}
+		if (!string.IsNullOrWhiteSpace(Model.StartPage.RightContent))
+		{
+			rightcontent = Model.StartPage.RightContent;
+		}
+	}
+}
+@if (Model.SliderViews != null && Model.SliderViews.Count > 0)
+{
+	int idx0 = random.Next(0, Model.SliderViews.Count - 1);
+	int idx1 = random.Next(0, Model.SliderViews.Count - 1);
+	int idx2 = random.Next(0, Model.SliderViews.Count - 1);
+	int idx3 = random.Next(0, Model.SliderViews.Count - 1);
+
+	if (idx1 == idx0) { idx1 = random.Next(0, Model.SliderViews.Count - 1); }
+	if (idx2 == idx0 || idx2 == idx1) { idx2 = random.Next(0, Model.SliderViews.Count - 1); }
+	if (idx3 == idx0 || idx3 == idx1 || idx3 == idx2) { idx3 = random.Next(0, Model.SliderViews.Count - 1); }
 	<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
 		<ol class="carousel-indicators">
 			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -22,18 +41,26 @@
 		</ol>
 		<div class="carousel-inner" role="listbox">
 			<div class="item active">
-				<img src="~/images/store/@Html.DisplayFor(model => model.ImageUrls[idx0])" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				<a asp-area="" asp-controller="Produkte" asp-action="Artikel" asp-route-id="@Model.SliderViews[idx0].SlugUrl">
+					<img src="~/images/store/@Html.DisplayFor(model => model.SliderViews[idx0].ImageUrl)" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				</a>
 				<div class="carousel-caption" role="option">
 				</div>
 			</div>
 			<div class="item">
-				<img src="~/images/store/@Html.DisplayFor(model => model.ImageUrls[idx1])" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				<a asp-area="" asp-controller="Produkte" asp-action="Artikel" asp-route-id="@Model.SliderViews[idx1].SlugUrl">
+					<img src="~/images/store/@Html.DisplayFor(model => model.SliderViews[idx1].ImageUrl)" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				</a>
 			</div>
 			<div class="item">
-				<img src="~/images/store/@Html.DisplayFor(model => model.ImageUrls[idx2])" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				<a  asp-area="" asp-controller="Produkte" asp-action="Artikel" asp-route-id="@Model.SliderViews[idx2].SlugUrl">
+					<img src="~/images/store/@Html.DisplayFor(model => model.SliderViews[idx2].ImageUrl)" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				</a>
 			</div>
 			<div class="item">
-				<img src="~/images/store/@Html.DisplayFor(model => model.ImageUrls[idx3])" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				<a  asp-area="" asp-controller="Produkte" asp-action="Artikel" asp-route-id="@Model.SliderViews[idx3].SlugUrl">
+					<img src="~/images/store/@Html.DisplayFor(model => model.SliderViews[idx3].ImageUrl)" style="min-height:200px;height:200px;width:200px;margin:auto;" />
+				</a>
 			</div>
 		</div>
 		<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
@@ -47,18 +74,24 @@
 	</div>
 }
 
-<h1 id="wellcome_header" style="text-align:center">Willkommen bei marelibuDesign.</h1>
-
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<section id="wellcome_text" style="text-align:center">
-			<h2 style="font-style:italic">
-					Viel Spa&szlig; beim St&ouml;bern!				
-			</h2>
-			<br />
-			<h3>
-				Bei Fragen und Problemen stehe ich per E-Mail gerne zur Verfügung. 
-			</h3>
+			@if (!string.IsNullOrWhiteSpace(headercontent))
+			{
+				@Html.Raw(headercontent);
+			}
+			else
+			{
+				<h1 id="wellcome_header" style="text-align:center">Willkommen bei marelibuDesign.</h1>
+				<h2 style="font-style:italic">
+					Viel Spa&szlig; beim St&ouml;bern!
+				</h2>
+				<br />
+				<h3>
+					Bei Fragen und Problemen stehe ich per E-Mail gerne zur Verfügung.
+				</h3>
+			}
 		</section>
 	</div>
 </div>
@@ -66,16 +99,30 @@
 <div class="row">
 	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 		<section id="left_section">
-			<h4>Neuigkeiten</h4>
-			<img src="~/contents/BannerErffnung.png" style="max-width:100%; height:auto;" class="img-responsive" />
+			@if (!string.IsNullOrWhiteSpace(leftcontent))
+			{
+				@Html.Raw(leftcontent)
+			}
+			else
+			{
+				<h4>Neuigkeiten</h4>
+				<img src="~/contents/BannerErffnung.png" style="max-width:100%; height:auto;" class="img-responsive" />
+			}
 		</section>
 	</div>
 	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 		<section id="right_section">
-			<h4>Designbeispiel</h4>
-			<video style="max-width: 100%; height:auto;" autoplay muted loop>
-				<source src="~/contents/StirnbandHP.mp4" type="video/mp4">
-			</video>
+			@if (!string.IsNullOrWhiteSpace(rightcontent))
+			{
+				@Html.Raw(rightcontent)
+			}
+			else
+			{
+				<h4>Designbeispiel</h4>
+				<video style="max-width: 100%; height:auto;" autoplay muted loop>
+					<source src="~/contents/StirnbandHP.mp4" type="video/mp4">
+				</video>
+			}
 		</section>
 	</div>
 </div>

@@ -1,0 +1,58 @@
+﻿@model MarelibuSoft.WebStore.Models.CmsStartPage
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>CmsStartPage</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.HeadContent)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HeadContent)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LeftContent)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LeftContent)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RightContent)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RightContent)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SeoKeywords)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SeoKeywords)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SeoDescription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SeoDescription)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

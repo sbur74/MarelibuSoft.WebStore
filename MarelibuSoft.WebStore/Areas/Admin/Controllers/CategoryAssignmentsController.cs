@@ -91,11 +91,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			ViewData["CategorySubID"] = new SelectList(catsubvms, "ID", "Name");
 			ViewData["CategoryDetailID"] = new SelectList(catdeatailvms, "ID", "Name");
 
-			ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "Name");
+			ViewData["ProductID"] = new SelectList(_context.Products.OrderByDescending(p => p.ProductNumber), "ProductID", "Name");
             return View();
         }
 
-        // POST: Admin/CategoryAssignments/Create
+        // POST: Admin/CategoryAssignments/Create.
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]

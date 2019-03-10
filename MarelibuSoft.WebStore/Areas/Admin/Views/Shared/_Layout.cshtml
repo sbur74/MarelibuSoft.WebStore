@@ -9,14 +9,14 @@
 	<environment names="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 		<link rel="stylesheet" href="~/css/admin.css" />
-		<link rel="stylesheet" href="~/lib/summernote/dist/summernote-lite.css" />
+		<link rel="stylesheet" href="~/lib/summernote/dist/summernote.css" />
 	</environment>
 	<environment names="Staging,Production">
-		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.4.1/css/bootstrap.min.css"
 			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
 			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
 		<link rel="stylesheet" href="~/css/admin.min.css" asp-append-version="true" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-lite.css" asp-fallback-href="~/lib/summernote/dist/summernote.css" />
+		<link rel="stylesheet" href="~/lib/summernote/dist/summernote.css"/>
 	</environment>
 	@*@Html.Raw(JavaScriptSnippet.FullScript)*@
 </head>
@@ -46,6 +46,13 @@
 					</ul>
 				</li>
 				<li><a asp-area="Admin" asp-controller="Customers" asp-action="Index">Kunden</a></li>
+				<li>
+					<a href="#cmsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">CMS <b class="caret"></b></a>
+					<ul id="cmsmenu" class="collapse list-unstyled">
+						<li><a asp-area="Admin" asp-controller="CmsStartPages" asp-action="Index">Startseite</a></li>
+						<li><a asp-area="Admin" asp-controller="CmsFiles" asp-action="Index">Dateien</a></li>
+					</ul>
+				</li>
 				<li>
 					<a href="#categoriesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Kategorien<b class="caret"></b></a>
 					<ul id="categoriesmenu" class="collapse list-unstyled">
@@ -107,6 +114,7 @@
 		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 		<script src="~/js/site.js" asp-append-version="true"></script>
 		<script src="~/js/admin.js" asp-append-version="true"></script>
+		<script src="~/js/admin.product.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
 		<script src="~/js/commonjs.js"></script>
 	</environment>
@@ -130,7 +138,7 @@
 	</environment>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
 	<script src="~/js/jquery.charactercounter.js"></script>
-	<script src="~/lib/summernote/dist/summernote-lite.js"></script>
+	<script src="~/lib/summernote/dist/summernote.min.js"></script>
 	<script src="~/lib/summernote/dist/lang/summernote-de-DE.js"></script>
 	@RenderSection("Scripts", required: false)
 
@@ -139,6 +147,18 @@
 		$("#menu-toggle").click(function (e) {
 			e.preventDefault();
 			$("#wrapper").toggleClass("toggled");
+		});
+
+		$(".summernote").summernote({
+			toolbar: [
+				// [groupName, [list of button]]
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
 		});
 	</script>
 </body>

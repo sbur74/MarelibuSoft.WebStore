@@ -10,6 +10,7 @@ using MarelibuSoft.WebStore.Models.ViewModels;
 using Microsoft.Extensions.Logging;
 using MarelibuSoft.WebStore.Services;
 using MarelibuSoft.WebStore.Common.Helpers;
+using MarelibuSoft.WebStore.Common.Statics;
 
 namespace MarelibuSoft.WebStore.Controllers
 {
@@ -32,8 +33,10 @@ namespace MarelibuSoft.WebStore.Controllers
 
 		public IActionResult Index()
         {
+			var model = new HomeViewModel();
 			var productImages = _context.ProductImages.Where(i => i.IsMainImage).ToList();
-			var urls = new List<string>();
+			var urls = new List<SliderViewModel>();
+			var startpage = _context.CmsStartPages.LastOrDefault();
 
 			metaService.AddMetadata("description", "Verkauf von Eislaufasseoirs, Stoffen und mehr.");
 			metaService.AddMetadata("keywords", "Asseoirs,Eiskunstlauf,Stoffe,Webrare,Taschen");
@@ -42,12 +45,27 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			_logger.LogDebug("show home index");
 
+			if (startpage != null)
+			{
+				if (!string.IsNullOrWhiteSpace(startpage.SeoDescription))
+				{
+					metaService.AddMetadata("description", startpage.SeoDescription);
+				}
+				if (!string.IsNullOrWhiteSpace(startpage.SeoKeywords))
+				{
+					metaService.AddMetadata("keywords", "Asseoirs,Eiskunstlauf,Stoffe,Webrare,Taschen");
+				}
+			}
+
 			foreach (var item in productImages)
 			{
-				urls.Add(item.ImageUrl);
+				var artikel = _context.Products.Single(p => p.ProductID == item.ProductID);
+				var vm = new SliderViewModel { ImageUrl = item.ImageUrl, SlugUrl = $"{artikel.ProductID}-{artikel.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(artikel.Name)}" };
+				urls.Add(vm);
 			}
-			var model = new HomeViewModel();
-			model.ImageUrls = urls;
+			
+			model.SliderViews = urls;
+			model.StartPage = startpage;
             return View(model);
         }
 
