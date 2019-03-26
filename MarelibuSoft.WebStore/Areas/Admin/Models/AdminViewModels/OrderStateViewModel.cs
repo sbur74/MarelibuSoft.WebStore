@@ -9,6 +9,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
     {
 		public Guid ID { get; set; }
 		public string StateAction { get; set; }
+		public string TrackingNumber { get; set; }
 		public string Message { get; set; }
 	}
 }

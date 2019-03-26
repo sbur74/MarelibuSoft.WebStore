@@ -42,5 +42,7 @@ namespace MarelibuSoft.WebStore.Models
 		public decimal Total { get; set; }
 		[Display(Name = "Zusätzliche Angaben")]
 		public string FreeText { get; set; }
+		[Display(Name = "Sendungsverfolungsnummer")]
+		public string TrackingNumber { get; set; }
 	}
 }

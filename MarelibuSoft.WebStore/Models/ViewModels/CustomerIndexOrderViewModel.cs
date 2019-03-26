@@ -15,5 +15,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string Orderdate { get; set; }
 		[Display(Name ="Auftragstatus")]
 		public string OrderState { get; set; }
+		[Display(Name = "Sendungsverfolgungsnummer")]
+		public string TrackingNumber { get; set; }
 	}
 }

@@ -85,9 +85,10 @@
 				<input id="@sendername" type="checkbox" checked="@item.IsActive"  onchange="marelibusoft.admin.product.sendActive('@senderid')" />
 			</td>
             <td>
-				<a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Bearbeiten" asp-action="Edit" asp-route-id="@item.ProductID"><span class="glyphicon glyphicon-edit"></span></a>
-                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.ProductID">Details</a> 
-				<a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="L&ouml;schen" asp-action="Delete" asp-route-id="@item.ProductID"><span class="glyphicon glyphicon-trash"></span></a>
+				<a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Bearbeiten" asp-action="Edit" asp-route-id="@item.ProductID"><i class="fa fa-edit"></i></a>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.ProductID" title="Details"><i class="fa fa-file"></i></a> 
+				<a class="btn btn-default" asp-action="CreateCopy" asp-route-id="@item.ProductID" title="Kopie erstellen"><i class="fa fa-copy"></i></a>
+				<a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="L&ouml;schen" asp-action="Delete" asp-route-id="@item.ProductID"><i class="fa fa-trash"></i></a>
             </td>
         </tr>
 }

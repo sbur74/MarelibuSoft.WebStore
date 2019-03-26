@@ -50,7 +50,8 @@ namespace MarelibuSoft.WebStore.Controllers
 					ID = item.ID,
 					Number = item.Number,
 					Orderdate = item.OrderDate.ToShortDateString(),
-					OrderState = state
+					OrderState = state,
+					TrackingNumber = item.TrackingNumber
 				};
 				myorders.Add(myorder);
 			}
@@ -138,7 +139,8 @@ namespace MarelibuSoft.WebStore.Controllers
 				InvoiceAddressString = invoiceaddr,
 				InvoicePostCodeCity = $"{invoice.PostCode} {invoice.City}",
 				InvoiceCountryName = incountry.Name,
-				Total = order.Total 
+				Total = order.Total ,
+				TrackingNumber = order.TrackingNumber
 			};
 
             return View(myorder);

@@ -179,10 +179,80 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			return View(vm) ;
         }
 
-        // POST: Admin/Products/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		// GET: Admin/Products/Edit/5
+		public async Task<IActionResult> CreateCopy(int? id)
+		{
+
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductID == id);
+			if (product == null)
+			{
+				return NotFound();
+			}
+
+			int actProductNumber = 0;
+			var lastProd = _context.Products.LastOrDefault();
+			if (lastProd != null)
+			{
+				actProductNumber = lastProd.ProductNumber + 1;
+			}
+
+			AdminProductViewModel vm = new AdminProductViewModel()
+			{
+				ProductID = product.ProductID,
+				AvailableQuantity = Math.Round(product.AvailableQuantity, 2).ToString(),
+				Description = product.Description,
+				MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity, 2).ToString(),
+				Name = "KOPIE - " + product.Name,
+				Price = Math.Round(product.Price, 2).ToString(),
+				ProductNumber = actProductNumber,
+				PeriodID = product.ShippingPeriod,
+				SizeID = product.Size,
+				ShortDescription = product.ShortDescription,
+				BasesUnitID = product.BasesUnitID,
+				SecondBaseUnitID = product.SecondBaseUnit,
+				SecondBasePrice = Math.Round(product.SecondBasePrice, 2).ToString(),
+				IsActive = product.IsActive,
+				BasesUnit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID),
+				Period = new ShippingPeriodHelper(_context).GetDescription(product.ShippingPeriod),
+				SecondBaseUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit),
+				Size = new SizeHelper(_context).GetName(product.Size),
+				ImageUrls = new ProductImageHelper(_context, factory).GetUrls(product.ProductID),
+				ShippingPriceTypeID = product.ShippingPriceType,
+				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
+				SeoDescription = product.SeoDescription,
+				SeoKeywords = product.SeoKeywords
+			};
+
+			List<UnitViewModel> vmunits = new UnitHelper(_context, factory).GetVmUnits();
+			List<SizeViewModel> vwsizes = new SizeHelper(_context).GetVmSizes();
+			List<ShippingPeriodViewModel> periods = new ShippingPeriodHelper(_context).GetVmShippingPeriods();
+			List<SelectItemViewModel> catvms = new CategoryHelper(_context).GetVmList();
+			List<SelectItemViewModel> catsubvms = new CategorySubHelper(_context).GetVmList();
+			List<SelectItemViewModel> catdeatailvms = new CategoryDetailHelper(_context).GetVmList();
+			List<SelectItemViewModel> shippingPriceTypes = new ShippingPriceTypeHelper(_context).GetVmList();
+
+			ViewData["BaseUnit"] = new SelectList(vmunits, "UnitID", "Name");
+			ViewData["Size"] = new SelectList(vwsizes, "ID", "Name");
+			ViewData["SeconedUnit"] = new SelectList(vmunits, "UnitID", "Name");
+			ViewData["Periods"] = new SelectList(periods, "ID", "Value");
+			ViewData["CategoryID"] = new SelectList(catvms, "ID", "Name");
+			ViewData["CategorySubID"] = new SelectList(catsubvms, "ID", "Name");
+			ViewData["CategoryDetailID"] = new SelectList(catdeatailvms, "ID", "Name");
+			ViewData["ShippingPriceTypeID"] = new SelectList(shippingPriceTypes, "ID", "Name");
+
+			return View(vm);
+		}
+
+
+		// POST: Admin/Products/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,SecondBaseUnitID,SecondBasePrice,ShortDescription,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive,SeoDescription,SeoKeywords")] AdminProductViewModel vm)
        {

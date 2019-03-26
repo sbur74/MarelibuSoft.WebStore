@@ -283,7 +283,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 
 		[HttpPost, ActionName("SendEmail")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> SendEmailAsync(Guid? id, [Bind("ID", "StateAction","Message")] OrderStateViewModel viewModel)
+		public async Task<IActionResult> SendEmailAsync(Guid? id, [Bind("ID", "StateAction","Message", "TrackingNumber")] OrderStateViewModel viewModel)
 		{
 			if (id == null)
 			{
@@ -297,6 +297,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			Order order = await _context.Orders.SingleAsync(o => o.ID.Equals(orderid));
 			order.IsSend = true;
 			order.Shippingdate = DateTime.Now;
+			order.TrackingNumber = viewModel.TrackingNumber;
 
 			_context.Entry(order).State = EntityState.Modified;
 			await _context.SaveChangesAsync();
@@ -452,6 +453,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					OrderDate = order.OrderDate,
 					FreeText = order.FreeText,
 					Payment = paymend.Name,
+					TrackingNumber = order.TrackingNumber,
 					Shippingdate = order.Shippingdate,
 					ShippingPriceAtOrder = order.ShippingPrice,
 					ShippingPriceName = shippingPrice.Name,

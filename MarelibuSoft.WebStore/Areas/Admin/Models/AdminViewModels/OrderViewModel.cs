@@ -52,6 +52,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public decimal Total { get; set; }
 		[Display(Name = "Kundenwunsch")]
 		public string FreeText { get; set; }
+		[Display(Name = "Sendungsverfolungsnummer")]
+		public string TrackingNumber { get; set; }
 
 		public OrderStateViewModel StateViewModel { get; set; }
 	}

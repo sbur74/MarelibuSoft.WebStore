@@ -54,6 +54,8 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string InvoicePostCodeCity { get; set; }
 		[Display(Name = "Rechnungsadresse-Land")]
 		public string InvoiceCountryName { get; set; }
+		[Display(Name = "Sendungsverfolgungsnummer")]
+		public string TrackingNumber { get; set; }
 
 
 

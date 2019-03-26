@@ -31,39 +31,46 @@
 			<th>
 				@Html.DisplayNameFor(model => model.IsClosed)
 			</th>
-			<th></th>
+			<th>
+				@Html.DisplayNameFor(model => model.TrackingNumber)
+			</th>
+			<th>
+			</th>
 		</tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Number)
-            </td>
-            <td>
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.Number)
+			</td>
+			<td>
 				@Html.DisplayFor(modelItem => item.OrderDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EMail)
-            </td>
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.EMail)
+			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.FreeText)
 			</td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPayed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsSend)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsClosed)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                @*<a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |*@
+			<td>
+				@Html.DisplayFor(modelItem => item.IsPayed)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.IsSend)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.IsClosed)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.TrackingNumber)
+			</td>
+			<td>
+				<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+				@*<a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |*@
 				<a asp-action="EMailSend" asp-route-id="@item.ID">Rechungs-Email Senden</a>
-            </td>
-        </tr>
+			</td>
+		</tr>
 }
     </tbody>
 </table>

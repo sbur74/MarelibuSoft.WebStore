@@ -19,6 +19,9 @@
 			<th>
 				@Html.DisplayNameFor(model => model.OrderState)
 			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.TrackingNumber)
+			</th>
             <th></th>
         </tr>
     </thead>
@@ -33,6 +36,9 @@
 			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.OrderState)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.TrackingNumber)
 			</td>
 			<td>
 				<a asp-action="Details" asp-route-id="@item.ID">Details</a>
