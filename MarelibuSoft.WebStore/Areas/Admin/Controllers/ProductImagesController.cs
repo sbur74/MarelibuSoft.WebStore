@@ -14,6 +14,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
 using MarelibuSoft.WebStore.Areas.Admin.Helpers;
 using MarelibuSoft.WebStore.Generics;
+using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -33,8 +34,23 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // GET: Admin/ProductImages
         public async Task<IActionResult> Index()
         {
-            var imges = await _context.ProductImages.ToListAsync();
-            return View(imges);
+            var imges = await _context.ProductImages.OrderByDescending(i => i.ProductID).ToListAsync();
+			List<ProductImageIndexViewModel> result = new List<ProductImageIndexViewModel>();
+
+			foreach (var item in imges)
+			{
+				var product = await _context.Products.SingleAsync(p => p.ProductID == item.ProductID);
+				var vm = new ProductImageIndexViewModel
+				{
+					ProductImageID = item.ProductImageID,
+					ImageUrl = item.ImageUrl,
+					IsMainImage = item.IsMainImage,
+					Name = item.Name,
+					ProductName = product.Name
+				};
+				result.Add(vm);
+			}
+			return View(result);
         }
 
         // GET: Admin/ProductImages/Details/5
@@ -59,7 +75,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // GET: Admin/ProductImages/Create
         public IActionResult Create(int? id)
         {
-            ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "Name");
+            ViewData["ProductID"] = new SelectList(_context.Products.OrderByDescending(p => p.ProductNumber), "ProductID", "Name");
 
 			ProductImage image = new ProductImage();
 			if (id != null)
@@ -126,7 +142,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "Name", productImage.ProductID);
+            ViewData["ProductID"] = new SelectList(_context.Products.OrderByDescending(p => p.ProductNumber), "ProductID", "Name", productImage.ProductID);
             return View(productImage);
         }
 
@@ -176,7 +192,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				}
                 return RedirectToAction("Index");
             }
-            ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "Name", productImage.ProductID);
+            ViewData["ProductID"] = new SelectList(_context.Products.OrderByDescending(p => p.ProductNumber), "ProductID", "Name", productImage.ProductID);
             return View(productImage);
         }
 

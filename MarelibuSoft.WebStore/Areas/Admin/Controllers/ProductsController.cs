@@ -40,7 +40,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			List<IndexProductViewModel> vms = new List<IndexProductViewModel>();
 			ViewData["CurrentFilter"] = searchString;
 
-			var products = await _context.Products.ToListAsync();
+			var products = await _context.Products.OrderByDescending(p => p.ProductNumber).ToListAsync();
 			if (!String.IsNullOrEmpty(searchString))
 			{
 				products = products.Where(p => p.Name.Contains(searchString)).ToList();

@@ -37,7 +37,7 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 		public List<SelectItemViewModel> GetVmList()
 		{
 			List<SelectItemViewModel> list = new List<SelectItemViewModel>() { new SelectItemViewModel { ID = "0", Name = "Keine Zuordnung" } };
-			var categories = _context.CategorySubs.ToList();
+			var categories = _context.CategorySubs.OrderByDescending(c => c.ID).ToList();
 			if (categories != null)
 			{
 				foreach (var item in categories)

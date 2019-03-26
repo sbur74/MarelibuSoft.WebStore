@@ -134,6 +134,7 @@
 		<script src="~/js/site.min.js" asp-append-version="true"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
 		<script src="~/js/admin.min.js" asp-append-version="true"></script>
+		<script src="~/js/admin.product.min.js"></script>
 		<script src="~/js/commonjs.min.js"></script>
 	</environment>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
@@ -150,16 +151,20 @@
 		});
 
 		$(".summernote").summernote({
-			toolbar: [
-				// [groupName, [list of button]]
-				['style', ['bold', 'italic', 'underline', 'clear']],
-				['font', ['strikethrough', 'superscript', 'subscript']],
-				['fontsize', ['fontsize']],
-				['color', ['color']],
-				['para', ['ul', 'ol', 'paragraph']],
-				['height', ['height']]
-			]
-		});
+				height: 300,
+				toolbar: [
+					['style', ['style']],
+					['style', ['bold', 'italic', 'underline', 'clear']],
+					['fontsize', ['fontsize']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['table'],
+					['insert', ['link', 'picture', 'video','hr']],
+					['view', ['undo','redo','fullscreen', 'codeview']],
+					['help']
+				]
+			});
 	</script>
 </body>
 </html>

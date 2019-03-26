@@ -25,7 +25,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // GET: Admin/Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _context.Categories.OrderByDescending(c => c.ID).ToListAsync());
         }
 
         // GET: Admin/Categories/Details/5

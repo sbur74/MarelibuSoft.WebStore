@@ -51,7 +51,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // GET: Admin/CategoryDetails/Create
         public IActionResult Create(int? id)
         {
-            ViewData["CategorySubID"] = new SelectList(_context.CategorySubs, "ID", "Name");
+            ViewData["CategorySubID"] = new SelectList(_context.CategorySubs.OrderByDescending(c => c.ID), "ID", "Name");
 			CategoryDetail detail = new CategoryDetail();
 			if (id != null)
 			{
@@ -95,7 +95,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategorySubID"] = new SelectList(_context.CategorySubs, "ID", "Name", categoryDetail.CategorySubID);
+            ViewData["CategorySubID"] = new SelectList(_context.CategorySubs.OrderByDescending(c => c.ID), "ID", "Name", categoryDetail.CategorySubID);
             return View(categoryDetail);
         }
 

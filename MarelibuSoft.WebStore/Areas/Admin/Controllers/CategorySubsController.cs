@@ -62,7 +62,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					ViewData["SenderID"] = category.ID; 
 				}
 			}
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Name");
+            ViewData["CategoryID"] = new SelectList(_context.Categories.OrderByDescending(c => c.ID), "ID", "Name");
 			
             return View(sub);
         }
@@ -97,7 +97,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Name", categorySub.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories.OrderByDescending(c => c.ID), "ID", "Name", categorySub.CategoryID);
             return View(categorySub);
         }
 

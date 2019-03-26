@@ -28,6 +28,12 @@
 		]
 	},
 	{
+		"outputFileName": "wwwroot/js/admin.product.min.js",
+		"inputFiles": [
+			"wwwroot/js/admin.product.js"
+		]
+	},
+	{
 		"outputFileName": "wwwroot/js/order.min.js",
 		"inputFiles": [
 			"wwwroot/js/order.js"

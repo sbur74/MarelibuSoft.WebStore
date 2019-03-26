@@ -57,7 +57,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			}
 			WeHaveYourOrderViewModel viewModel = await GetViewModel((Guid)id);
 			viewModel.Email = User.Identity.Name;
-			string subject = "Deine Bestellung bei marelibuDesign";
+			string subject = "Ihre Bestellung bei marelibuDesign";
 			string mailContent = await CreateOrderMail(viewModel.OrderID);
 
 			var agb = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.AGB);

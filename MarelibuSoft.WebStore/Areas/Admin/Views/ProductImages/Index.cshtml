@@ -1,4 +1,4 @@
-@model IEnumerable<MarelibuSoft.WebStore.Models.ProductImage>
+@model IEnumerable<MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.ProductImageIndexViewModel>
 
 @{
     ViewData["Title"] = "Artikelbilder";
@@ -41,7 +41,7 @@
                 @Html.DisplayFor(modelItem => item.IsMainImage)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
+                @Html.DisplayFor(modelItem => item.ProductName)
             </td>
             <td>
                 <a class="btn btn-default" asp-action="Edit" asp-route-id="@item.ProductImageID">Bearbeiten</a>

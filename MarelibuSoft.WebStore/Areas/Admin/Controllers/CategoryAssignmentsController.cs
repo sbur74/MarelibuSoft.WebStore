@@ -34,7 +34,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // GET: Admin/CategoryAssignments
         public async Task<IActionResult> Index()
         {
-            var categoryAssignments = await _context.CategoryAssignments.Include(c => c.Product).OrderBy(ca => ca.ProductID ).ToListAsync();
+            var categoryAssignments = await _context.CategoryAssignments.Include(c => c.Product).OrderByDescending(ca => ca.ProductID ).ToListAsync();
 			var vms = new List<CategoryAssignmentViewModel>();
 			foreach (var item in categoryAssignments)
 			{
