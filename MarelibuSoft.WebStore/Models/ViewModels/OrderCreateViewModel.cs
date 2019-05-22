@@ -15,7 +15,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 
 		public ShippingPrice ShippingPrice { get; set; }
 
-		public string AGB { get; set; }
+        public string AGB { get; set; }
 
 		public string Wdbl { get; set; }
 

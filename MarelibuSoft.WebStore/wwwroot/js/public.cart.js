@@ -84,7 +84,8 @@ function postCartLine(itemId, itemUnit, basePrice) {
 	quantityString = quantityString.replace(",", ".");
 	var bpricestr = basePrice.replace(",", ".");
 	var fBasePrice = parseFloat(bpricestr);
-	var fquantity = parseFloat(quantityString);
+    var fquantity = parseFloat(quantityString);
+    var sellactitid = $("#" + id + "_sellActionItemId").val();
 	var apiurl = "/api/ShoppingCartLines";
 	console.log("postCartLine -> quantity: " + fquantity);
 
@@ -100,7 +101,8 @@ function postCartLine(itemId, itemUnit, basePrice) {
 				quantity: fquantity,
 				productID: id,
 				unitID: itemUnit,
-				sellBasePrice: fBasePrice
+                sellBasePrice: fBasePrice,
+                sellActionItemId: sellactitid
 			}),
 			success: function (data) {
 				//TODO: add message system and refresh of shoppingcart view component

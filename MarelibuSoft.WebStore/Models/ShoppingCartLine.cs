@@ -14,7 +14,9 @@ namespace MarelibuSoft.WebStore.Models
 		public decimal SellBasePrice { get; set; } // price per unit at selling time
 		public int UnitID{ get; set; }
 
-		public Guid ShoppingCartID { get; set; }
+        public int SellActionItemId { get; set; }
+
+        public Guid ShoppingCartID { get; set; }
 		public ShoppingCart ShoppingCart { get; set; }
 	}
 }

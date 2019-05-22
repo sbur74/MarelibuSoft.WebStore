@@ -68,7 +68,8 @@ namespace MarelibuSoft.WebStore.Controllers
 			logger.LogDebug("WeHaveYourOrderViewModel -> try to send email",null);
 
 			await _emailSender.SendEmailWithAttachmentsAsync(User.Identity.Name, subject, mailContent, attachments);
-			await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft", $"<p>Verkauf an: {User.Identity.Name}</p>");
+            await _emailSender.SendEmailWithAttachmentsAsync("pburon@t-online.de", subject, mailContent, attachments);
+            await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft", $"<p>Verkauf an: {User.Identity.Name}</p>");
 
 			//ViewData["Landing"] = viewModel;
 
@@ -143,9 +144,22 @@ namespace MarelibuSoft.WebStore.Controllers
 						shippingPriceDefault = productShipPrice;
 					}
 
-					decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
+                    decimal baseprice = Math.Round(item.SellBasePrice,2); // immer den an der Warenkorbzeile nehmen
 
-					decimal pPrice = 0.0M;
+                    decimal sekprice = Math.Round(product.SecondBasePrice, 2);
+
+                    if (item.SellActionItemId > 0)
+                    {
+                        var sellActionItem = await _context.SellActionItems.SingleOrDefaultAsync(i => i.SellActionItemID == item.SellActionItemId);
+                        if (sellActionItem != null)
+                        {
+                            var action = await _context.SellActions.FirstAsync(a => a.SellActionID == sellActionItem.SellActionID);
+                            sekprice = Math.Round((sekprice - (sekprice * action.Percent) / 100), 2);
+                        }
+                    }
+
+
+                    decimal pPrice = 0.0M;
 					if (baseprice != 0.0M)
 					{
 						pPrice = baseprice * item.Quantity;
@@ -173,12 +187,14 @@ namespace MarelibuSoft.WebStore.Controllers
 						MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity, 2),
 						AvailableQuantity = Math.Round(product.AvailableQuantity, 2),
 						ShoppingCartID = shoppingCart.ID,
-						SellBasePrice = Math.Round(item.SellBasePrice, 2),
-						SellSekPrice = Math.Round(product.SecondBasePrice, 2),
+						SellBasePrice = baseprice,
+						SellSekPrice = sekprice,
+                        SellActionItemId = item.SellActionItemId,
 						SekUnit = sekunit,
 						ShortDescription = product.ShortDescription,
-						UnitID = product.BasesUnitID
-					};
+						UnitID = product.BasesUnitID,
+                        SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}"
+                    };
 					vmcLines.Add(cvml);
 					total = total + pPrice;
 				}
@@ -514,12 +530,12 @@ namespace MarelibuSoft.WebStore.Controllers
 			}
 			catch (Exception e)
 			{
-				logger.LogError(e, "OrdersController.GetThankyou -> Fehler bei abruf der Auftragsbest&auml;tigung");
+				logger.LogError(e, "OrdersController.GetThankyou -> Fehler bei abruf der Auftragsbesätigung");
 			}
 
 			if (string.IsNullOrWhiteSpace(thankyou))
 			{
-				thankyou = "Danke f&uuml;r deinen Einkauf bei marelibuDesign";
+				thankyou = "Danke f&uuml;r Ihren Einkauf bei marelibuDesign";
 			}
 
 			return thankyou;

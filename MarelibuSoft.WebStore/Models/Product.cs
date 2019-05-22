@@ -25,8 +25,9 @@ namespace MarelibuSoft.WebStore.Models
 		public int ShippingPeriod { get; set; }
 		public int ShippingPriceType { get; set; }
 		public bool IsActive { get; set; }
+        public DateTime PublishedOn { get; set; }
 
-		public ICollection<CategoryAssignment> CategoryAssignments { get; set; }
+        public ICollection<CategoryAssignment> CategoryAssignments { get; set; }
 
 		public List<ProductImage> ImageList { get; set; }
 	}

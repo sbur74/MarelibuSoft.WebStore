@@ -21,7 +21,13 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		[Display(Name = "Grundpreis")]
 		[DataType(DataType.Currency)]
 		public decimal Price { get; set; }
-		[Display(Name = "Verfügbare Menge")]
+        [Display(Name = "Streichpreis")]
+        [DataType(DataType.Currency)]
+        public decimal OrgPrice { get; set; }
+        [Display(Name = "Rabatt")]
+        public int SellActionPrecent { get; set; }
+        public int SellActionItemId { get; set; }
+        [Display(Name = "Verfügbare Menge")]
 		public decimal AvailableQuantity { get; set; }
 		[Display(Name = "Mindestabnahmemenge")]
 		public decimal MinimumPurchaseQuantity { get; set; }
@@ -44,5 +50,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public List<string> ImageUrls { get; set; }
 
 		public string SlugUrl { get; set; }
-	}
+
+        public bool IsNew { get; set; }
+    }
 }

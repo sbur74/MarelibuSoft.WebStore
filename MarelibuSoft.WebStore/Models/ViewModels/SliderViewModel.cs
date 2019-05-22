@@ -9,5 +9,6 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 	{
 		public string ImageUrl { get; set; }
 		public string SlugUrl { get; set; }
-	}
+        public int SellActionItemId { get; set; }
+    }
 }

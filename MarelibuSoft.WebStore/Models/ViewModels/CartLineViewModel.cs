@@ -7,7 +7,8 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public int ID { get; set; }
 		public int Position { get; set; }
 		public int ProductID { get; set; }
-		public string ProductName { get; set; }
+        public int SellActionItemId { get; set; }
+        public string ProductName { get; set; }
 		public string ProductNo { get; set; }
 		public string ShortDescription { get; set; }
 		public decimal Quantity { get; set; }

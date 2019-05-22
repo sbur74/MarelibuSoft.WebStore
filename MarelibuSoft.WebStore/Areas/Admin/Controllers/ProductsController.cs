@@ -276,7 +276,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				ShippingPriceType = vm.ShippingPriceTypeID,
 				IsActive = vm.IsActive,
 				SeoDescription = vm.SeoDescription,
-				SeoKeywords = vm.SeoKeywords
+				SeoKeywords = vm.SeoKeywords,
+                PublishedOn = DateTime.Now
 			};
 
 			if (ModelState.IsValid)
@@ -373,7 +374,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				IsActive = vm.IsActive,
 				ShippingPriceType = vm.ShippingPriceTypeID,
 				SeoDescription = vm.SeoDescription,
-				SeoKeywords = vm.SeoKeywords
+				SeoKeywords = vm.SeoKeywords,
+                PublishedOn = DateTime.Now
 			};
 
 			if (ProductID != vm.ProductID)

@@ -1,0 +1,102 @@
+﻿@model MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels.SellActionViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>SellAction</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input id="sellactionid" type="hidden" asp-for="SellActionID" />
+            <div class="form-group">
+                <label asp-for="ActionName" class="control-label"></label>
+                <input asp-for="ActionName" class="form-control" />
+                <span asp-validation-for="ActionName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Percent" class="control-label"></label>
+                <input asp-for="Percent" class="form-control" />
+                <span asp-validation-for="Percent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-xs-6">
+        <h3>Aktionsaktrikel</h3>
+        <ul id="actionItems" class="list-group">
+            @foreach (var item in Model.SelectedItems)
+            {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-1">
+                        <img class="img-responsive" src="~/images/store/@item.Img" style="max-width: 30px; max-height: 30px;" />
+                    </div>
+                    <div class="col-xs-9">
+                        <p>@item.No - @item.Name</p>
+                    </div>
+                    <div class="col-xs-1">
+                        <button class="btn btn-danger" onclick="marelibusoft.admin.sellaction.dropItem(@item.SellActionItemID)">
+                            <i class="fa fa-trash" title="löschen"></i>
+                        </button>
+                    </div>
+                </div>   
+            </li>
+            }
+        </ul>
+    </div>
+    <div class="col-xs-6">
+        <h3>Artikelauswählen</h3>
+        <ul id="chooseItems" class="list-group">
+            @foreach (var item in Model.SelectProducts)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-1">
+                            <img class="img-responsive" src="~/images/store/@item.Img" style="max-width: 30px; max-height: 30px;" />
+                        </div>
+                        <div class="col-xs-9">
+                            <p>@item.No - @item.Name</p>
+                        </div>
+                        <div class="col-xs-1">
+                            <button class="btn btn-success" onclick="marelibusoft.admin.sellaction.addItem(@item.ID)"><i class="fa fa-angle-left" title="hinzufügen"></i></button>
+                        </div>
+                    </div>
+                </li>
+            }
+         </ul>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+</div>
+

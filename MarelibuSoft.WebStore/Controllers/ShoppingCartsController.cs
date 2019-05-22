@@ -43,9 +43,7 @@ namespace MarelibuSoft.WebStore.Controllers
 			int shipTypeDefault = 1; //Type 1 = kleines Paket
 			decimal shipDefaultPrice = 0.0M;
 			int countryDefault = 1;//Country 1 Deutschland
-			int periodDefault = 1;
-
-			
+			int periodDefault = 1;			
 
 			if (id == null)
 			{
@@ -98,9 +96,23 @@ namespace MarelibuSoft.WebStore.Controllers
 					shipTypeDefault = productShipPrice.ShippingPriceTypeId;
 				}
 
-				decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
+                //decimal baseprice = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault().Price;
 
-				decimal pPrice = 0.0M;
+                decimal baseprice = item.SellBasePrice; // immer den an der Warenkorbzeile nehmen
+
+                decimal sekprice = Math.Round(product.SecondBasePrice, 2);
+
+                if (item.SellActionItemId > 0)
+                {
+                    var sellActionItem = await _context.SellActionItems.SingleOrDefaultAsync(i => i.SellActionItemID == item.SellActionItemId);
+                    if (sellActionItem != null)
+                    {
+                        var action = await _context.SellActions.FirstAsync(a => a.SellActionID == sellActionItem.SellActionID);
+                        sekprice = Math.Round((sekprice - (sekprice * action.Percent) / 100), 2);
+                    }
+                }
+
+                decimal pPrice = 0.0M;
 				if (baseprice != 0.0M)
 				{
 					pPrice = baseprice * item.Quantity;
@@ -130,9 +142,11 @@ namespace MarelibuSoft.WebStore.Controllers
 					MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity, 2),
 					AvailableQuantity = Math.Round(product.AvailableQuantity, 2),
 					ShoppingCartID = shoppingCart.ID,
+                    SellActionItemId = item.SellActionItemId,
 					SellBasePrice = Math.Round(item.SellBasePrice, 2),
-					SellSekPrice = Math.Round(product.SecondBasePrice, 2),
-					SekUnit = sekunit, SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}"
+					SellSekPrice = sekprice,
+					SekUnit = sekunit,
+                    SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}"
 				};
 				vmcLines.Add(cvml);
 				total = total + pPrice;

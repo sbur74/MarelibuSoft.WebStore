@@ -104,19 +104,27 @@ namespace MarelibuSoft.WebStore.Services
 					emailMessage.Subject = subject;
 					emailMessage.Body = message;
 
-					foreach (string file in Attachments)
-					{
+                    try
+                    {
+                        foreach (string file in Attachments)
+                        {
 
-						string path = Path.Combine(_environment.WebRootPath, FILESFOLDER);
-						string filepath = Path.Combine(path, file);
-						Attachment data = new Attachment(filepath, MediaTypeNames.Application.Octet);
-						// Add time stamp information for the file.
-						ContentDisposition disposition = data.ContentDisposition;
-						disposition.CreationDate = System.IO.File.GetCreationTime(filepath);
-						disposition.ModificationDate = System.IO.File.GetLastWriteTime(filepath);
-						disposition.ReadDate = System.IO.File.GetLastAccessTime(filepath);
-						emailMessage.Attachments.Add(data);
-					}
+                            string path = Path.Combine(_environment.WebRootPath, FILESFOLDER);
+                            string filepath = Path.Combine(path, file);
+                            Attachment data = new Attachment(filepath, MediaTypeNames.Application.Octet);
+                            // Add time stamp information for the file.
+                            ContentDisposition disposition = data.ContentDisposition;
+                            disposition.CreationDate = System.IO.File.GetCreationTime(filepath);
+                            disposition.ModificationDate = System.IO.File.GetLastWriteTime(filepath);
+                            disposition.ReadDate = System.IO.File.GetLastAccessTime(filepath);
+                            emailMessage.Attachments.Add(data);
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        _logger.LogError(e, "Fehler bei den Anhängen!!", null);
+                        Console.WriteLine(e);
+                    }
 
 					ServicePointManager.ServerCertificateValidationCallback =
 						delegate (object s, X509Certificate certificate,
@@ -131,6 +139,7 @@ namespace MarelibuSoft.WebStore.Services
 					catch (Exception e)
 					{
 						_logger.LogError(e, "Fehler beim E-Mail Versand:", null);
+                        Console.WriteLine($"Fehler beim E-Mail Versand: {e.Message}\nInnerException: {e.InnerException}\nStackTrace: {e.StackTrace}");
 					}
 				}
 			}

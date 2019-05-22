@@ -3,18 +3,20 @@ using System;
 using MarelibuSoft.WebStore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MarelibuSoft.WebStore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190508043820_AddSellActionItemIdToShoppingCartLine")]
+    partial class AddSellActionItemIdToShoppingCartLine
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ApplicationUser", b =>
@@ -552,8 +554,6 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.Property<decimal>("Price");
 
                     b.Property<int>("ProductNumber");
-
-                    b.Property<DateTime>("PublishedOn");
 
                     b.Property<decimal>("SecondBasePrice");
 

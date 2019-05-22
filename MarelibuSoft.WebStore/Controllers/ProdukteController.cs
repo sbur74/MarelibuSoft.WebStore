@@ -64,7 +64,10 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				catDetId = int.Parse(catDetSplit[0]);
 			}
 
-			var products = await _context.Products.Include(p => p.ImageList).Include(ca => ca.CategoryAssignments).OrderByDescending(p => p.ProductID).ToListAsync();
+            var sellacitons = await _context.SellActions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).Include(i => i.SellActionItems).ToListAsync();
+
+
+            var products = await _context.Products.Include(p => p.ImageList).Include(ca => ca.CategoryAssignments).OrderByDescending(p => p.ProductID).ToListAsync();
 			List<Product> filterProducts = new List<Product>();
 			List<ProductThumbnailsViewModel> thubnails = new List<ProductThumbnailsViewModel>();
 			var categoryAssignments = new List<CategoryAssignment>();
@@ -124,7 +127,8 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				}
 			}
 
-			
+            string metaSellActionKeyWord = string.Empty;
+            string metaSellActionDescription = string.Empty;
 
 			foreach (Product item in filterProducts)
 			{
@@ -132,21 +136,58 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				string baseUnit = string.Empty;
 				string secondPriceUnit = string.Empty;
 				ProductThumbnailsViewModel vmProduct = new ProductThumbnailsViewModel();
+                SellActionItem sellActionItem = null;
+                SellAction sellAction = null;
+
+                foreach (var action in sellacitons)    
+                {
+                    var sellactionitem = action.SellActionItems.Where(i => i.FkProductID == item.ProductID).LastOrDefault();
+
+                    if (sellactionitem != null)
+                    {
+                        sellAction = action;
+                        sellActionItem = sellactionitem;
+                        if (string.IsNullOrEmpty(metaSellActionKeyWord))
+                        {
+                            metaSellActionKeyWord = $", rabatt";
+                            metaSellActionDescription = $"/ RABATTAKTION/ Rabatt {(int)action.Percent}%/ {action.ActionName}";
+                        }
+                        break;
+                    }
+                }
 
 				baseUnit = new UnitHelper(_context, factory).GetUnitName(item.BasesUnitID);
-
-				if (item.SecondBasePrice != 0.0M && item.SecondBaseUnit != 0)
-				{
-					string strUnit = new UnitHelper(_context, factory).GetUnitName(item.SecondBaseUnit);
-					secondPriceUnit = Math.Round(item.SecondBasePrice, 2).ToString() + " €/" + strUnit;
-				}
 
 				try
 				{
 					vmProduct.ProductID = item.ProductID;
 					vmProduct.ProductNumber = item.ProductNumber;
-					vmProduct.Price = item.Price;
-					vmProduct.AvailableQuantity = item.AvailableQuantity;
+
+                    vmProduct.Price = Math.Round(item.Price, 2);
+                    vmProduct.OrgPrice = 0.00M;
+                    vmProduct.SellActionItemId = 0;
+                   
+                    decimal SecondBasePrice = item.SecondBasePrice;
+
+                    if (sellAction != null)
+                    {
+                        if (sellActionItem != null)
+                        {
+                            vmProduct.Price = Math.Round((item.Price - (item.Price * sellAction.Percent)/100) , 2);
+                            vmProduct.OrgPrice = Math.Round(item.Price, 2);
+                            SecondBasePrice = Math.Round((SecondBasePrice - (SecondBasePrice * sellAction.Percent) / 100), 2);
+                            vmProduct.SellActionPrecent = (int)sellAction.Percent;
+                            vmProduct.SellActionItemId = sellActionItem.SellActionItemID;
+                        }
+                    }
+
+                    if (SecondBasePrice != 0.0M && item.SecondBaseUnit != 0)
+                    {
+                        string strUnit = new UnitHelper(_context, factory).GetUnitName(item.SecondBaseUnit);
+                        secondPriceUnit = Math.Round(SecondBasePrice, 2).ToString() + " €/" + strUnit;
+                    }
+
+                    vmProduct.AvailableQuantity = item.AvailableQuantity;
 					vmProduct.BasesUnit = baseUnit;
 					vmProduct.BasesUnitID = item.BasesUnitID;
 					vmProduct.Description = item.Description;
@@ -157,7 +198,9 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 					vmProduct.ShortDescription = item.ShortDescription;
 					vmProduct.SecondPriceUnit = secondPriceUnit;
 					vmProduct.SlugUrl = $"{item.ProductID}-{item.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(item.Name)}";
-				}
+                    vmProduct.IsNew = CheckIsNewProduct(item.PublishedOn);
+
+                }
 				catch (Exception ex)
 				{
 					Console.WriteLine(ex);
@@ -189,12 +232,15 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 
 			ViewData["CategorieDescription"] = categorieDescription;
 			ViewData["Title"] = titel;
+            
 			if (!string.IsNullOrWhiteSpace(metadescription))
 			{
+                metadescription += metaSellActionDescription;
 				metaService.AddMetadata("description", metadescription); 
 			}
 			if (!string.IsNullOrWhiteSpace(metakeywords))
 			{
+                metakeywords += metaSellActionKeyWord;
 				metaService.AddMetadata("keywords", metakeywords);
 			}
 
@@ -225,15 +271,58 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
                 return NotFound();
             }
 
-			List<ProductImage> imgs = product.ImageList;
+            List<ProductImage> imgs = product.ImageList;
 
-			ProductImage mainImg = GetMainImageUrl(imgs);
+            ProductImage mainImg = GetMainImageUrl(imgs);
 
-			string secondPriceUnit = "";
-			if (product.SecondBasePrice != 0.0M && product.SecondBaseUnit != 0)
+            var sellacitons = await _context.SellActions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).Include(i => i.SellActionItems).ToListAsync();
+
+            SellActionItem sellActionItem = null;
+            SellAction sellAction = null;
+            string metaSellActionKeyWord = string.Empty;
+            string metaSellActionDescription = string.Empty;
+
+
+            foreach (var action in sellacitons)
+            {
+                var sellactionitem = action.SellActionItems.Where(i => i.FkProductID == product.ProductID).LastOrDefault();
+
+                if (sellactionitem != null)
+                {
+                    sellAction = action;
+                    sellActionItem = sellactionitem;
+                    if (string.IsNullOrEmpty(metaSellActionKeyWord))
+                    {
+                        metaSellActionKeyWord = $", rabatt";
+                        metaSellActionDescription = $"/ RABATTAKTION/ Rabatt {(int)action.Percent}%/ {action.ActionName}";
+                    }
+                    break;
+                }
+            }
+
+            decimal productPrice = Math.Round(product.Price, 2);
+            decimal productOrgPrice = 0.0M;
+            decimal productSellActionPrecent = 0.0M;
+            int sellactionitemid = 0;
+            decimal SecondBasePrice = Math.Round(product.SecondBasePrice, 2);
+
+            if (sellAction != null)
+            {
+                if (sellActionItem != null)
+                {
+                    productPrice = Math.Round((productPrice - (productPrice * sellAction.Percent) / 100), 2);
+                    productOrgPrice = Math.Round(product.Price, 2);
+                    SecondBasePrice = Math.Round((SecondBasePrice - (SecondBasePrice * sellAction.Percent) / 100), 2);
+                    productSellActionPrecent = Math.Round(sellAction.Percent, 2);
+                    sellactionitemid = sellActionItem.SellActionItemID;
+                }
+            }
+
+            string secondPriceUnit = "";
+			if (SecondBasePrice != 0.0M && product.SecondBaseUnit != 0)
 			{
 				string strUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit);
-				secondPriceUnit = Math.Round( product.SecondBasePrice,2 ).ToString() + " €/" + strUnit;
+				secondPriceUnit = Math.Round( SecondBasePrice,2 ).ToString() + " €/" + strUnit;
 			}
 
 			string baseuint = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID);
@@ -245,7 +334,10 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				BasesUnit = baseuint,
 				BasesUnitID = product.BasesUnitID,
 				Description = product.Description,
-				Price = product.Price,
+				Price = productPrice,
+                OrgPrice = productOrgPrice,
+                SellActionPrecent = (int) productSellActionPrecent,
+                SellActionItemId = sellactionitemid,
 				MinimumPurchaseQuantity = product.MinimumPurchaseQuantity,
 				Name = product.Name,
 				ProductNumber = product.ProductNumber,
@@ -257,16 +349,19 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				SecondPriceUnit = secondPriceUnit,
 				SeoDescription = product.SeoDescription,
 				SeoKeywords = product.SeoKeywords,
-				Shipping = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType)
+				Shipping = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
+                IsNew = CheckIsNewProduct(product.PublishedOn)
 				
 			};
 
 			if (!string.IsNullOrWhiteSpace(dvm.SeoDescription))
 			{
+                dvm.SeoDescription += metaSellActionDescription;
 				metaService.AddMetadata("description", dvm.SeoDescription); 
 			}
 			if (!string.IsNullOrWhiteSpace(dvm.SeoKeywords))
 			{
+                dvm.SeoKeywords += metaSellActionKeyWord;
 				metaService.AddMetadata("keywords", dvm.SeoKeywords);
 			}
 
@@ -297,5 +392,20 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 			}
 			return restult;
 		}
+
+        private bool CheckIsNewProduct(DateTime publisheddate)
+        {
+            bool isNew = false;
+
+            DateTime now = DateTime.Now;
+            TimeSpan timeSpan = now.Subtract(publisheddate);
+
+            if (timeSpan.TotalDays < 14)
+            {
+                isNew = true;
+            }
+
+            return isNew;
+        }
     }
 }

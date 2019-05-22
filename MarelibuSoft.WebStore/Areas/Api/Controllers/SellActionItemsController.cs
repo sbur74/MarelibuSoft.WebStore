@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarelibuSoft.WebStore.Data;
 using MarelibuSoft.WebStore.Models;
+using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
 
 namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 {
@@ -28,6 +29,36 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
             return _context.SellActionItems;
         }
 
+        [HttpGet("ActionId/{actionid}")]
+        public async Task<IEnumerable<SellActionItemViewModel>> GetSellActionItemsByActionId([FromRoute] int actionid)
+        {
+            List<SellActionItemViewModel> selecteditems = new List<SellActionItemViewModel>();
+            if (actionid == null)
+            {
+                return selecteditems;
+            }
+
+            var sellactionitems = _context.SellActionItems.Where(i => i.SellActionID == actionid);
+
+            foreach (var item in sellactionitems)
+            {
+                var product = await _context.Products.FirstAsync(p => p.ProductID == item.FkProductID);
+                var img = await _context.ProductImages.FirstOrDefaultAsync(i => i.ProductID == item.FkProductID && i.IsMainImage);
+
+                string imgurl = "noImage.svg";
+                if (img != null)
+                {
+                    imgurl = img.ImageUrl;
+                }
+
+                var vm = new SellActionItemViewModel { SellActionID = item.SellActionID, SellActionItemID = item.SellActionItemID, FkProductID = item.FkProductID, Img = imgurl, Name = product.Name, No = product.ProductNumber };
+                selecteditems.Add(vm);
+            }
+            return selecteditems;
+        }
+
+
+
         // GET: api/SellActionItems/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSellActionItem([FromRoute] int id)
@@ -44,7 +75,26 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(sellActionItem);
+            var product = await _context.Products.FirstAsync(p => p.ProductID == sellActionItem.FkProductID);
+            var img = await _context.ProductImages.FirstOrDefaultAsync(i => i.ProductID == sellActionItem.FkProductID && i.IsMainImage);
+
+            string imgurl = "noImage.svg";
+            if (img != null)
+            {
+                imgurl = img.ImageUrl;
+            }
+
+            var vm = new SellActionItemViewModel
+            {
+                FkProductID = sellActionItem.FkProductID,
+                SellActionID = sellActionItem.SellActionID,
+                SellActionItemID = sellActionItem.SellActionItemID,
+                Img = imgurl,
+                Name = product.Name,
+                No = product.ProductNumber
+            };
+
+            return Ok(vm);
         }
 
         // PUT: api/SellActionItems/5
@@ -82,41 +132,41 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
         //    return NoContent();
         //}
 
-        // POST: api/SellActionItems
-        //[HttpPost]
-        //public async Task<IActionResult> PostSellActionItem([FromBody] SellActionItem sellActionItem)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+       // POST: api/SellActionItems
+       [HttpPost]
+        public async Task<IActionResult> PostSellActionItem([FromBody] SellActionItem sellActionItem)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    _context.SellActionItems.Add(sellActionItem);
-        //    await _context.SaveChangesAsync();
+            _context.SellActionItems.Add(sellActionItem);
+            await _context.SaveChangesAsync();
 
-        //    return CreatedAtAction("GetSellActionItem", new { id = sellActionItem.SellActionItemID }, sellActionItem);
-        //}
+            return CreatedAtAction("GetSellActionItem", new { id = sellActionItem.SellActionItemID }, sellActionItem);
+        }
 
         // DELETE: api/SellActionItems/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteSellActionItem([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSellActionItem([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    var sellActionItem = await _context.SellActionItems.SingleOrDefaultAsync(m => m.SellActionItemID == id);
-        //    if (sellActionItem == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var sellActionItem = await _context.SellActionItems.SingleOrDefaultAsync(m => m.SellActionItemID == id);
+            if (sellActionItem == null)
+            {
+                return NotFound();
+            }
 
-        //    _context.SellActionItems.Remove(sellActionItem);
-        //    await _context.SaveChangesAsync();
+            _context.SellActionItems.Remove(sellActionItem);
+            await _context.SaveChangesAsync();
 
-        //    return Ok(sellActionItem);
-        //}
+            return Ok(sellActionItem);
+        }
 
         private bool SellActionItemExists(int id)
         {

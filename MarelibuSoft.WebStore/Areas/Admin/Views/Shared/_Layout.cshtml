@@ -23,150 +23,177 @@
 	@*@Html.Raw(JavaScriptSnippet.FullScript)*@
 </head>
 <body>
-	<button onclick="topFunction()" id="myBtn" title="nach oben"><i class="fa fa-arrow-up"></i></button>
-	<!--css wrapper-->
-	<div id="wrapper">
-		<!--css sidebar wrapper-->
-		<!-- Sidebar -->
-		<div id="sidebar-wrapper">
-			<ul class="sidebar-nav">
-				<li class="sidebar-brand">
-					<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
-						<img src="~/images/favicon.svg" width="30" height="30" /> Shop
-					</a>
-				</li>
-				<li><a asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
-				<li><a asp-area="Admin" asp-controller="BankAcccounts" asp-action="Index">Bankverbindung</a></li>
-				<li>
-					<a href="#ordersmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Auftr&auml;ge<b class="caret"></b></a>
-					<ul class="collapse list-unstyled" id="ordersmenu"> 
-						<li><a asp-area="Admin" asp-controller="Orders" asp-action="Index">Offene Auftr&auml;ge</a></li>
-						<li>
-							<a asp-area="Admin" asp-controller="Orders" asp-action="Closed">Geschlossene Auftr&auml;ge</a>
-						</li>
-						<li><a asp-area="Admin" asp-controller="OrderCompletionTexts" asp-action="Index">Auftragsabschlusstexte</a></li>
-					</ul>
-				</li>
-				<li><a asp-area="Admin" asp-controller="Customers" asp-action="Index">Kunden</a></li>
-				<li>
-					<a href="#cmsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">CMS <b class="caret"></b></a>
-					<ul id="cmsmenu" class="collapse list-unstyled">
-						<li><a asp-area="Admin" asp-controller="CmsStartPages" asp-action="Index">Startseite</a></li>
-						<li><a asp-area="Admin" asp-controller="CmsFiles" asp-action="Index">Dateien</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#categoriesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Kategorien<b class="caret"></b></a>
-					<ul id="categoriesmenu" class="collapse list-unstyled">
-						<li><a asp-area="Admin" asp-controller="Categories" asp-action="Index">Kategorien</a></li>
-						<li><a asp-area="Admin" asp-controller="CategorySubs" asp-action="Index">Unterkategorien</a></li>
-						<li><a asp-area="Admin" asp-controller="CategoryDetails" asp-action="Index">Detail-Kategorien</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#productmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Artikelinfomationen<b class="caret"></b></a>
-					<ul id="productmenu" class="collapse list-unstyled">
-						<li><a asp-area="Admin" asp-controller="Products" asp-action="Index">Artikel</a></li>
-						<li><a asp-area="Admin" asp-controller="ProductImages" asp-action="Index">Artikelbilder</a></li>
-						<li><a asp-area="Admin" asp-controller="CategoryAssignments" asp-action="Index">Artikel Kategoriezuordnung</a></li>
-						<li><a asp-area="Admin" asp-controller="Units" asp-action="Index">Einheiten</a></li>
-						<li><a asp-area="Admin" asp-controller="Sizes" asp-action="Index">Gr&ouml;&szlig;en</a></li>
-						<li><a asp-area="Admin" asp-controller="AdditionalPriceInformations" asp-action="Index">Preis Zusatzinformationen</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#lawmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Rechtstexte<b class="caret"></b></a>
-					<ul id="lawmenu" class="collapse list-unstyled">
-						<li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte Shop HTML</a></li>
-						<li><a asp-area="Admin" asp-controller="ShopFiles" asp-action="Index">Rechtstexte PDF</a> </li>
-					</ul>
-				</li>
-				<li>
-					<a href="#settingsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Shop-Einstellungen<b class="caret"></b></a>
-					<ul id="settingsmenu" class="collapse list-unstyled">
-						<li><a asp-area="Admin" asp-controller="Countries" asp-action="Index">L&auml;nder</a></li>
-						<li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte</a></li>
-						<li><a asp-area="Admin" asp-controller="ShippingPeriods" asp-action="Index">Lieferzeiten</a></li>
-						<li><a asp-area="Admin" asp-controller="ShippingPriceTypes" asp-action="Index">Lieferpreistypen</a></li>
-						<li><a asp-area="Admin" asp-controller="ShippingPrices" asp-action="Index">Lieferpreise</a></li>
-						<li><a asp-area="Admin" asp-controller="Paymends" asp-action="Index">Zahlungsarten</a></li>
-						<li><a asp-area="Admin" asp-controller="Impressums" asp-action="Index">Impressum</a></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-		<!-- /#sidebar-wrapper -->
-		<!-- Page Content -->
-		<div id="page-content-wrapper">
-			<div class="container-fluid body-content">
-				<div class="row">
-					<div class="col-lg-12">
-						<a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
-						@RenderBody()
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /#page-content-wrapper -->
+    <button onclick="topFunction()" id="marelibuMyBtn" title="nach oben"><i class="fa fa-arrow-up"></i></button>
 
-	</div>
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button class="close" type="button" data-dismiss="modal">&times;</button>
+                    <h4 id="myModalTitle" class="modal-title bg-primary"></h4>
+                </div>
+                <div id="myModalBody" class="modal-body">
 
-	<environment names="Development">
-		<script src="~/lib/jquery/dist/jquery.js"></script>
-		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-		<script src="~/js/site.js" asp-append-version="true"></script>
-		<script src="~/js/admin.js" asp-append-version="true"></script>
-		<script src="~/js/admin.product.js"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-		<script src="~/js/commonjs.js"></script>
-	</environment>
-	<environment names="Staging,Production">
-		<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-				asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-				asp-fallback-test="window.jQuery"
-				crossorigin="anonymous"
-				integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-		</script>
-		<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-				asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-				crossorigin="anonymous"
-				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-		</script>
-		<script src="~/js/site.min.js" asp-append-version="true"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-		<script src="~/js/admin.min.js" asp-append-version="true"></script>
-		<script src="~/js/admin.product.min.js"></script>
-		<script src="~/js/commonjs.min.js"></script>
-	</environment>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-	<script src="~/js/jquery.charactercounter.js"></script>
-	<script src="~/lib/summernote/dist/summernote.min.js"></script>
-	<script src="~/lib/summernote/dist/lang/summernote-de-DE.js"></script>
-	@RenderSection("Scripts", required: false)
+                </div>
+                <div class="modal-footer bg-primary">
+                    <button class="btn btn-default" type="button" data-dismiss="modal">schlie&szlig;en</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-		<!-- Menu Toggle Script -->
-	<script>
-		$("#menu-toggle").click(function (e) {
-			e.preventDefault();
-			$("#wrapper").toggleClass("toggled");
-		});
+    <!--css wrapper-->
+    <div id="wrapper">
+        <!--css sidebar wrapper-->
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                        <img src="~/images/favicon.svg" width="30" height="30" /> Shop
+                    </a>
+                </li>
+                <li><a asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
+                <li><a asp-area="Admin" asp-controller="BankAcccounts" asp-action="Index">Bankverbindung</a></li>
+                <li>
+                    <a href="#ordersmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Auftr&auml;ge<b class="caret"></b></a>
+                    <ul class="collapse list-unstyled" id="ordersmenu">
+                        <li><a asp-area="Admin" asp-controller="Orders" asp-action="Index">Offene Auftr&auml;ge</a></li>
+                        <li>
+                            <a asp-area="Admin" asp-controller="Orders" asp-action="Closed">Geschlossene Auftr&auml;ge</a>
+                        </li>
+                        <li><a asp-area="Admin" asp-controller="OrderCompletionTexts" asp-action="Index">Auftragsabschlusstexte</a></li>
+                    </ul>
+                </li>
+                <li><a asp-area="Admin" asp-controller="Customers" asp-action="Index">Kunden</a></li>
+                <li>
+                    <a href="#cmsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">CMS <b class="caret"></b></a>
+                    <ul id="cmsmenu" class="collapse list-unstyled">
+                        <li><a asp-area="Admin" asp-controller="CmsStartPages" asp-action="Index">Startseite</a></li>
+                        <li><a asp-area="Admin" asp-controller="CmsFiles" asp-action="Index">Dateien</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#categoriesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Kategorien<b class="caret"></b></a>
+                    <ul id="categoriesmenu" class="collapse list-unstyled">
+                        <li><a asp-area="Admin" asp-controller="Categories" asp-action="Index">Kategorien</a></li>
+                        <li><a asp-area="Admin" asp-controller="CategorySubs" asp-action="Index">Unterkategorien</a></li>
+                        <li><a asp-area="Admin" asp-controller="CategoryDetails" asp-action="Index">Detail-Kategorien</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#productmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Artikelinfomationen<b class="caret"></b></a>
+                    <ul id="productmenu" class="collapse list-unstyled">
+                        <li><a asp-area="Admin" asp-controller="Products" asp-action="Index">Artikel</a></li>
+                        <li><a asp-area="Admin" asp-controller="ProductImages" asp-action="Index">Artikelbilder</a></li>
+                        <li><a asp-area="Admin" asp-controller="CategoryAssignments" asp-action="Index">Artikel Kategoriezuordnung</a></li>
+                        <li><a asp-area="Admin" asp-controller="Units" asp-action="Index">Einheiten</a></li>
+                        <li><a asp-area="Admin" asp-controller="Sizes" asp-action="Index">Gr&ouml;&szlig;en</a></li>
+                        <li><a asp-area="Admin" asp-controller="AdditionalPriceInformations" asp-action="Index">Preis Zusatzinformationen</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#sellactionmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Verkaufsaktionen <b class="caret"></b></a>
+                    <ul id="sellactionmenu" class="collapse list-unstyled">
+                        <li><a asp-area="Admin" asp-controller="SellActions" asp-action="Index">Rabataktionen</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#lawmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Rechtstexte <b class="caret"></b></a>
+                    <ul id="lawmenu" class="collapse list-unstyled">
+                        <li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte Shop HTML</a></li>
+                        <li><a asp-area="Admin" asp-controller="ShopFiles" asp-action="Index">Rechtstexte PDF</a> </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#settingsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Shop-Einstellungen<b class="caret"></b></a>
+                    <ul id="settingsmenu" class="collapse list-unstyled">
+                        <li><a asp-area="Admin" asp-controller="Countries" asp-action="Index">L&auml;nder</a></li>
+                        <li><a asp-area="Admin" asp-controller="LawContents" asp-action="Index">Rechtstexte</a></li>
+                        <li><a asp-area="Admin" asp-controller="ShippingPeriods" asp-action="Index">Lieferzeiten</a></li>
+                        <li><a asp-area="Admin" asp-controller="ShippingPriceTypes" asp-action="Index">Lieferpreistypen</a></li>
+                        <li><a asp-area="Admin" asp-controller="ShippingPrices" asp-action="Index">Lieferpreise</a></li>
+                        <li><a asp-area="Admin" asp-controller="Paymends" asp-action="Index">Zahlungsarten</a></li>
+                        <li><a asp-area="Admin" asp-controller="Impressums" asp-action="Index">Impressum</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid body-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
 
-		$(".summernote").summernote({
-				height: 300,
-				toolbar: [
-					['style', ['style']],
-					['style', ['bold', 'italic', 'underline', 'clear']],
-					['fontsize', ['fontsize']],
-					['fontname', ['fontname']],
-					['color', ['color']],
-					['para', ['ul', 'ol', 'paragraph']],
-					['table'],
-					['insert', ['link', 'picture', 'video','hr']],
-					['view', ['undo','redo','fullscreen', 'codeview']],
-					['help']
-				]
-			});
-	</script>
+    </div>
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/admin.js" asp-append-version="true"></script>
+        <script src="~/js/admin.product.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+        <script src="~/js/commonjs.js"></script>
+        <script src="~/js/admin.sellaction.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+        <script src="~/js/admin.min.js" asp-append-version="true"></script>
+        <script src="~/js/admin.product.min.js"></script>
+        <script src="~/js/commonjs.min.js"></script>
+        <script src="~/js/admin.sellaction.min.js"></script>
+        <script src="~/js/admin.cms.min.js"></script>
+    </environment>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/js/jquery.charactercounter.js"></script>
+    <script src="~/lib/summernote/dist/summernote.min.js"></script>
+    <script src="~/lib/summernote/dist/lang/summernote-de-DE.js"></script>
+    @RenderSection("Scripts", required: false)
+
+    <!-- Menu Toggle Script -->
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+
+        $(".summernote").summernote({
+            height: 300,
+            toolbar: [
+                ['style', ['style']],
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['fontsize', ['fontsize']],
+                ['fontname', ['fontname']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table'],
+                ['insert', ['link', 'picture', 'video', 'hr']],
+                ['view', ['undo', 'redo', 'fullscreen', 'codeview']],
+                ['help']
+            ]
+        });
+    </script>
 </body>
 </html>

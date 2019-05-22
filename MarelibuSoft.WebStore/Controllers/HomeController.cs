@@ -60,7 +60,18 @@ namespace MarelibuSoft.WebStore.Controllers
 			foreach (var item in productImages)
 			{
 				var artikel = _context.Products.Single(p => p.ProductID == item.ProductID);
-				var vm = new SliderViewModel { ImageUrl = item.ImageUrl, SlugUrl = $"{artikel.ProductID}-{artikel.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(artikel.Name)}" };
+                var sellActionItem = _context.SellActionItems.LastOrDefault(i => i.FkProductID == item.ProductID);
+                int saiId = 0;
+                if (sellActionItem != null)
+                {
+                    saiId = sellActionItem.SellActionItemID; 
+                }
+				var vm = new SliderViewModel
+                {
+                    ImageUrl = item.ImageUrl,
+                    SlugUrl = $"{artikel.ProductID}-{artikel.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(artikel.Name)}",
+                    SellActionItemId = saiId
+                };
 				urls.Add(vm);
 			}
 			

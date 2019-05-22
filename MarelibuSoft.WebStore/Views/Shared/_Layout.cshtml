@@ -7,189 +7,190 @@
 
 	<title>@ViewData["Title"] - marelibuDesign</title>
 
-	<environment include="Development">
-		<link rel="icon" type="image/x-icon" href="~/favicon.ico">
-		<link rel="stylesheet" href="~/css/bootstrap.css" />
-		<link rel="stylesheet" href="~/css/site.css" />
-		<link rel="stylesheet" href="~/css/main.css" />
-		<link rel="stylesheet" href="~/lib/jquery-ui/themes/base/jquery-ui.css" />
-		<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
-	</environment>
+    <environment include="Development">
+        <link rel="icon" type="image/x-icon" href="~/favicon.ico">
+        <link rel="stylesheet" href="~/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        <link rel="stylesheet" href="~/lib/jquery-ui/themes/base/jquery-ui.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
+        <link href="~/css/cookie_notice.css" rel="stylesheet">
+    </environment>
 	<environment exclude="Development">
 		<link rel="icon" type="image/x-icon" href="~/favicon.ico">
 		<link rel="stylesheet" href="~/css/bootstrap.min.css"
 			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
 			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
 		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-		<link rel="stylesheet" href="~/css/main.css" />
+		<link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/cookie_notice.min.css"  asp-append-version="true"/>
 		<link rel="stylesheet" href="~/lib/jquery-ui/themes/base/jquery-ui.min.css" />
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	</environment>
 </head>
 <body>
-	<div class="container" style="margin-bottom: 30px; margin-top:0px;">
-		<img src="~/images/logoMarelibuDesign1.svg" class="img-responsive" style="max-height: 200px;" />
-	</div>
-	<nav class="navbar navbar-default">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
-					<img src="~/images/favicon.svg" width="30" height="30" />
-				</a>
-			</div>
-			<div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-					<li>@await Component.InvokeAsync("Navigation")</li>
-				</ul>
-				@await Html.PartialAsync("_LoginPartial")
-				<ul class="nav navbar-nav navbar-right">
-					<li id="cartDisplay">@await Component.InvokeAsync("ShoppingCart")</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-	<div class="toogler">
-		<div id="myalert"></div>
-	</div>
-	<button onclick="topFunction()" id="myBtn" title="nach oben"><span class="glyphicon glyphicon-arrow-up"></span></button>
+    <div class="container" style="margin-bottom: 30px; margin-top:0px;">
+        <img src="~/images/logoMarelibuDesign1.svg" class="img-responsive" style="max-height: 200px;" />
+    </div>
 
-	<div id="myModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header bg-primary">
-					<button class="close" type="button" data-dismiss="modal">&times;</button>
-					<h4 id="myModalTitle" class="modal-title bg-primary"></h4>
-				</div>
-				<div id="myModalBody" class="modal-body">
+        <button onclick="topFunction()" id="marelibuMyBtn" title="nach oben"><i class="fa fa-arrow-up"></i></button>
 
-				</div>
-				<div class="modal-footer bg-primary">
-					<button class="btn btn-default" type="button" data-dismiss="modal">schlie&szlig;en</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                    <img src="~/images/favicon.svg" width="30" height="30" />
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@await Component.InvokeAsync("Navigation")</li>
+                </ul>
+                @await Html.PartialAsync("_LoginPartial")
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="cartDisplay">@await Component.InvokeAsync("ShoppingCart")</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="toogler">
+        <div id="myalert"></div>
+    </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button class="close" type="button" data-dismiss="modal">&times;</button>
+                    <h4 id="myModalTitle" class="modal-title bg-primary"></h4>
+                </div>
+                <div id="myModalBody" class="modal-body">
+
+                </div>
+                <div class="modal-footer bg-primary">
+                    <button class="btn btn-default" type="button" data-dismiss="modal">schlie&szlig;en</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-	<div class="container body-content">
-		@RenderBody()
-		<hr />
-		<footer>
-			<div class="row">
-				<div class="col-md-3">
-					<h4>Informationen:</h4>
-					<ul>
-						<li><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">Zahlung und Versand</a></li>
-						<li><a asp-area="" asp-controller="Home" asp-action="Faq">Faq</a></li>
-						<li><a asp-area="" asp-controller="Home" asp-action="About">&Uuml;ber mich</a></li>
-						<li><a asp-area="" asp-controller="Home" asp-action="OnWeb">Im Netz</a></li>
-					</ul>
-				</div>
-				<div class="col-md-3">
-					<h4>Rechtliches:</h4>
-					<ul>
-						<li><a asp-area="" asp-controller="Home" asp-action="Imprint">Impressum</a></li>
-						<li><a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">AGB</a></li>
-						<li><a asp-area="" asp-controller="Home" asp-action="PrivacyPolicy">Datenschutzerkl&auml;rung</a></li>
-						<li><a asp-area="" asp-controller="Home" asp-action="Cancellation">Widerruf</a></li>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>Informationen:</h4>
+                    <ul>
+                        <li><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">Zahlung und Versand</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Faq">Faq</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">&Uuml;ber mich</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="OnWeb">Im Netz</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h4>Rechtliches:</h4>
+                    <ul>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Imprint">Impressum</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">AGB</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="PrivacyPolicy">Datenschutzerkl&auml;rung</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Cancellation">Widerruf</a></li>
 
-					</ul>
-				</div>
-				<div class="col-md-3">
-					<h4>Service:</h4>
-					<ul>
-						<li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontakt</a></li>
-						<li><a asp-area="" asp-controller="Account" asp-action="Register">Kundenkonto erstellen</a></li>
-						<li><a asp-area="" asp-controller="Account" asp-action="ForgotPassword">Passwort vergessen</a></li>
-					</ul>
-				</div>
-				<div class="col-md-3">
-					<ul>
-						<li>&copy; @DateTime.Now.Year - marelibuDesign</li>
-					</ul>
-				</div>
-			</div>
-		</footer>
-		<!-- cookie info-->
-		<nav id="cookieConsent" class="navbar navbar-default navbar-fixed-top hidden" role="alert">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cookieConsent .navbar-collapse">
-						<span class="sr-only">Toggle cookie consent banner</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<span class="navbar-brand"><span class="glyphicon glyphicon-info-sign warning" aria-hidden="true"></span></span>
-				</div>
-				<div class="collapse navbar-collapse">
-					<p class="navbar-text">
-						Diese Website nutzt Cookies. Wenn Du die Seite weiter nutzt, gehen wir von Deinem Einverst&auml;ndnis aus. &nbsp;
-					</p>
-					<div class="navbar-right">
-						<a asp-controller="Home" asp-action="PrivacyPolicy" class="btn btn-info navbar-btn">mehr Informationen</a>
-						<a class="btn btn-default navbar-btn" id="cookie_notice_button_accept">ich stimme zu</a>
-					</div>
-				</div>
-			</div>
-		</nav>
-	</div>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h4>Service:</h4>
+                    <ul>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontakt</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Kundenkonto erstellen</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="ForgotPassword">Passwort vergessen</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <ul>
+                        <li>&copy; @DateTime.Now.Year - marelibuDesign</li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+        <!-- cookie info-->
+        <nav id="cookieConsent" class="navbar navbar-default navbar-fixed-top hidden" role="alert">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cookieConsent .navbar-collapse">
+                        <span class="sr-only">Toggle cookie consent banner</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <span class="navbar-brand"><span class="glyphicon glyphicon-info-sign warning" aria-hidden="true"></span></span>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <p class="navbar-text">
+                        Diese Website nutzt Cookies. Wenn Du die Seite weiter nutzt, gehen wir von Deinem Einverst&auml;ndnis aus. &nbsp;
+                    </p>
+                    <div class="navbar-right">
+                        <a asp-controller="Home" asp-action="PrivacyPolicy" class="btn btn-info navbar-btn">mehr Informationen</a>
+                        <a class="btn btn-default navbar-btn" id="cookie_notice_button_accept">ich stimme zu</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
 
-	<environment include="Development">
-		<script src="~/js/shop.js"></script>
-		<script src="~/lib/jquery/dist/jquery.js"></script>
-		<script src="~/js/bootstrap.js"></script>
-		<script src="~/js/site.js" asp-append-version="true"></script>
-		<script src="~/js/admin.js"></script>
-		<script src="~/js/public.cart.js"></script>
-		<script src="~/js/commonjs.js"></script>
-		<script src="~/lib/jquery-ui/jquery-ui.js"></script>
-		<script src="~/js/order.js"></script>
-		<link href="~/css/cookie_notice.css" rel="stylesheet">
-		<script src="~/js/cookie_notice.js"></script>
-		<script type="text/javascript" src="~/js/shop.js"></script>
-		<script type="text/javascript" src="~/js/invoiceaddress.js"></script>
-	</environment>
-	<environment exclude="Development">
-		<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-				asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-				asp-fallback-test="window.jQuery"
-				crossorigin="anonymous"
-				integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-		</script>
-		<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-				asp-fallback-src="~/js/bootstrap.min.js"
-				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-				crossorigin="anonymous"
-				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-		</script>
-		<script src="~/js/shop.js"></script>
-		<script src="~/js/site.min.js" asp-append-version="true"></script>
-		<script src="~/js/admin.min.js"></script>
-		<script src="~/js/public.cart.min.js"></script>
-		<script src="~/js/commonjs.min.js"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-		<script src="~/js/order.min.js"></script>
-		<link href="~/css/cookie_notice.css" rel="stylesheet">
-		<script src="~/js/cookie_notice.min.js"></script>
-		<script src="~/js/invoiceaddress.min.js"></script>
-		<script type="text/javascript" src="~/js/shop.js"></script>
-		<script src="https://widgets.shopvote.de/js/reputation-badge-v2.min.js"></script>
-		<script>
-			var myShopID = 11906;
-			var myBadgetType = 1;
-			var mySrc = ('https:' === document.location.protocol ? 'https' : 'http');
-			createRBadge(myShopID, myBadgetType, mySrc);
-		</script>
-	</environment>
+    <environment include="Development">
+        <script type="text/javascript" src="~/js/shop.js"></script>
+        <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="~/js/bootstrap.js"></script>
+        <script type="text/javascript" src="~/js/site.js"></script>
+        <script src="~/js/admin.js"></script>
+        <script type="text/javascript" src="~/js/public.cart.js"></script>
+        <script type="text/javascript" src="~/js/commonjs.js"></script>
+        <script type="text/javascript" src="~/lib/jquery-ui/jquery-ui.js"></script>
+        <script type="text/javascript" src="~/js/order.js"></script>
+        <script type="text/javascript" src="~/js/cookie_notice.js"></script>
+        <script type="text/javascript" src="~/js/shop.js"></script>
+        <script type="text/javascript" src="~/js/invoiceaddress.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script type="text/javascript" src="~/js/shop.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/js/site.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/js/admin.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/js/public.cart.min.js  asp-append-version=" true""></script>
+        <script type="text/javascript" src="~/js/commonjs.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="~/js/order.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/js/cookie_notice.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/js/invoiceaddress.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="https://widgets.shopvote.de/js/reputation-badge-v2.min.js"></script>
+        <script>
+            var myShopID = 11906;
+            var myBadgetType = 1;
+            var mySrc = ('https:' === document.location.protocol ? 'https' : 'http');
+            createRBadge(myShopID, myBadgetType, mySrc);
+        </script>
+    </environment>
 
-	@RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 
 
 </body>

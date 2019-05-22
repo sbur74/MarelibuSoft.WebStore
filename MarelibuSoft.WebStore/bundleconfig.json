@@ -1,60 +1,88 @@
 [
-	{
-		"outputFileName": "wwwroot/css/site.min.css",
-		"inputFiles": [
-			"wwwroot/css/site.css"
-		]
-	},
-	{
-		"outputFileName": "wwwroot/css/admin.min.css",
-		"inputFiles": [
-			"wwwroot/css/admin.css"
-		]
-	},
-	{
-		"outputFileName": "wwwroot/js/site.min.js",
-		"inputFiles": [
-			"wwwroot/js/site.js"
-		],
-		"minify": {
-			"enabled": true,
-			"renameLocals": true
-		}
-	},
-	{
-		"outputFileName": "wwwroot/js/admin.min.js",
-		"inputFiles": [
-			"wwwroot/js/admin.js"
-		]
-	},
-	{
-		"outputFileName": "wwwroot/js/admin.product.min.js",
-		"inputFiles": [
-			"wwwroot/js/admin.product.js"
-		]
-	},
-	{
-		"outputFileName": "wwwroot/js/order.min.js",
-		"inputFiles": [
-			"wwwroot/js/order.js"
-		]
-	},
-	{
-		"outputFileName": "wwwroot/js/public.cart.min.js",
-		"inputFiles": [
-			"wwwroot/js/public.cart.js"
-		]
-	},
-	{
-		"outputFileName": "wwwroot/js/cookie_notice.min.js",
-		"inputFiles": [ "wwwroot/js/cookie_notice.js" ]
-	},
-	{
-		"outputFileName": "wwwroot/js/commonjs.min.js",
-		"inputFiles": [ "wwwroot/js/commonjs.js" ]
-	},
-	{
-		"outputFileName": "wwwroot/js/invoiceaddress.min.js",
-		"inputFiles": [ "wwwroot/js/invoiceaddress.js" ]
-	}
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/admin.min.css",
+    "inputFiles": [
+      "wwwroot/css/admin.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/cookie_notice.min.css",
+    "inputFiles": [
+      "wwwroot/css/cookie_notice.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/shop.min.js",
+    "inputFiles": [
+      "wwwroot/js/shop.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/admin.min.js",
+    "inputFiles": [
+      "wwwroot/js/admin.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/admin.cms.min.js",
+    "inputFiles": [
+      "wwwroot/js/admin.cms.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/admin.sellaction.min.js",
+    "inputFiles": [
+      "wwwroot/js/admin.sellaction.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/admin.product.min.js",
+    "inputFiles": [
+      "wwwroot/js/admin.product.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/order.min.js",
+    "inputFiles": [
+      "wwwroot/js/order.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/public.cart.min.js",
+    "inputFiles": [
+      "wwwroot/js/public.cart.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/cookie_notice.min.js",
+    "inputFiles": [ "wwwroot/js/cookie_notice.js" ]
+  },
+  {
+    "outputFileName": "wwwroot/js/commonjs.min.js",
+    "inputFiles": [ "wwwroot/js/commonjs.js" ]
+  },
+  {
+    "outputFileName": "wwwroot/js/invoiceaddress.min.js",
+    "inputFiles": [ "wwwroot/js/invoiceaddress.js" ]
+  }
 ]
