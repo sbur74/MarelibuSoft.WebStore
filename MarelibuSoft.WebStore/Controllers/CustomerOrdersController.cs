@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -45,6 +46,8 @@ namespace MarelibuSoft.WebStore.Controllers
 				if (item.IsSend) state = "Versendet";
 				if (item.IsSend && !item.IsPayed) state = "Versendet, noch nicht bezahlt";
 				if (item.IsClosed) state = "Abgeschlossen";
+                if (item.IsCancelled && item.IsClosed) state = "Storniert";
+           
 				var myorder = new CustomerIndexOrderViewModel
 				{
 					ID = item.ID,
@@ -68,12 +71,16 @@ namespace MarelibuSoft.WebStore.Controllers
             }
 
             var order = await _context.Orders
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .Include(ol => ol.OderLines)
+                .ThenInclude(ot => ot.OrderLineTextOptions)
+                .Include(ol => ol.OderLines)
+                .ThenInclude(ov => ov.VariantValues).SingleOrDefaultAsync(o => o.ID == id);
+             
             if (order == null)
             {
                 return NotFound();
             }
-			var olines = await _context.OrderLines.Where(o => o.OrderID.Equals(order.ID)).ToListAsync();
+            var olines = order.OderLines;
 			var shipTo = await _context.ShippingAddresses.SingleAsync(s => s.ID == order.ShippingAddressId);
 			var invoice = await _context.ShippingAddresses.SingleAsync(i => i.CustomerID == order.CustomerID && i.IsInvoiceAddress);
 			var period = await _context.ShpippingPeriods.SingleAsync(p => p.ShippingPeriodID == order.ShippingPeriodId);
@@ -86,18 +93,45 @@ namespace MarelibuSoft.WebStore.Controllers
 			var custOrderLines = new List<CustomerOrderLineViewModel>();
 			foreach (OrderLine orderLine in olines)
 			{
-				var product = await _context.Products.SingleAsync(p => p.ProductID == orderLine.ProductID);
+				var product = await _context.Products.Include(v => v.ProductVariants).SingleAsync(p => p.ProductID == orderLine.ProductID);
+                var txtOptions = new List<TextOptionViewModel>();
+                var vList = new List<VariantViewModel>();
+
+                foreach (var txt in orderLine.OrderLineTextOptions)
+                {
+                    var tovm = new TextOptionViewModel { ID = txt.ID, LineId = txt.OrderLineId, Text = txt.Text };
+                    txtOptions.Add(tovm);
+                }
+                foreach (var variant in orderLine.VariantValues)
+                {
+                    var vvm = new VariantViewModel
+                    {
+                        Combi = variant.Combi,
+                        Id = variant.Id,
+                        LineId = variant.OrderLineId,
+                        Price = variant.Price,
+                        Quantity = variant.Quantity,
+                        ProductVariant = variant.ProductVariant,
+                        ProductVariantOption = variant.ProductVariantOption,
+                        Value = variant.Value,
+                        VariantName = variant.VarinatName
+                    };
+                    vList.Add(vvm);
+                }
+
 				var custOLine = new CustomerOrderLineViewModel
 				{
 					OrderID = order.ID,
 					OrderLineID = orderLine.OrderLineID,
 					Position = orderLine.Position,
 					ProductID = orderLine.ProductID,
-					ProductName = product.Name,
-					ProductNumber = product.ProductNumber.ToString(),
+					ProductName = orderLine.ProductName,
+					ProductNumber = orderLine.ProductNumber.ToString(),
 					Quantity = orderLine.Quantity,
 					SellBasePrice = orderLine.SellBasePrice,
-					Unit = units.Single(s => s.UnitID == orderLine.UnitID).Name
+					Unit = units.Single(s => s.UnitID == orderLine.UnitID).Name, 
+                    TextOptions = txtOptions, 
+                    VariantList = vList
 				};
 				custOrderLines.Add(custOLine);
 			}
@@ -125,6 +159,7 @@ namespace MarelibuSoft.WebStore.Controllers
 				IsClosed = order.IsClosed,
 				IsPayed = order.IsPayed,
 				IsSend = order.IsSend,
+                IsCancelled = order.IsCancelled,
 				Lines = custOrderLines,
 				Number = order.Number,
 				OrderDate = order.OrderDate,

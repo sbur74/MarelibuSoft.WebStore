@@ -67,8 +67,8 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			logger.LogDebug("WeHaveYourOrderViewModel -> try to send email",null);
 
-			await _emailSender.SendEmailWithAttachmentsAsync(User.Identity.Name, subject, mailContent, attachments);
-            await _emailSender.SendEmailWithAttachmentsAsync("pburon@t-online.de", subject, mailContent, attachments);
+			await _emailSender.SendEmailWithAttachmentsAsync(User.Identity.Name, subject, mailContent, attachments, "petra@marelibuDesign.de");
+            await _emailSender.SendEmailWithAttachmentsAsync("pburon@t-online.de", subject, mailContent, attachments, "");
             await _emailSender.SendEmailAsync("petra@marelibuDesign.de", "Du hast etwas auf marelibudesign.de verkauft", $"<p>Verkauf an: {User.Identity.Name}</p>");
 
 			//ViewData["Landing"] = viewModel;
@@ -114,9 +114,14 @@ namespace MarelibuSoft.WebStore.Controllers
 			if (id != null)
 			{
 				Guid cartId = (Guid)id;
-				var shoppingCart = await _context.ShoppingCarts.SingleAsync(sc => sc.ID == id);
+				var shoppingCart = await _context.ShoppingCarts
+                                            .Include(l => l.Lines)
+                                            .ThenInclude(t => t.ShoppingCartLineTextOptions)
+                                            .Include(l => l.Lines)
+                                            .ThenInclude(v => v.VariantValues)
+                                            .SingleAsync(sc => sc.ID == id);
 				decimal total = 0.0M;
-				var lines = _context.ShoppingCartLines.Where(l => l.ShoppingCartID.Equals(shoppingCart.ID));
+                var lines = shoppingCart.Lines;
 				List<CartLineViewModel> vmcLines = new List<CartLineViewModel>();
 
 				foreach (var item in lines)
@@ -130,13 +135,22 @@ namespace MarelibuSoft.WebStore.Controllers
 					{
 						path = "noImage.svg";
 					}
-					var product = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault();
+					var product = _context.Products
+                                    .Include(v => v.ProductVariants)
+                                    .ThenInclude(o => o.Options)
+                                    .Where(p => p.ProductID.Equals(item.ProductID))
+                                    .SingleOrDefault();
 
 					if (ShippingPeriodDefaultID < product.ShippingPeriod)
 					{
 						ShippingPeriodDefaultID = product.ShippingPeriod;
 					}
-					var productShipPrice = await _context.ShippingPrices.SingleAsync(s => s.ShippingPriceTypeId == product.ShippingPriceType && s.CountryId == countryDefault);
+					var productShipPrice = await _context.ShippingPrices
+                                                    .SingleAsync
+                                                    (
+                                                            s => s.ShippingPriceTypeId == product.ShippingPriceType
+                                                            && s.CountryId == countryDefault
+                                                     );
 
 					if (shipDefaultPrice < productShipPrice.Price)
 					{
@@ -150,7 +164,8 @@ namespace MarelibuSoft.WebStore.Controllers
 
                     if (item.SellActionItemId > 0)
                     {
-                        var sellActionItem = await _context.SellActionItems.SingleOrDefaultAsync(i => i.SellActionItemID == item.SellActionItemId);
+                        var sellActionItem = await _context.SellActionItems
+                                                        .SingleOrDefaultAsync(i => i.SellActionItemID == item.SellActionItemId);
                         if (sellActionItem != null)
                         {
                             var action = await _context.SellActions.FirstAsync(a => a.SellActionID == sellActionItem.SellActionID);
@@ -172,6 +187,37 @@ namespace MarelibuSoft.WebStore.Controllers
 					var unitHelper = new UnitHelper(_context, factory);
 					string unit = unitHelper.GetUnitName(product.BasesUnitID);
 					string sekunit = unitHelper.GetUnitName(product.SecondBaseUnit);
+                    var varinatList = new List<VariantViewModel>();
+                    var textList = new List<TextOptionViewModel>();
+
+                    foreach (ShoppingCartLineVariantValue variantValue in item.VariantValues)
+                    {
+                        string varinatname = product.ProductVariants.Single(v => v.ID == variantValue.ProductVariant).Name;
+                        var clvvm = new VariantViewModel
+                        {
+                            Id = variantValue.Id,
+                            Combi = variantValue.Combi,
+                            Price = variantValue.Price,
+                            ProductVariant = variantValue.ProductVariant,
+                            ProductVariantOption = variantValue.ProductVariantOption,
+                            Quantity = variantValue.Quantity,
+                            LineId = variantValue.ShoppingCartLineId,
+                            Value = variantValue.Value, 
+                            VariantName = varinatname
+                        };
+                        varinatList.Add(clvvm);
+                    }
+                    foreach (ShoppingCartLineTextOption textOption in item.ShoppingCartLineTextOptions)
+                    {
+                        var cltxtvm = new TextOptionViewModel
+                        {
+                            ID = textOption.ID,
+                            LineId = textOption.ShoppingCartLineId,
+                            Text = textOption.Text
+                        };
+                        textList.Add(cltxtvm);
+                    }
+
 					CartLineViewModel cvml = new CartLineViewModel()
 					{
 						ID = item.ID,
@@ -193,7 +239,9 @@ namespace MarelibuSoft.WebStore.Controllers
 						SekUnit = sekunit,
 						ShortDescription = product.ShortDescription,
 						UnitID = product.BasesUnitID,
-                        SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}"
+                        SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}",
+                        VariantList = varinatList,
+                        TextOptionList = textList
                     };
 					vmcLines.Add(cvml);
 					total = total + pPrice;
@@ -310,9 +358,14 @@ namespace MarelibuSoft.WebStore.Controllers
 					Customer customer = await _context.Customers.SingleAsync(c => c.UserId == userid);
 					order.CustomerID = customer.CustomerID;
 
-					var shoppingCart = await _context.ShoppingCarts.SingleAsync(sc => sc.ID.Equals(order.CartID));
+					var shoppingCart = await _context.ShoppingCarts
+                                                .Include(sl => sl.Lines)
+                                                .ThenInclude(slt => slt.ShoppingCartLineTextOptions)
+                                                .Include(sl => sl.Lines)
+                                                .ThenInclude(slv => slv.VariantValues)
+                                                .SingleAsync(sc => sc.ID.Equals(order.CartID));
 
-					var shoppingCartLines = await _context.ShoppingCartLines.Where(scl => scl.ShoppingCartID.Equals(shoppingCart.ID)).ToListAsync();
+					var shoppingCartLines = shoppingCart.Lines;
 
 					var shipPrice = await _context.ShippingPrices.SingleAsync(p => p.ID == order.ShippingPriceId);
 
@@ -324,7 +377,66 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					foreach (var item in shoppingCartLines)
 					{
-						var odl = new OrderLine { OrderID = order.ID, Position = item.Position, ProductID = item.ProductID, Quantity = item.Quantity, SellBasePrice = item.SellBasePrice, UnitID = item.UnitID };
+                        var product = await _context.Products
+                                                .Include(p => p.ImageList)
+                                                .Include(v => v.ProductVariants)
+                                                .ThenInclude(o => o.Options)
+                                                .SingleOrDefaultAsync(p => p.ProductID == item.ProductID);
+                        int number = 0;
+                        string name = string.Empty;
+                        string imgurl = string.Empty;
+                        if(product != null)
+                        {
+                            number = product.ProductNumber;
+                            name = product.Name;
+                            var url = product.ImageList.FirstOrDefault(i => i.IsMainImage);
+                            if (url != null) { imgurl = url.ImageUrl; }
+                        }
+                        List<OrderLineTextOption> textOptions = new List<OrderLineTextOption>();
+                        List<OrderLineVariantValue> orderLineVariants = new List<OrderLineVariantValue>();
+
+                        if(item.ShoppingCartLineTextOptions.Count > 0)
+                        {
+                            foreach (var txtOption in item.ShoppingCartLineTextOptions)
+                            {
+                                var ordertxt = new OrderLineTextOption { 
+                                    Text = txtOption.Text,
+                                    Name = product.TextVariantTitel };
+                                textOptions.Add(ordertxt);
+                            }
+                        }
+                        if(item.VariantValues.Count > 0)
+                        {
+                            foreach (var variantvalue in item.VariantValues)
+                            {
+                                string vname = product.ProductVariants.Single(v => v.ID == variantvalue.ProductVariant).Name;
+                                var ordervariant = new OrderLineVariantValue
+                                {
+                                    Combi = variantvalue.Combi,
+                                    Price = variantvalue.Price,
+                                    Quantity = variantvalue.Quantity,
+                                    Value = variantvalue.Value,
+                                    ProductVariant = variantvalue.ProductVariant,
+                                    VarinatName = vname
+                                };
+                                orderLineVariants.Add(ordervariant);
+                            }
+                        }
+
+						var odl = new OrderLine
+                        {
+                            OrderID = order.ID,
+                            Position = item.Position,
+                            ProductID = item.ProductID,
+                            Quantity = item.Quantity,
+                            SellBasePrice = item.SellBasePrice,
+                            UnitID = item.UnitID,
+                            ProductName = name,
+                            ProductNumber = number,
+                            ImageUrl = imgurl,
+                            OrderLineTextOptions = textOptions,
+                            VariantValues = orderLineVariants
+                        };
 						_context.Add(odl);
 					}
 					logger.LogInformation($"Order Information:\n" +
@@ -421,13 +533,41 @@ namespace MarelibuSoft.WebStore.Controllers
 							"</tr>";
 				foreach (var item in order.OrderLines)
 				{
-					table += $"<tr>" +
-								$"<td align=\"center\">{item.Position}</td>" +
-								$"<td align=\"center\">{item.ProductNumber}</td>" +
-								$"<td align=\"center\">{item.ProductName}</td>" +
-								$"<td align=\"center\">{item.Quantity} {item.ProductUnit}</td>" +
-								$"<td align=\"center\">{item.Price}</td>" +
-							$"</tr>";
+                    bool hasVariants = item.TextOptionsList.Count > 0 || item.VariantList.Count > 0;
+                    if (!hasVariants)
+                    {
+                        table += $"<tr>" +
+                                                $"<td align=\"center\">{item.Position}</td>" +
+                                                $"<td align=\"center\">{item.ProductNumber}</td>" +
+                                                $"<td align=\"center\">{item.ProductName}</td>" +
+                                                $"<td align=\"center\">{item.Quantity} {item.ProductUnit}</td>" +
+                                                $"<td align=\"center\">{item.Price}</td>" +
+                                            $"</tr>"; 
+                    }
+                    else
+                    {
+                        table += $"<tr>" +
+                                                $"<td align=\"center\">{item.Position}</td>" +
+                                                $"<td align=\"center\">{item.ProductNumber}</td>" +
+                                                $"<td align=\"center\">{item.ProductName}</td>" +
+                                                $"<td align=\"center\">{item.Quantity} {item.ProductUnit}</td>" +
+                                                $"<td align=\"center\">{item.Price}</td>" +
+                                            $"</tr>";
+                        foreach (var txt in item.TextOptionsList)
+                        {
+                            table += $"<tr>" +
+                                        $"<td align=\"center\">Text:</td>"+
+                                        $"<td align=\"center\" colspan=\"4\">{txt.Text}</td>" +
+                                $"</tr>";
+                        }
+                        foreach (var variant in item.VariantList)
+                        {
+                            table += $"<tr>" +
+                                         $"<td align=\"center\">{variant.VariantName}</td>" +
+                                         $"<td align=\"center\" colspan=\"4\">{variant.Value}</td>" +
+                                 $"</tr>";
+                        }
+                    }
 				}
 
 				table += $"<tr>" +
@@ -551,15 +691,54 @@ namespace MarelibuSoft.WebStore.Controllers
 			var period = await _context.ShpippingPeriods.SingleAsync(p => p.ShippingPeriodID == myorder.ShippingPeriodId);
 			var shipPrice = await _context.ShippingPrices.SingleAsync(p => p.ID == myorder.ShippingPriceId);
 
-			var olines = await _context.OrderLines.Where(ol => ol.OrderID.Equals(myorder.ID)).ToListAsync();
+			var olines = await _context.OrderLines
+                                .Include(ot => ot.OrderLineTextOptions)
+                                .Include(ov => ov.VariantValues)
+                                .Where(ol => ol.OrderID.Equals(myorder.ID)).ToListAsync();
 
 			List<WeHaveYourOrderLineViewModel> lineViewModels = new List<WeHaveYourOrderLineViewModel>();
 
 			foreach (var item in olines)
 			{
-				var prod = await _context.Products.SingleAsync(p => p.ProductID == item.ProductID);
+				var prod = await _context.Products
+                                         .Include(v => v.ProductVariants)
+                                         .ThenInclude(o => o.Options)
+                                         .SingleAsync(p => p.ProductID == item.ProductID);
 				var img = await _context.ProductImages.SingleAsync(p => p.IsMainImage && p.ProductID == item.ProductID);
 				var unit = await _context.Units.SingleAsync(u => u.UnitID == prod.BasesUnitID);
+                var variantValues = new List<VariantViewModel>();
+                var textOptions = new List<TextOptionViewModel>();
+                if(item.VariantValues.Count > 0)
+                {
+                    foreach (var variant in item.VariantValues)
+                    {
+                        var vvvm = new VariantViewModel
+                        {
+                            Combi = variant.Combi,
+                            Id = variant.Id,
+                            Price = variant.Price,
+                            Quantity = variant.Quantity,
+                            ProductVariant = variant.ProductVariant,
+                            ProductVariantOption = variant.ProductVariantOption,
+                            Value = variant.Value, 
+                            VariantName = variant.VarinatName
+                        };
+                        variantValues.Add(vvvm);
+                    }
+                }
+                if (item.OrderLineTextOptions.Count > 0)
+                {
+                    foreach (var txt in item.OrderLineTextOptions)
+                    {
+                        var otvm = new TextOptionViewModel
+                        {
+                            ID = txt.ID,
+                            LineId = txt.OrderLineId,
+                            Text = txt.Text
+                        };
+                        textOptions.Add(otvm);
+                    }
+                }
 				var line = new WeHaveYourOrderLineViewModel
 				{
 					ID = item.OrderLineID,
@@ -569,7 +748,9 @@ namespace MarelibuSoft.WebStore.Controllers
 					ProductName = prod.Name,
 					ProductNumber = prod.ProductNumber,
 					Quantity = Math.Round(item.Quantity, 2),
-					ProductUnit = unit.Name
+					ProductUnit = unit.Name,
+                    VariantList = variantValues,
+                    TextOptionsList = textOptions
 				};
 
 				lineViewModels.Add(line);

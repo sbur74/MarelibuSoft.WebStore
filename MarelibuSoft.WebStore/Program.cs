@@ -71,7 +71,7 @@ namespace MarelibuSoft.WebStore
 					.UseConfiguration(config)
 					.UseContentRoot(Directory.GetCurrentDirectory())
 					.UseStartup<Startup>()
-					.UseSerilog()
+					.UseSerilog((ctx, cfg) => cfg.ReadFrom.ConfigurationSection(ctx.Configuration.GetSection("Serilog")))
 					.UseUrls("https://localhost:6001");
 	}
 }

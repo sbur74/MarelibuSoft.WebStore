@@ -81,7 +81,7 @@
 	
     <div class="row">
         <div class="col-xs-12">
-            <table class="table-bordered table-responsive">
+            <table class="table table-responsive">
                 <thead>
                     <tr>
                         <th></th>
@@ -105,6 +105,7 @@
                 <tbody>
                     @foreach (var item in Model.OrderLines)
                     {
+                        bool hasVariant = item.VariantList.Count > 0 || item.TextOptionsList.Count > 0;
                         <tr>
                             <td><img src="~/images/store/@item.ImagePath" width="50" height="50" /></td>
                             <td>@item.Position</td>
@@ -113,6 +114,25 @@
                             <td>@item.Quantity @item.ProductUnit</td>
                             <td>@item.Price</td>
                         </tr>
+                        if (hasVariant)
+                        {
+                            foreach (var txt in item.TextOptionsList)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">Text: </td>
+                                    <td colspan="3">@txt.Text</td>
+                                </tr>
+                            }
+                            foreach (var variant in item.VariantList)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">@variant.VariantName:</td>
+                                    <td colspan="3">@variant.Value</td>
+                                </tr>
+                            }
+                        }
                     }
                     <tr>
                         <td></td>

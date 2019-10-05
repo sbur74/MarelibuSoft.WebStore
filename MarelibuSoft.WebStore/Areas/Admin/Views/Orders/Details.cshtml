@@ -10,110 +10,116 @@
 <div>
 	<h4>Auftrag</h4>
 	<hr />
-	<dl class="dl-horizontal">
-		<dt>
-			@Html.DisplayNameFor(model => model.Number)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Number)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.OrderDate)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.OrderDate)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Payment)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Payment)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.IsPayed)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.IsPayed)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.IsSend)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.IsSend)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Shippingdate)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Shippingdate)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.IsClosed)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.IsClosed)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.EMail)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.EMail)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.CustomerFirstName)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.CustomerFirstName)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.CutomerLastName)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.CutomerLastName)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.ExceptLawConditions)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.ExceptLawConditions)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.ShippingPriceName)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.ShippingPriceName)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.ShippingPriceAtOrder)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.ShippingPriceAtOrder)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.ShippingPeriodString)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.ShippingPeriodString)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Total)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Total)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.FreeText)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.FreeText)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.TrackingNumber)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.TrackingNumber)
-		</dd>
-	</dl>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Number)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Number)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Payment)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Payment)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPayed)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsPayed)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsSend)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsSend)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsCancelled)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsCancelled)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Shippingdate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Shippingdate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsClosed)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsClosed)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EMail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EMail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerFirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerFirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CutomerLastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CutomerLastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExceptLawConditions)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExceptLawConditions)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ShippingPriceName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ShippingPriceName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ShippingPriceAtOrder)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ShippingPriceAtOrder)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ShippingPeriodString)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ShippingPeriodString)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Total)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Total)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FreeText)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FreeText)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TrackingNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TrackingNumber)
+        </dd>
+    </dl>
 </div>
 <h4>Auftragspositionen</h4>
 <div class="table table-bordered">
@@ -142,30 +148,62 @@
 	</div>
 	@foreach (var item in Model.OderLines)
 	{
-		<div class="row">
-			<div class="col-md-1">
-				<p id="@item.ID" class="hidden">@item.ID</p>
-				<p>@item.Position</p>
-			</div>
-			<div class="col-md-1">
-				<img src="~/images/store/@item.Image" width="50" height="50" />
-			</div>
-			<div class="col-md-1">
-				<p>@item.ProductNumber</p>
-			</div>
-			<div class="col-md-1">
-				<p>@item.ProductName</p>
-			</div>
-			<div class="col-md-1">
-				<p>@Math.Round(item.OrderPrice, 2) &euro;</p>
-			</div>
-			<div class="col-md-1">
-				<p>@Math.Round(item.OrderQuantity, 2) @item.OrderUnit</p>
-			</div>
-			<div class="col-md-1">
-				<p>@Math.Round(item.OrderLineTotal, 2) &euro;</p>
-			</div>
-		</div>
+        <div class="row">
+            <div class="col-md-1">
+                <p id="@item.ID" class="hidden">@item.ID</p>
+                <p>@item.Position</p>
+            </div>
+            <div class="col-md-1">
+                <img src="~/images/store/@item.Image" width="50" height="50" />
+            </div>
+            <div class="col-md-1">
+                <p>@item.ProductNumber</p>
+            </div>
+            <div class="col-md-1">
+                <p>@item.ProductName</p>
+            </div>
+            <div class="col-md-1">
+                <p>@Math.Round(item.OrderPrice, 2) &euro;</p>
+            </div>
+            <div class="col-md-1">
+                <p>@Math.Round(item.OrderQuantity, 2) @item.OrderUnit</p>
+            </div>
+            <div class="col-md-1">
+                <p>@Math.Round(item.OrderLineTotal, 2) &euro;</p>
+            </div>
+            @if (item.TextOptionList.Count > 0)
+            {
+                foreach (var txt in item.TextOptionList)
+                {
+                    <div class="row">
+                        <div class="col-md-2">
+                            Text:
+                        </div>
+                        <div class="col-md-10">
+                            @txt.Text
+                        </div>
+                    </div>
+                }
+            }
+            @if (item.VariantList.Count > 0)
+            {
+                <div class="row">
+                    <div class="col-md-3">Option</div>
+                    <div class="col-md-3">Combi</div>
+                    <div class="col-md-3">Preis</div>
+                    <div class="col-md-3">Menge</div>
+                </div>
+                foreach (var varinat in item.VariantList)
+                {
+                    <div class="row">
+                        <div class="col-md-3">@varinat.Value</div>
+                        <div class="col-md-3">@varinat.Combi</div>
+                        <div class="col-md-3">@varinat.Price</div>
+                        <div class="col-md-3">@varinat.Quantity</div>
+                    </div>
+                }
+            }
+        </div>
 	}
 </div>
 <h4>Liefern an</h4>
@@ -273,54 +311,66 @@
 </dl>
 
 <div>
-	@*<a asp-action="Edit" asp-route-id="@Model.ID">Bearbeiten</a> |*@
-	<div class="row">
-		<div class="col-md-12 col-lg-12">
-			<form asp-action="MarkPayed">
-				<input type="hidden" asp-for="ID" value="@Model.ID" />
-				<input type="hidden" asp-for="StateViewModel.ID" value="@Model.ID" name="ID" />
-				<input type="hidden" asp-for="StateViewModel.StateAction" value="MarkPayed" name="StateAction" />
-				<div class="form-group">
-					<input type="submit" value="Als Bezahlt makieren" class="btn btn-success" />
-				</div>
-			</form>
-		</div>
-	</div>
-	<hr />
-	<h4>Versand-Email</h4>
-	<div class="row">
-		<div class="col-10">
-			<form asp-action="SendEmail">
-				<input type="hidden" asp-for="ID" value="@Model.ID" />
-				<input type="hidden" asp-for="StateViewModel.ID" value="@Model.ID" name="ID" />
-				<input type="hidden" asp-for="StateViewModel.StateAction" value="SendEmail" name="StateAction" />
-				<div class="form-group">
-					<label class="control-label">Sendungsverfolgungsnummer</label>
-					<input class="form-control" asp-for="TrackingNumber" />
-				</div>
-				<div class="form-group">
-					<label class="control-label">Nachricht</label>
-					<textarea asp-for="StateViewModel.Message" class="summernote" name="Message" rows="5"></textarea>
-				</div>
-				<div class="form-group">
-					<input type="submit" value="Senden" class="btn btn-success" />
-				</div>
-			</form>
-		</div>
-	</div>
-	<hr />
-	<div class="row">
-		<div class="col-md-4">
-			<form asp-action="MarkClosed">
-				<input type="hidden" asp-for="ID" value="@Model.ID" />
-				<input type="hidden" asp-for="StateViewModel.ID" value="@Model.ID" name="ID" />
-				<input type="hidden" asp-for="StateViewModel.StateAction" value="MarkClosed" name="StateAction" />
-				<div class="form-group">
-					<input type="submit" value="Als abgeschlossen makieren" class="btn btn-success" />
-				</div>
-			</form>
-		</div>
-	</div>
+    @*<a asp-action="Edit" asp-route-id="@Model.ID">Bearbeiten</a> |*@
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <form asp-action="MarkPayed">
+                <input type="hidden" asp-for="ID" value="@Model.ID" />
+                <input type="hidden" asp-for="StateViewModel.ID" value="@Model.ID" name="ID" />
+                <input type="hidden" asp-for="StateViewModel.StateAction" value="MarkPayed" name="StateAction" />
+                <div class="form-group">
+                    <input type="submit" value="Als Bezahlt makieren" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr />
+    <h4>Versand-Email</h4>
+    <div class="row">
+        <div class="col-10">
+            <form asp-action="SendEmail">
+                <input type="hidden" asp-for="ID" value="@Model.ID" />
+                <input type="hidden" asp-for="StateViewModel.ID" value="@Model.ID" name="ID" />
+                <input type="hidden" asp-for="StateViewModel.StateAction" value="SendEmail" name="StateAction" />
+                <div class="form-group">
+                    <label class="control-label">Sendungsverfolgungsnummer</label>
+                    <input class="form-control" asp-for="TrackingNumber" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Nachricht</label>
+                    <textarea asp-for="StateViewModel.Message" class="summernote" name="Message" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Senden" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="MarkClosed">
+                <input type="hidden" asp-for="ID" value="@Model.ID" />
+                <input type="hidden" asp-for="StateViewModel.ID" value="@Model.ID" name="ID" />
+                <input type="hidden" asp-for="StateViewModel.StateAction" value="MarkClosed" name="StateAction" />
+                <div class="form-group">
+                    <input type="submit" value="Als abgeschlossen makieren" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="MarkCancelled">
+                <input type="hidden" asp-for="ID" value="@Model.ID" />
+                <input type="hidden" asp-for="StateViewModel.ID" value="@Model.ID" name="ID" />
+                <input type="hidden" asp-for="StateViewModel.StateAction" value="MarkCancelled" name="StateAction" />
+                <div class="form-group">
+                    <input type="submit" value="Als abgeschlossen makieren" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
 
-	<a class="btn btn-default" asp-action="Index">zur&uuml;ck zur &Uuml;bersicht</a>
+    <a class="btn btn-default" asp-action="Index">zur&uuml;ck zur &Uuml;bersicht</a>
 </div>

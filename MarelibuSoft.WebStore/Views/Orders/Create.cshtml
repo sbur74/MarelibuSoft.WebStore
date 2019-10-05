@@ -1,26 +1,27 @@
 ﻿@model MarelibuSoft.WebStore.Models.ViewModels.OrderCreateViewModel
 
 @{
-	ViewData["Title"] = "KASSE";
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	ShippingPrice shippingPrice = Model.ShippingPrice;
-	var orderobj = Model.Order;
-	var ship = Model.ShippingAddresseVMs.Single(s => s.IsMainAddress);
-	var cartId = Model.Cart.ID;
+    ViewData["Title"] = "KASSE";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ShippingPrice shippingPrice = Model.ShippingPrice;
+    var orderobj = Model.Order;
+    var ship = Model.ShippingAddresseVMs.Single(s => s.IsMainAddress);
+    var cartId = Model.Cart.ID;
 }
 
 <h2>JETZT KAUFEN</h2>
 <hr />
 <h4>Mein Warenkorb</h4>
 <div id="cartDetail">
-	@foreach (var item in Model.Cart.Lines)
-	{
-		string plus = item.ID + "_plus";
-		string minus = item.ID + "_minus";
-		string quantity = item.ID + "_quantity";
-		string qunitityPrice = item.ID + "_quantityPrice";
-		string availableQunitity = item.ProductID + "_availableQuantity";
-		<div class="row">
+    @foreach (var item in Model.Cart.Lines)
+    {
+        string plus = item.ID + "_plus";
+        string minus = item.ID + "_minus";
+        string quantity = item.ID + "_quantity";
+        string qunitityPrice = item.ID + "_quantityPrice";
+        string availableQunitity = item.ProductID + "_availableQuantity";
+        bool hasVarinats = item.VariantList.Count > 0 || item.TextOptionList.Count > 0;
+        <div class="row">
             <div class="col-md-1 item">
                 @if (item.SellActionItemId > 0)
                 {
@@ -30,180 +31,204 @@
                     <img src="~/images/store/@Html.DisplayFor(modelItem => item.ImgPath)" width="100" height="100" />
                 </a>
             </div>
-			<div class="col-md-10" style="margin-left: 10px;">
-				<div class="row">
-					<div class="col-md-4">
-						<a asp-action="Artikel" asp-controller="Produkte" asp-route-id="@item.SlugUrl">@Html.DisplayFor(modelItem => item.ProductName)</a>
-					</div>
-					<div class="col-md-3">
-						Menge: <span id="@quantity">@Html.DisplayFor(modelItem => item.Quantity)</span>&nbsp;<span>@Html.DisplayFor(modelItem => item.Unit)</span>
-					</div>
-					<div class="col-md-4">
-						Preis:
-						<span id="@qunitityPrice" class="label label-default listprice" style="font-size:medium"> @Html.DisplayFor(modelItem => item.PosPrice) &euro; *</span>
-					</div>
-					<div class="col-md-1">
-						
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						@Html.DisplayFor(modelItem => item.ShortDescription)
-					</div>
-					<div class="col-md-3">
-						
-					</div>
-					<div class="col-md-4">
-						<small>Grundpreis:</small><br />
-						<small>@Html.DisplayFor(modelItem => item.SellBasePrice) &euro;/@Html.DisplayFor(modelItem => item.Unit) *</small>
-						@if (item.SellSekPrice > 0.0M)
-						{
-						<small>| @Html.DisplayFor(modelItem => item.SellSekPrice) &euro;/@Html.DisplayFor(modelItem => item.SekUnit) *</small>
-						}
-					</div>
-					<div class="col-md-1">
+            <div class="col-md-10" style="margin-left: 10px;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a asp-action="Artikel" asp-controller="Produkte" asp-route-id="@item.SlugUrl">@Html.DisplayFor(modelItem => item.ProductName)</a>
+                    </div>
+                    <div class="col-md-3">
+                        @if (hasVarinats)
+                        {
+                            <span class="badge badge-dark">Gew&auml;hlte Variante</span><br />
+                            if (item.TextOptionList.Count > 0)
+                            {
+                                <span>Text:</span>
+                                foreach (var text in item.TextOptionList)
+                                {
+                                    <span>@text.Text</span>
+                                }
+                            }
+                            if (item.VariantList.Count > 0)
+                            {
+                                <br />
+                                foreach (var variant in item.VariantList)
+                                {
+                                    <span>@variant.VariantName: </span>
+                                    <span>@variant.Value</span>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Menge: <span id="@quantity">@Html.DisplayFor(modelItem => item.Quantity)</span> 
+                            <span>@Html.DisplayFor(modelItem => item.Unit)</span>
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        Preis:
+                        <span id="@qunitityPrice" class="label label-default listprice" style="font-size:medium"> @Html.DisplayFor(modelItem => item.PosPrice) &euro; *</span>
+                    </div>
+                    <div class="col-md-1">
 
-					</div>
-				</div>
-			</div>
-		</div>
-		<hr />
-	}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.DisplayFor(modelItem => item.ShortDescription)
+                    </div>
+                    <div class="col-md-3">
+                        @if (hasVarinats)
+                        {
+                            <span>Menge: </span>
+                            <span>@Math.Round(item.Quantity)</span><span>@item.Unit</span>
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        <small>Grundpreis:</small><br />
+                        <small>@Html.DisplayFor(modelItem => item.SellBasePrice) &euro;/@Html.DisplayFor(modelItem => item.Unit) *</small>
+                        @if (item.SellSekPrice > 0.0M)
+                        {
+                            <small>| @Html.DisplayFor(modelItem => item.SellSekPrice) &euro;/@Html.DisplayFor(modelItem => item.SekUnit) *</small>
+                        }
+                    </div>
+                    <div class="col-md-1">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+    }
 </div>
 <div class="row">
-	<div class="col-md-1">
+    <div class="col-md-1">
 
-	</div>
-	<div class="col-md-10">
-		<div class="row">
-			<div class="col-md-4">
-				
-			</div>
-			<div class="col-md-3">
-				@Html.DisplayFor(model => model.ShippingPeriod.Decription)
-			</div>
-			<div class="col-md-4">
-				<p>Versand: <span id="shipPrice">@Math.Round(shippingPrice.Price,2)</span> &euro;</p>
-			</div>
+    </div>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-4">
 
-		</div>
-	</div>
+            </div>
+            <div class="col-md-3">
+                @Html.DisplayFor(model => model.ShippingPeriod.Decription)
+            </div>
+            <div class="col-md-4">
+                <p>Versand: <span id="shipPrice">@Math.Round(shippingPrice.Price, 2)</span> &euro;</p>
+            </div>
+
+        </div>
+    </div>
 </div>
 <hr />
 <div class="row">
-	<div class="col-md-1">
+    <div class="col-md-1">
 
-	</div>
-	<div class="row">
-		<div class="col-md-10">
-			<div class="col-md-4">
-				
-			</div>
-			<div class="col-md-3">
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="col-md-4">
 
-			</div>
-			<div class="col-md-4">
-				Gesamt: <strong id="total">@Html.DisplayFor(model => model.Cart.Total)</strong> &euro;
-			</div>
-		</div>
-	</div>
+            </div>
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-4">
+                Gesamt: <strong id="total">@Html.DisplayFor(model => model.Cart.Total)</strong> &euro;
+            </div>
+        </div>
+    </div>
 
 </div>
 <div class="row">
-	<div class="col-md-3">
-		<a class="btn btn-default" asp-area="" asp-controller="ShoppingCarts" asp-action="Details" asp-route-id="@cartId">
-			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Warenkorb bearbeiten
-		</a>
-	</div>
+    <div class="col-md-3">
+        <a class="btn btn-default" asp-area="" asp-controller="ShoppingCarts" asp-action="Details" asp-route-id="@cartId">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Warenkorb bearbeiten
+        </a>
+    </div>
 </div>
 <br />
 
 <form asp-action="Create">
-	<div class="row">
-		<div class="col-md-6">
-			@*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
-			<input id="isPayed" type="hidden" asp-for="Order.IsPayed" value="false" />
-			<input id="cartId" type="hidden" asp-for="Order.CartID" value="@Model.Cart.ID" />
-			<input id="paymentId" type="hidden" value="0" onchange="marelibusoft.order.shopFileChecked();" />
-			<input id="shippingPriceId" type="hidden" asp-for="Order.ShippingPriceId" value="@Model.ShippingPrice.ID" />
-			<input id="shippingPrice" type="hidden" asp-for="Order.ShippingPrice" value="@Model.ShippingPrice.Price" />
-			<input id="orderTotal" type="hidden" asp-for="Order.Total" value="@Model.Cart.Total" />
-			<input id="orderNumber" type="hidden" asp-for="Order.Number" value="@Model.Order.Number" />
-			<input id="orderPeriod" type="hidden" asp-for="Order.ShippingPeriodId" value="@Model.ShippingPeriod.ShippingPeriodID" />
-			<input id="orderShipToAddressId" type="hidden" asp-for="Order.ShippingAddressId" />
+    <div class="row">
+        <div class="col-md-6">
+            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+            <input id="isPayed" type="hidden" asp-for="Order.IsPayed" value="false" />
+            <input id="cartId" type="hidden" asp-for="Order.CartID" value="@Model.Cart.ID" />
+            <input id="paymentId" type="hidden" value="0" onchange="marelibusoft.order.shopFileChecked();" />
+            <input id="shippingPriceId" type="hidden" asp-for="Order.ShippingPriceId" value="@Model.ShippingPrice.ID" />
+            <input id="shippingPrice" type="hidden" asp-for="Order.ShippingPrice" value="@Model.ShippingPrice.Price" />
+            <input id="orderTotal" type="hidden" asp-for="Order.Total" value="@Model.Cart.Total" />
+            <input id="orderNumber" type="hidden" asp-for="Order.Number" value="@Model.Order.Number" />
+            <input id="orderPeriod" type="hidden" asp-for="Order.ShippingPeriodId" value="@Model.ShippingPeriod.ShippingPeriodID" />
+            <input id="orderShipToAddressId" type="hidden" asp-for="Order.ShippingAddressId" />
 
 
-			<div class="form-group">
-				<label asp-for="Order.Number" class="control-label"></label>
-				<p>@Model.Order.Number</p>
-			</div>
-			<div class="form-group">
-				<label asp-for="Order.OrderDate" class="control-label"></label>
-				<p>@Model.Order.OrderDate.ToShortDateString()</p>
-				<span asp-validation-for="Order.OrderDate" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Order.FreeText" class="control-label"></label>
-				<textarea asp-for="Order.FreeText" class="form-control"></textarea>
-			</div>
-			<div class="form-group">
-				<div class="thumbnail col-md-4 col-sm-12 col-xs-12 panel-default">
-					<p>Gew&auml;hlt Lieferadresse</p>
-					<div>
-						@Html.DisplayFor(item => ship.FirstName) @Html.DisplayFor(item => ship.LastName)
-					</div>
-					<div>
-						@Html.DisplayFor(item => ship.Address)
-					</div>
-					<div>
-						@Html.DisplayFor(item => ship.AdditionalAddress)
-					</div>
-					<div>
-						@Html.DisplayFor(item => ship.PostCode), @Html.DisplayFor(item => ship.City)
-					</div>
-					<div>
-						@Html.DisplayFor(item => ship.CountryName)
-					</div>
-				</div>
+            <div class="form-group">
+                <label asp-for="Order.Number" class="control-label"></label>
+                <p>@Model.Order.Number</p>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.OrderDate" class="control-label"></label>
+                <p>@Model.Order.OrderDate.ToShortDateString()</p>
+                <span asp-validation-for="Order.OrderDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.FreeText" class="control-label"></label>
+                <textarea asp-for="Order.FreeText" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="thumbnail col-md-4 col-sm-12 col-xs-12 panel-default">
+                    <p>Gew&auml;hlt Lieferadresse</p>
+                    <div>
+                        @Html.DisplayFor(item => ship.FirstName) @Html.DisplayFor(item => ship.LastName)
+                    </div>
+                    <div>
+                        @Html.DisplayFor(item => ship.Address)
+                    </div>
+                    <div>
+                        @Html.DisplayFor(item => ship.AdditionalAddress)
+                    </div>
+                    <div>
+                        @Html.DisplayFor(item => ship.PostCode), @Html.DisplayFor(item => ship.City)
+                    </div>
+                    <div>
+                        @Html.DisplayFor(item => ship.CountryName)
+                    </div>
+                </div>
 
-			</div>
-			<div class="form-group">
-				<div class="checkbox">
-					<label>
-						<input id="agbCheck" asp-for="Order.ExceptLawConditions" onclick="marelibusoft.order.shopFileChecked()" />Ich habe die <a asp-area="" asp-controller="Home" asp-action="TermsAndConditions" asp-route-id="@Model.Cart.ID">Allgemeinen Gesch&auml;ftsbedingungen</a> und die <a asp-area="" asp-controller="Home" asp-action="Cancellation" asp-route-id="@Model.Cart.ID">Widerrufsbelehrung</a> gelesen und akzeptiere sie.
-					</label>
-					<span asp-validation-for="Order.ExceptLawConditions" class="text-danger"></span>
-				</div>
-			</div>
-			<label asp-for="Order.PaymentID" class="control-label"></label>
-			<div class="container" onload="marelibusoft.order.initPaymendOnload()">
-				@if (ViewBag.CustomerCountryCode != "CH")
-				{
-					<input id="payment1" type="radio" asp-for="Order.PaymentID" value="1" onclick="marelibusoft.order.onSubmitUeberweisung();" /> <span>&Uuml;berweisung (Vorkasse)</span>
-					<br />
-				}
-				<input id="payment2" type="radio" asp-for="Order.PaymentID" value="2" onclick="marelibusoft.order.onSubmitPayPal();" /> <img src="~/images/ico-paypal.svg" />
-				@if (Model.CanBuyWithBill && ViewBag.CustomerCountryCode != "CH")
-				{
-					<br />
-					<input id="payment3" type="radio"  value="3" onclick="marelibusoft.order.onSubmitBill();" /> <span>Rechnung</span>
-				}
-			</div>
-			<div class="form-group">
-				<input id="submitBuy" type="submit" value="JETZT KAUFEN!" class="btn btn-default disabled" />
-			</div>
-		</div><!--end col md 6-->
-	</div><!--end row-->
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input id="agbCheck" asp-for="Order.ExceptLawConditions" onclick="marelibusoft.order.shopFileChecked()" />Ich habe die <a asp-area="" asp-controller="Home" asp-action="TermsAndConditions" asp-route-id="@Model.Cart.ID">Allgemeinen Gesch&auml;ftsbedingungen</a> und die <a asp-area="" asp-controller="Home" asp-action="Cancellation" asp-route-id="@Model.Cart.ID">Widerrufsbelehrung</a> gelesen und akzeptiere sie.
+                    </label>
+                    <span asp-validation-for="Order.ExceptLawConditions" class="text-danger"></span>
+                </div>
+            </div>
+            <label asp-for="Order.PaymentID" class="control-label"></label>
+            <div class="container" onload="marelibusoft.order.initPaymendOnload()">
+                @if (ViewBag.CustomerCountryCode != "CH")
+                {
+                    <input id="payment1" type="radio" asp-for="Order.PaymentID" value="1" onclick="marelibusoft.order.onSubmitUeberweisung();" /> <span>&Uuml;berweisung (Vorkasse)</span>
+                    <br />
+                }
+                <input id="payment2" type="radio" asp-for="Order.PaymentID" value="2" onclick="marelibusoft.order.onSubmitPayPal();" /> <img src="~/images/ico-paypal.svg" />
+                @if (Model.CanBuyWithBill && ViewBag.CustomerCountryCode != "CH")
+                {
+                    <br />
+                    <input id="payment3" type="radio" value="3" onclick="marelibusoft.order.onSubmitBill();" /> <span>Rechnung</span>
+                }
+            </div>
+            <div class="form-group">
+                <input id="submitBuy" type="submit" value="JETZT KAUFEN!" class="btn btn-default disabled" />
+            </div>
+        </div><!--end col md 6-->
+    </div><!--end row-->
 </form>
 
-<p class="small">
-	*Angegebene Preise sind Gesamtpreise (zzgl. Versandkosten). Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
-	Bei Bestellungen aus der Schweiz k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.
-</p>
-<p class="small">
-	Technisch bedingt kann es zu Farbabweichungen kommen.
-</p>
+@await Html.PartialAsync("_TaxInfoPartial")
+@await Html.PartialAsync("_TechInfoPartial")
 
 @section Scripts {
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

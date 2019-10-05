@@ -188,9 +188,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					attachments.Add(wiederruf.Filename);
 					attachments.Add(datenschutz.Filename);
 
-					await _emailSender.SendEmailWithAttachmentsAsync(orderEmail.Email, orderEmail.Subject, bill, attachments);
+					await _emailSender.SendEmailWithAttachmentsAsync(orderEmail.Email, orderEmail.Subject, bill, attachments, "petra@marelibuDesign.de");
 
-					return RedirectToAction(nameof(Index));
+
+                    return RedirectToAction(nameof(Index));
 				}
 			}
 			return View(orderEmail);
@@ -328,7 +329,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			var wiederuf = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.WRB);
 			var datenschutz = await _context.ShopFiles.SingleAsync(s => s.ShopFileType == Enums.ShopFileTypeEnum.DSK);
 			var attachments = new List<string> { agb.Filename, wiederuf.Filename, datenschutz.Filename };
-			await _emailSender.SendEmailWithAttachmentsAsync(email,  subject, message, attachments);
+			await _emailSender.SendEmailWithAttachmentsAsync(email,  subject, message, attachments, "petra@marelibuDesign.de");
 			return RedirectToAction(nameof(Details), new { id = id });
 		}
 
@@ -375,8 +376,31 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			return RedirectToAction(nameof(Details), new { id = id });
 		}
 
+        [HttpPost, ActionName("MarkCancelled")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkCancelledAsync(Guid? id, [Bind("ID", "StateAction", "Message")] OrderStateViewModel viewModel)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-		private bool OrderExists(Guid id)
+            var order = await _context.Orders.SingleAsync(o => o.ID == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            order.IsClosed = true;
+            order.IsCancelled = true;
+            _context.Entry(order).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
+
+
+        private bool OrderExists(Guid id)
         {
             return _context.Orders.Any(e => e.ID == id);
         }
@@ -386,28 +410,29 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			OrderViewModel vm = null;
 			try
 			{
-				var order = await _context.Orders.SingleOrDefaultAsync(m => m.ID == orderId);
-				var olines = await _context.OrderLines.Where(ol => ol.OrderID.Equals(order.ID)).ToListAsync();
+				var order = await _context.Orders
+                    .Include(ol => ol.OderLines)
+                    .ThenInclude(ot => ot.OrderLineTextOptions)
+                    .Include(ol => ol.OderLines)
+                    .ThenInclude(ov => ov.VariantValues)
+                    .SingleOrDefaultAsync(m => m.ID == orderId);
+                var olines = order.OderLines;
 				List<OrderLineViewModel> lineViewModels = new List<OrderLineViewModel>();
 				foreach (var item in olines)
 				{
-					Product product = null;
-
-					product = await _context.Products.SingleAsync(p => p.ProductID == item.ProductID);
-					var mainImage = await _context.ProductImages.SingleAsync(i => i.IsMainImage && i.ProductID.Equals(item.ProductID));
 					var unit = await _context.Units.SingleAsync(u => u.UnitID == item.UnitID);
 
 					OrderLineViewModel lineViewModel = new OrderLineViewModel {
 						ID = item.OrderLineID,
-						Image = mainImage.ImageUrl,
+						Image = item.ImageUrl,
 						OrderPrice = item.SellBasePrice,
 						OrderQuantity = item.Quantity,
-						ProductName = product.Name,
+						ProductName = item.ProductName,
 						OrderUnit = unit.Name,
 						OrderLineTotal = 
 						item.Quantity * item.SellBasePrice,
 						Position = item.Position,
-						ProductNumber = product.ProductNumber
+						ProductNumber = item.ProductNumber
 					};
 
 					lineViewModels.Add(lineViewModel);

@@ -149,13 +149,15 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 			int position = 1000;
 			try
 			{
-				var lines = await _context.ShoppingCartLines.Where(l => l.ShoppingCartID == shoppingCartLine.ShoppingCartID).ToListAsync();
+				//var lines = await _context.ShoppingCartLines.Where(l => l.ShoppingCartID == shoppingCartLine.ShoppingCartID).ToListAsync();
 
 				var product = await _context.Products.Where(p => p.ProductID.Equals(shoppingCartLine.ProductID)).SingleAsync();
 
-				var cart = await _context.ShoppingCarts.SingleAsync(c => c.ID.Equals(shoppingCartLine.ShoppingCartID));
+				var cart = await _context.ShoppingCarts.Include(l =>l.Lines).SingleAsync(c => c.ID.Equals(shoppingCartLine.ShoppingCartID));
 				cart.LastChange = DateTime.Now;
 				_context.ShoppingCarts.Update(cart);
+
+                var lines = cart.Lines;
 
 				if (product.AvailableQuantity >= shoppingCartLine.Quantity)
 				{
@@ -218,6 +220,79 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 
 		}
 
+        // POST: api/ShoppingCartLines/variant
+        [HttpPost("variant")]
+        [ValidateAntiForgeryToken]
+        [Produces("application/json")]
+        public async Task<ActionResult<ShoppingCartLine>> PostShoppingCartLineVariant([FromBody] ShoppingCartLine shoppingCartLine)
+        {
+            int position = 1000;
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = ModelState });
+            }
+
+            try
+            {
+                //var lines = await _context.ShoppingCartLines
+                //    .Where(l => l.ShoppingCartID == shoppingCartLine.ShoppingCartID)
+                //    .Include(v => v.VariantValues)
+                //    .ToListAsync();
+
+                var product = await _context.Products
+                    .Where(p => p.ProductID.Equals(shoppingCartLine.ProductID))
+                    .Include(v => v.ProductVariants)
+                    .ThenInclude(o => o.Options)
+                    .SingleAsync();
+
+                var cart = await _context.ShoppingCarts.Include(l =>l.Lines).ThenInclude(v => v.VariantValues).SingleAsync(c => c.ID.Equals(shoppingCartLine.ShoppingCartID));
+                cart.LastChange = DateTime.Now;
+                _context.ShoppingCarts.Update(cart);
+
+                var lines = cart.Lines;
+
+                foreach (ShoppingCartLineVariantValue item in shoppingCartLine.VariantValues)
+                {
+                    var variant = product.ProductVariants.Single(v => v.ID == item.ProductVariant);
+                    if (variant == null) return NotFound();
+                    var option = variant.Options.Single(o => o.ID == item.ProductVariantOption);
+                    if (option == null) return NotFound();
+
+                    if(option.Quantity >= item.Quantity)
+                    {
+                        option.Quantity -= item.Quantity;
+                        _context.ProductVariantOptions.Update(option);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+                                             
+                if (lines != null && lines.Count() > 0)
+                {
+                    position += lines.Count() + 1;
+                }
+
+                shoppingCartLine.Position = position;
+                _context.ShoppingCartLines.Add(shoppingCartLine);
+                
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Api Error Post PostShoppingCartLineVariant", null);
+                return BadRequest(e);
+            }
+
+            //return CreatedAtAction(nameof(GetShoppingCartLine), new { id = shoppingCartLine.ID }, shoppingCartLine);
+            //return CreatedAtAction("GetShoppingCartLine", shoppingCartLine);
+            return Ok(new { id = shoppingCartLine.ID, productid = shoppingCartLine.ProductID });
+
+        }
+
         // DELETE: api/ShoppingCartLines/5
         [HttpDelete("{id}")]
 		[ValidateAntiForgeryToken]
@@ -229,7 +304,9 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
                 return BadRequest(new { message = ModelState });
             }
 
-            var shoppingCartLine = await _context.ShoppingCartLines.SingleOrDefaultAsync(m => m.ID == id);
+            var shoppingCartLine = await _context.ShoppingCartLines
+                .Include(o => o.VariantValues)
+                .SingleOrDefaultAsync(m => m.ID == id);
 			
             if (shoppingCartLine == null)
             {
@@ -242,8 +319,20 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 			cart.LastChange = DateTime.Now;
 			_context.ShoppingCarts.Update(cart);
 
-			var product = await _context.Products.SingleAsync(p => p.ProductID.Equals(shoppingCartLine.ProductID));
+			var product = await _context.Products.Include(p => p.ProductVariants).ThenInclude(v => v.Options).SingleAsync(p => p.ProductID.Equals(shoppingCartLine.ProductID));
 			product.AvailableQuantity += shoppingCartLine.Quantity;
+
+            if (shoppingCartLine.VariantValues.Count > 0)
+            {
+                foreach (var item in shoppingCartLine.VariantValues)
+                {
+                    var option = product.ProductVariants
+                        .Single(v => v.ID == item.ProductVariant)
+                        .Options.Single(o => o.ID == item.ProductVariantOption);
+                    option.Quantity += item.Quantity;
+                    _context.ProductVariantOptions.Update(option);
+                }
+            }
 
 			_context.Products.Update(product);
 

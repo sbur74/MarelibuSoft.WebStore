@@ -21,7 +21,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string Payment { get; set; }
 		[Display(Name = "Rechung bezahlt")]
 		public bool IsPayed { get; set; }
-		[Display(Name = "Ware versendet")]
+        [Display(Name = "ist storniert")]
+        public bool IsCancelled { get; set; }
+        [Display(Name = "Ware versendet")]
 		public bool IsSend { get; set; }
 		[Display(Name = "Versanddatum")]
 		[DataType(DataType.Date)]

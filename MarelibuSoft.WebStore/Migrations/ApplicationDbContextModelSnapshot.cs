@@ -443,6 +443,8 @@ namespace MarelibuSoft.WebStore.Migrations
 
                     b.Property<Guid>("GustID");
 
+                    b.Property<bool>("IsCancelled");
+
                     b.Property<bool>("IsClosed");
 
                     b.Property<bool>("IsPayed");
@@ -495,11 +497,17 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.Property<int>("OrderLineID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ImageUrl");
+
                     b.Property<Guid>("OrderID");
 
                     b.Property<int>("Position");
 
                     b.Property<int>("ProductID");
+
+                    b.Property<string>("ProductName");
+
+                    b.Property<int>("ProductNumber");
 
                     b.Property<decimal>("Quantity");
 
@@ -512,6 +520,52 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.HasIndex("OrderID");
 
                     b.ToTable("OrderLines");
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderLineTextOption", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("OrderLineId");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("OrderLineId");
+
+                    b.ToTable("OrderLineTextOptions");
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderLineVariantValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Combi");
+
+                    b.Property<int>("OrderLineId");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<int>("ProductVariant");
+
+                    b.Property<int>("ProductVariantOption");
+
+                    b.Property<decimal>("Quantity");
+
+                    b.Property<string>("Value");
+
+                    b.Property<string>("VarinatName");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderLineId");
+
+                    b.ToTable("OrderLineVariantValue");
                 });
 
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Paymend", b =>
@@ -545,6 +599,8 @@ namespace MarelibuSoft.WebStore.Migrations
 
                     b.Property<bool>("IsActive");
 
+                    b.Property<bool>("IsShowTextVariant");
+
                     b.Property<decimal>("MinimumPurchaseQuantity");
 
                     b.Property<string>("Name");
@@ -570,6 +626,8 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.Property<string>("ShortDescription");
 
                     b.Property<int>("Size");
+
+                    b.Property<string>("TextVariantTitel");
 
                     b.HasKey("ProductID");
 
@@ -601,11 +659,19 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description");
+                    b.Property<string>("CombiOptionName");
+
+                    b.Property<bool>("IsAbsolutelyNecessary");
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("OptionName");
+
+                    b.Property<int>("ProductId");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductVariants");
                 });
@@ -615,9 +681,17 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Combi");
+
+                    b.Property<bool>("IsNotShown");
+
                     b.Property<string>("Option");
 
+                    b.Property<decimal>("Price");
+
                     b.Property<int>("ProductVariantID");
+
+                    b.Property<decimal>("Quantity");
 
                     b.HasKey("ID");
 
@@ -824,6 +898,48 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.ToTable("ShoppingCartLines");
                 });
 
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCartLineTextOption", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ShoppingCartLineId");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ShoppingCartLineId");
+
+                    b.ToTable("ShoppingCartLineTextOptions");
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCartLineVariantValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Combi");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<int>("ProductVariant");
+
+                    b.Property<int>("ProductVariantOption");
+
+                    b.Property<decimal>("Quantity");
+
+                    b.Property<int>("ShoppingCartLineId");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShoppingCartLineId");
+
+                    b.ToTable("ShoppingCartLineVariantValue");
+                });
+
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Size", b =>
                 {
                     b.Property<int>("SizeID")
@@ -852,6 +968,22 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.ToTable("Units");
                 });
 
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.VariantOptionTemplate", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Option");
+
+                    b.Property<int>("VariantTemplateId");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("VariantTemplateId");
+
+                    b.ToTable("VariantOptionTemplates");
+                });
+
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.VariantProductAssignment", b =>
                 {
                     b.Property<int>("ID")
@@ -864,6 +996,20 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("VariantProductAssignments");
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.VariantTemplate", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("OptionName");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("VariantTemplates");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1013,11 +1159,35 @@ namespace MarelibuSoft.WebStore.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderLineTextOption", b =>
+                {
+                    b.HasOne("MarelibuSoft.WebStore.Models.OrderLine", "OrderLine")
+                        .WithMany("OrderLineTextOptions")
+                        .HasForeignKey("OrderLineId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderLineVariantValue", b =>
+                {
+                    b.HasOne("MarelibuSoft.WebStore.Models.OrderLine", "OrderLine")
+                        .WithMany("VariantValues")
+                        .HasForeignKey("OrderLineId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ProductImage", b =>
                 {
                     b.HasOne("MarelibuSoft.WebStore.Models.Product", "Product")
                         .WithMany("ImageList")
                         .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.ProductVariant", b =>
+                {
+                    b.HasOne("MarelibuSoft.WebStore.Models.Product", "Product")
+                        .WithMany("ProductVariants")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -1050,6 +1220,30 @@ namespace MarelibuSoft.WebStore.Migrations
                     b.HasOne("MarelibuSoft.WebStore.Models.ShoppingCart", "ShoppingCart")
                         .WithMany("Lines")
                         .HasForeignKey("ShoppingCartID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCartLineTextOption", b =>
+                {
+                    b.HasOne("MarelibuSoft.WebStore.Models.ShoppingCartLine", "ShoppingCartLine")
+                        .WithMany("ShoppingCartLineTextOptions")
+                        .HasForeignKey("ShoppingCartLineId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCartLineVariantValue", b =>
+                {
+                    b.HasOne("MarelibuSoft.WebStore.Models.ShoppingCartLine", "CartLine")
+                        .WithMany("VariantValues")
+                        .HasForeignKey("ShoppingCartLineId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MarelibuSoft.WebStore.Models.VariantOptionTemplate", b =>
+                {
+                    b.HasOne("MarelibuSoft.WebStore.Models.VariantTemplate", "VariantTemplate")
+                        .WithMany("VariantOptionTemplates")
+                        .HasForeignKey("VariantTemplateId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

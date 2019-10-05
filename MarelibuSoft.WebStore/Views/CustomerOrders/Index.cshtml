@@ -27,23 +27,32 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-		<tr>
-			<td>
-				@Html.DisplayFor(modelItem => item.Number)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Orderdate)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.OrderState)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.TrackingNumber)
-			</td>
-			<td>
-				<a asp-action="Details" asp-route-id="@item.ID">Details</a>
-			</td>
-		</tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Orderdate)
+            </td>
+            @if (item.OrderState.Equals("Storniert"))
+            {
+            <td class="text-danger">
+                @Html.DisplayFor(modelItem => item.OrderState)
+            </td>
+            }
+            else
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderState)
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.TrackingNumber)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+            </td>
+        </tr>
 }
     </tbody>
 </table>

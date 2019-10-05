@@ -33,7 +33,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
         public async Task<IEnumerable<SellActionItemViewModel>> GetSellActionItemsByActionId([FromRoute] int actionid)
         {
             List<SellActionItemViewModel> selecteditems = new List<SellActionItemViewModel>();
-            if (actionid == null)
+            if (actionid == 0)
             {
                 return selecteditems;
             }

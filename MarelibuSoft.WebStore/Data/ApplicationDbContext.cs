@@ -41,17 +41,19 @@ namespace MarelibuSoft.WebStore.Data
 		public DbSet<Guest> Guests { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<OrderLine> OrderLines { get; set; }
-		public DbSet<OrderCompletionText> OrderCompletionTexts { get; set; }
+        public DbSet<OrderLineTextOption> OrderLineTextOptions { get; set; }
+        public DbSet<OrderCompletionText> OrderCompletionTexts { get; set; }
 		public DbSet<Paymend> Paymends { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<ProductImage> ProductImages { get; set; }
 		public DbSet<ProductVariant> ProductVariants { get; set; }
 		public DbSet<ProductVariantOption> ProductVariantOptions { get; set; }
-		public DbSet<SellAction> SellActions { get; set; }
+        public DbSet<SellAction> SellActions { get; set; }
 		public DbSet<SellActionItem> SellActionItems { get; set; }
 		public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 		public DbSet<ShoppingCartLine> ShoppingCartLines { get; set; }
-		public DbSet<ShopFile> ShopFiles { get; set; }
+        public DbSet<ShoppingCartLineTextOption> ShoppingCartLineTextOptions { get; set; }
+        public DbSet<ShopFile> ShopFiles { get; set; }
 		public DbSet<ShippingPeriod> ShpippingPeriods { get; set; }
 		public DbSet<ShippingPrice> ShippingPrices { get; set; }
 		public DbSet<ShippingPriceType> ShippingPriceTypes { get; set; }
@@ -62,5 +64,8 @@ namespace MarelibuSoft.WebStore.Data
 		public DbSet<ShopContent> ShopContents { get; set; }
 		public DbSet<LawContent> LawContents { get; set; }
 		public DbSet<VariantProductAssignment> VariantProductAssignments { get; set; }
-	}
+
+        public DbSet<VariantTemplate> VariantTemplates { get; set; }
+        public DbSet<VariantOptionTemplate> VariantOptionTemplates { get; set; }
+    }
 }

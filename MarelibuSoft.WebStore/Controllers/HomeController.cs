@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using MarelibuSoft.WebStore.Services;
 using MarelibuSoft.WebStore.Common.Helpers;
 using MarelibuSoft.WebStore.Common.Statics;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarelibuSoft.WebStore.Controllers
 {
@@ -34,7 +35,8 @@ namespace MarelibuSoft.WebStore.Controllers
 		public IActionResult Index()
         {
 			var model = new HomeViewModel();
-			var productImages = _context.ProductImages.Where(i => i.IsMainImage).ToList();
+            var products = _context.Products.Include(p => p.ImageList).Where(p => p.IsActive);
+			
 			var urls = new List<SliderViewModel>();
 			var startpage = _context.CmsStartPages.LastOrDefault();
 
@@ -57,23 +59,28 @@ namespace MarelibuSoft.WebStore.Controllers
 				}
 			}
 
-			foreach (var item in productImages)
-			{
-				var artikel = _context.Products.Single(p => p.ProductID == item.ProductID);
+            foreach (var item in products)
+            {
+                var main = item.ImageList.SingleOrDefault(i => i.IsMainImage);
+                if (main == null)
+                {
+                    break;
+                }
+                string imgUrl = main.ImageUrl;
                 var sellActionItem = _context.SellActionItems.LastOrDefault(i => i.FkProductID == item.ProductID);
                 int saiId = 0;
                 if (sellActionItem != null)
                 {
-                    saiId = sellActionItem.SellActionItemID; 
+                    saiId = sellActionItem.SellActionItemID;
                 }
-				var vm = new SliderViewModel
+                var vm = new SliderViewModel
                 {
-                    ImageUrl = item.ImageUrl,
-                    SlugUrl = $"{artikel.ProductID}-{artikel.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(artikel.Name)}",
+                    ImageUrl = imgUrl,
+                    SlugUrl = $"{item.ProductID}-{item.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(item.Name)}",
                     SellActionItemId = saiId
                 };
-				urls.Add(vm);
-			}
+                urls.Add(vm);
+            }
 			
 			model.SliderViews = urls;
 			model.StartPage = startpage;

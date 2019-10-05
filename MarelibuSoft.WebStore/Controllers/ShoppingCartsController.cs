@@ -50,7 +50,12 @@ namespace MarelibuSoft.WebStore.Controllers
 				return NotFound();
 			}
 
-			var shoppingCart = await _context.ShoppingCarts.SingleOrDefaultAsync(m => m.ID == id);
+			var shoppingCart = await _context.ShoppingCarts
+                                            .Include(l => l.Lines)
+                                            .ThenInclude(v => v.VariantValues)
+                                            .Include(l => l.Lines)
+                                            .ThenInclude(t => t.ShoppingCartLineTextOptions)
+                                            .SingleOrDefaultAsync(m => m.ID == id);
 
 			if (shoppingCart == null)
 			{
@@ -68,7 +73,8 @@ namespace MarelibuSoft.WebStore.Controllers
 			}
 
 			decimal total = 0.0M;
-			var lines = _context.ShoppingCartLines.Where(l => l.ShoppingCartID.Equals(shoppingCart.ID));
+            //var lines = _context.ShoppingCartLines.Where(l => l.ShoppingCartID.Equals(shoppingCart.ID));
+            var lines = shoppingCart.Lines;
 			List<CartLineViewModel> vmcLines = new List<CartLineViewModel>();
 			foreach (var item in lines)
 			{
@@ -81,7 +87,11 @@ namespace MarelibuSoft.WebStore.Controllers
 				{
 					path = "noImage.svg";
 				}
-				var product = _context.Products.Where(p => p.ProductID.Equals(item.ProductID)).SingleOrDefault();
+				var product = _context.Products
+                                .Include(v => v.ProductVariants)
+                                .ThenInclude(o => o.Options)
+                                .Where(p => p.ProductID.Equals(item.ProductID))
+                                .SingleOrDefault();
 
 				if (periodDefault < product.ShippingPeriod)
 				{
@@ -125,6 +135,38 @@ namespace MarelibuSoft.WebStore.Controllers
 				string unit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID);
 				string sekunit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit);
 
+                var variantList = new List<VariantViewModel>();
+
+                foreach (var variant in item.VariantValues)
+                {
+                    var variantVm = new VariantViewModel
+                    {
+                        Id = variant.Id,
+                        Combi = variant.Combi,
+                        Price = variant.Price,
+                        ProductVariant = variant.ProductVariant,
+                        ProductVariantOption = variant.ProductVariantOption,
+                        Quantity = variant.Quantity,
+                        LineId = variant.ShoppingCartLineId,
+                        VariantName = product.ProductVariants.Single(v => v.ID == variant.ProductVariant).Name,
+                        Value = variant.Value
+                    };
+                    variantList.Add(variantVm); 
+                }
+
+                var textOptions = new List<TextOptionViewModel>();
+
+                foreach (var text in item.ShoppingCartLineTextOptions)
+                {
+                    var textvm = new TextOptionViewModel
+                    {
+                        ID = text.ID,
+                        LineId = text.ShoppingCartLineId,
+                        Text = text.Text
+                    };
+                    textOptions.Add(textvm);
+                }
+
 				CartLineViewModel cvml = new CartLineViewModel()
 				{
 					ID = item.ID,
@@ -146,7 +188,9 @@ namespace MarelibuSoft.WebStore.Controllers
 					SellBasePrice = Math.Round(item.SellBasePrice, 2),
 					SellSekPrice = sekprice,
 					SekUnit = sekunit,
-                    SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}"
+                    SlugUrl = $"{item.ProductID}-{product.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(product.Name)}",
+                    VariantList = variantList,
+                    TextOptionList = textOptions
 				};
 				vmcLines.Add(cvml);
 				total = total + pPrice;

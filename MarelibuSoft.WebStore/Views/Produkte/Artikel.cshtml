@@ -1,6 +1,6 @@
 @model MarelibuSoft.WebStore.Models.ViewModels.ProductDetailViewModel
-
-@{
+@if (string.IsNullOrWhiteSpace(Model.Error))
+{
     Layout = "~/Views/Shared/_Layout.cshtml";
     string plus = Model.ProductID + "_plus";
     string minus = Model.ProductID + "_minus";
@@ -10,53 +10,53 @@
     string sellactitid = Model.ProductID + "_sellActionItemId";
     decimal streichPreis = Math.Round(Model.OrgPrice, 2);
     decimal startPrice = Math.Round((Model.Price * Model.MinimumPurchaseQuantity), 2);
-}
-@*@Html.SpMetaDescription(Model.SeoDescription)*@
-<h1>@Html.DisplayFor(model => model.ProductNumber)</h1>
-<h2>@Html.DisplayFor(model => model.Name)</h2>
+    bool showOptions = Model.IsShownTextVartiant || (Model.Variants != null && Model.Variants.Count > 0);
 
-<div class="hidden">
-    @Html.AntiForgeryToken()
-</div>
+    @*<h1>@Html.DisplayFor(model => model.ProductNumber)</h1>*@
+    <h1>@Html.DisplayFor(model => model.Name)</h1>
 
-<div onload="marelibusoft.common.changeMetaDesc('@Model.Description');">
-    <hr />
-    <div class="row">
-        <div class="col-md-5">
-            <img id="expandedImg" src="~/images/store/@Model.MainImageUrl.ImageUrl" alt="@Model.MainImageUrl.Name" class="img-responsive" style="max-height: 75%; max-width: 75%;" />
-            <br />
-            <div class="table table-responsive">
-                @foreach (var item in Model.ImageUrls)
-                {
-                    <img src="~/images/store/@Html.DisplayFor(modelitem => item.ImageUrl)" alt="@Html.DisplayFor(modelItem => item.Name)" class="img-rounded tab-content" style="max-height:100px; max-width:100px; cursor:pointer;" onclick="myFunction(this);" />
-                }
+    <div class="hidden">
+        @Html.AntiForgeryToken()
+    </div>
+
+    <div onload="marelibusoft.common.changeMetaDesc('@Model.Description');">
+        <hr />
+        <div class="row">
+            <div class="col-md-5">
+                <img id="expandedImg" src="~/images/store/@Model.MainImageUrl.ImageUrl" alt="@Model.MainImageUrl.Name" class="img-responsive" style="max-height: 75%; max-width: 75%;" />
+                <br />
+                <div class="table table-responsive">
+                    @foreach (var item in Model.ImageUrls)
+                    {
+                        <img src="~/images/store/@Html.DisplayFor(modelitem => item.ImageUrl)" alt="@Html.DisplayFor(modelItem => item.Name)" class="img-rounded tab-content" style="max-height:100px; max-width:100px; cursor:pointer;" onclick="myFunction(this);" />
+                    }
+                </div>
+                <script>
+                    function myFunction(imgs) {
+                        var expandImg = document.getElementById("expandedImg");
+                        var imgText = document.getElementById("imgtext");
+                        expandImg.src = imgs.src;
+                        imgText.innerHTML = imgs.alt;
+                        expandImg.parentElement.style.display = "block";
+                    }
+                </script>
             </div>
-            <script>
-                function myFunction(imgs) {
-                    var expandImg = document.getElementById("expandedImg");
-                    var imgText = document.getElementById("imgtext");
-                    expandImg.src = imgs.src;
-                    imgText.innerHTML = imgs.alt;
-                    expandImg.parentElement.style.display = "block";
-                }
-            </script>
-        </div>
-        <div class="col-md-7">
-            <div class="jumbotron item">
-                @if (streichPreis > 0)
-                {
-                    <span class="notify-badge">
-                        <b>@Html.DisplayFor(model => model.SellActionPrecent)<i class="fa fa-percent"></i></b>
-                        <br />
-                        <span style="font-size:10px;">@Html.DisplayNameFor(model => model.SellActionPrecent).ToUpper()</span>
-                    </span>
-                }
-                @if (Model.IsNew)
-                {
-                    <span class="notify-new-badge">
-                        <b>NEU</b>
-                    </span>
-                }
+            <div class="col-md-7">
+                <div class="jumbotron item">
+                    @if (streichPreis > 0)
+                    {
+                        <span class="notify-badge">
+                            <b>@Html.DisplayFor(model => model.SellActionPrecent)<i class="fa fa-percent"></i></b>
+                            <br />
+                            <span style="font-size:10px;">@Html.DisplayNameFor(model => model.SellActionPrecent).ToUpper()</span>
+                        </span>
+                    }
+                    @if (Model.IsNew)
+                    {
+                        <span class="notify-new-badge">
+                            <b>NEU</b>
+                        </span>
+                    }
                 <dl class="dl-horizontal">
                     <dt>
                         @Html.DisplayNameFor(model => model.ProductNumber)
@@ -121,12 +121,15 @@
                     <dd>
                         @Html.DisplayFor(model => model.ShippingTime)
                     </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.AvailableQuantity)
-                    </dt>
-                    <dd>
-                        <span id="@availableQunitity">@Math.Round(Model.AvailableQuantity, 2)</span> <span>@Model.BasesUnit</span>
-                    </dd>
+                    @if (!showOptions)
+                    {
+                        <dt>
+                            @Html.DisplayNameFor(model => model.AvailableQuantity)
+                        </dt>
+                        <dd>
+                            <span id="@availableQunitity">@Math.Round(Model.AvailableQuantity, 2)</span> <span>@Model.BasesUnit</span>
+                        </dd>
+                    }
                     <dt>
                         @Html.DisplayNameFor(model => model.Shipping)
                     </dt>
@@ -134,41 +137,142 @@
                         @Html.DisplayFor(model => model.Shipping)
                     </dd>
                 </dl>
+                </div>
+                <section>
+                    <form id="sendToCard">
+                        @if (showOptions)
+                        {
+                            <h3>Produkt Optionen w&auml;hlen</h3>
+                        }
+                        @if (Model.IsShownTextVartiant)
+                        {
+                            <div id="textOptions">
+                                <div class="form-group">
+                                    <label class="control-label">@Model.TextVariantTitel eingeben</label>
+                                    <input id="textOptionInput"
+                                           data-text-variant-titel="@Model.TextVariantTitel" 
+                                           type="text" 
+                                           class="form-control"
+                                           required 
+                                           onchange="marelibusoft.shop.checkTextVariant()"
+                                           onblur="marelibusoft.shop.checkTextVariant()"
+                                           />
+                                    <span id="textVariantValidate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Variants != null && Model.Variants.Count > 0)
+                        {
+                            <div id="variants">
+                                @foreach (var variant in Model.Variants)
+                                {
+                                    <div class="form-group">
+                                        <h4>@variant.Name</h4>
+                                        <label class="control-label">@variant.OptionName</label>
+
+                                        <select id="variantSelect_@variant.ID" onchange="marelibusoft.shop.checkOption(@variant.ID, @Model.ProductID)"
+                                                data-variant-id="@variant.ID"
+                                                data-variant-is-necessary="@variant.IsAbsolutelyNecessary">
+                                            @if (!variant.IsAbsolutelyNecessary)
+                                            {
+                                                <option id="zero_@variant.ID">nicht gew&auml;hlt</option>
+                                            }
+                                            @foreach (var option in variant.Options)
+                                            {
+                                                if (!option.IsNotShown)
+                                                {
+                                                    <option id="optionId_@option.ID"
+                                                            data-option-id="@option.ID"
+                                                            data-option-price="@Math.Round(option.Price,2)"
+                                                            data-option-quantity="@Math.Round(option.Quantity,2)">
+                                                        @option.Option
+                                                        @if (option.Price > 0.0M)
+                                                        {
+                                                            <span> | Preisaufschlag: + </span> @Math.Round(option.Price, 2); <span>&euro;</span>
+                                                        }
+                                                    </option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (Math.Round(variant.Options[0].Quantity, 2) > 0.00M)
+                                        {
+                                            <br />
+                                            <dl class="dl-horizontal">
+                                                <dt>Verf&uuml;gbare Menge</dt>
+                                                <dd>
+                                                    <span id="variantQuantity_@variant.ID">@Math.Round(variant.Options[0].Quantity)</span> <span>@Model.BasesUnit</span>
+                                                </dd>
+                                            </dl>
+                                        }
+                                        <span id="variantValidation_@variant.ID" class="text-danger"></span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        @if (showOptions)
+                        {
+                            <div id="optionPriceArea">
+                                <table style="align-content:center">
+                                    <tbody id="optionPriceTableBody">
+                                        <tr>
+                                            <td>Grundpreis:</td>
+                                            <td id="grundPreis">@startPrice &euro;</td>
+                                        </tr>
+                                        <tr id="optionPrice"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        <p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro;</span> <b>*</b>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
+                        <br />
+                        <div class="input-group col-md-4">
+                            <span class="input-group-btn">
+                                <button id="@minus" type="button" class="btn btn-primary" onclick="subQuantity(@Model.ProductID,'@Model.MinimumPurchaseQuantity','@Model.Price');"><i class="glyphicon glyphicon-minus-sign"></i></button>
+                            </span>
+                            <input id="@sellactitid" type="hidden" value="@Model.SellActionItemId" />
+                            <input id="@quantity" style="text-align:right;" class="form-control" value="@Html.DisplayFor(model => model.MinimumPurchaseQuantity)"
+                                   onload="quantityPrice(@Model.ProductID,'@Model.Price');"
+                                   onchange="quantityPrice(@Model.ProductID, '@Model.Price');" />
+                            <span class="input-group-btn">
+                                <button id="@plus" class="btn btn-primary" type="button" onclick="addQuantity(@Model.ProductID,'@Model.MinimumPurchaseQuantity','@Model.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
+                            </span>
+                        </div>
+                        @if (!showOptions)
+                        {
+                            <div class="form-group">
+                                <a id="item" class="btn btn-primary" role="button" onclick="postCartLine(@Model.ProductID, '@Model.BasesUnitID','@Model.Price');">
+                                    <i class="fa fa-shopping-cart"></i>&nbsp; in den Warenkorb &nbsp;
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <a id="item" class="btn btn-primary" role="button" onclick="marelibusoft.shop.sendCartLine(@Model.ProductID, '@Model.BasesUnitID', '@Model.Price');">
+                                    <i class="fa fa-shopping-cart"></i>&nbsp; in den Warenkorb &nbsp;
+                                </a>
+                            </div>
+                        }
+                    </form>
+                </section>
             </div>
+        </div>
+        <div class="jumbotron">
+            <h4>@Html.DisplayNameFor(model => model.Description)</h4>
             <section>
-                <p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
-                <br />
-                <div class="input-group col-md-4">
-                    <span class="input-group-btn">
-                        <button id="@minus" type="button" class="btn btn-primary" onclick="subQuantity(@Model.ProductID,'@Model.MinimumPurchaseQuantity','@Model.Price');"><i class="glyphicon glyphicon-minus-sign"></i></button>
-                    </span>
-                    <input id="@sellactitid" type="hidden" value="@Model.SellActionItemId" />
-                    <input id="@quantity" style="text-align:right;" class="form-control" value="@Html.DisplayFor(model => model.MinimumPurchaseQuantity)"
-                           onload="quantityPrice(@Model.ProductID,'@Model.Price');"
-                           onchange="quantityPrice(@Model.ProductID, '@Model.Price');" />
-                    <span class="input-group-btn">
-                        <button id="@plus" class="btn btn-primary" type="button" onclick="addQuantity(@Model.ProductID,'@Model.MinimumPurchaseQuantity','@Model.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <a id="item" class="btn btn-primary" role="button" onclick="postCartLine(@Model.ProductID, '@Model.BasesUnitID','@Model.Price');">
-                        <span class="glyphicon glyphicon-shopping-cart"></span> in den Warenkorb
-                    </a>
-                </div>
+                <article>
+                    @Html.Raw(Model.Description)
+                </article>
             </section>
         </div>
-    </div>
-    <div class="jumbotron">
-        <h4>@Html.DisplayNameFor(model => model.Description)</h4>
-        <section>
-            <article>
-                @Html.Raw(Model.Description)
-            </article>
-        </section>
-    </div>
-    <br />
+        <br />
 
-</div>
+    </div>
+}
+else
+{
+    <h2 class="text-danger">@Html.DisplayFor(model => model.Error)</h2>
+}
 <hr />
 @*@await Html.PartialAsync("_ChCustomerInfoPartial")*@
 @await Html.PartialAsync("_TaxInfoPartial")

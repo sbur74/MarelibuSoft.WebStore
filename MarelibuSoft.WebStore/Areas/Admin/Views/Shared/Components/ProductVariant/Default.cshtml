@@ -1,0 +1,39 @@
+﻿@model IEnumerable<VariantTemplate>;
+<h4>Vorhandene Varianten w&auml;hlen</h4>
+<div class="m-5">
+    <label class="control-label">Variante w&auml;hlen</label>
+    <select id="selectVariant">
+        @if (Model.Count() == 0)
+        {
+            <option id="0">Keine Varianten vorhanden</option>
+        }
+        else
+        {
+            <option id="0">Nicht zugewiesen</option>
+            @foreach (var item in Model)
+            {
+                <option id="@item.ID" data-optionname="@item.OptionName">@item.Name</option>
+            }
+        }
+    </select>
+    <a class="btn btn-primary" onclick="marelibusoft.admin.getVariantOptions()">Verwenden</a>
+</div>
+<h4>Kombinations Varianten w&auml;hlen</h4>
+<div class="m-5">
+    <label class="control-label">Variante w&auml;hlen</label>
+    <select id="selectVariantCombi">
+        @if (Model.Count() == 0)
+        {
+            <option id="0">Keine Varianten vorhanden</option>
+        }
+        else
+        {
+            <option id="0">Nicht zugewiesen</option>
+            @foreach (var item in Model)
+            {
+                <option id="@item.ID" data-optionname="@item.OptionName">@item.Name</option>
+            }
+        }
+    </select>
+    <a class="btn btn-primary" onclick="marelibusoft.admin.getVariantCombiOptions()">Verwenden</a>
+</div>

@@ -31,8 +31,13 @@ namespace MarelibuSoft.WebStore.Models
 		[Display(Name = "Ich habe die Rechtlichenhinweise gelesen")]
 		[Required]
 		public bool ExceptLawConditions { get; set; }
-		[Display(Name = "Auftragspositionen")]
-		public List<OrderLine> OderLines { get; set; }
+        [Display(Name = "ist storniert")]
+        public bool IsCancelled { get; set; }
+
+        [Display(Name = "Auftragspositionen")]
+		public List<OrderLine> OderLines { get; private set; }
+
+
 		public int ShippingPriceId { get; set; }
 		[Display(Name = "Versandkosten")]
 		public Decimal ShippingPrice { get; set; }

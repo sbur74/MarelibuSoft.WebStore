@@ -3,202 +3,359 @@
 @{
     ViewData["Title"] = "Bearbeiten";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    string behave = ViewBag.Behave;
+    string h2 = "Artikel bearbeiten";
+    string classTag = "";
+
+    switch (behave)
+    {
+        case "Create":
+            ViewData["Title"] = "Neuer Artikel";
+            h2 = "Artikel erstellen";
+            classTag = "new-product";
+            break;
+        case "Copy":
+            ViewData["Title"] = "Kopie erstellen";
+            h2 = "Artikel Kopie erstellen";
+            classTag = "copy-product";
+            break;
+        case "Edit":
+        default:
+            ViewData["Title"] = "Bearbeiten";
+            h2 = "Artikel bearbeiten";
+            classTag = "edit-product";
+            break;
+    }
 }
 
-<h2>Artikel bearbeiten</h2>
+<h2 class="@classTag">@h2</h2>
 
 <form asp-action="Edit" class="dl-horizontal">
-	<div class="form-horizontal col-md-12">
-		<h4>@Model.ProductNumber - @Model.Name</h4>
-		<hr />
-		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-		<input type="hidden" asp-for="ProductID" />
-		<div class="form-group">
-			<label asp-for="ProductNumber" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<input asp-for="ProductNumber" class="col-md-10 form-control" />
-				<span asp-validation-for="ProductNumber" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="Name" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<input asp-for="Name" class="col-md-10 form-control" />
-				<span asp-validation-for="Name" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="ShortDescription" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<input asp-for="ShortDescription" class="col-md-10 form-control" />
-				<span asp-validation-for="ShortDescription" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="Description" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<textarea asp-for="Description" class="col-md-10 form-control summernote" rows="10"></textarea>
-				<span asp-validation-for="Description" class="text-danger"></span>
-			</div>
-		</div>
-		<hr />
-		<div class="form-group">
-			<label asp-for="SeoDescription" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<textarea id="seodescription" asp-for="SeoDescription" class="col-md-10 form-control counted" data-max-chars="155" rows="5" onkeyup="marelibusoft.common.countChar(this);"></textarea>
-				<span id="seodescriptionval" asp-validation-for="SeoDescription" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="SeoKeywords" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<textarea asp-for="SeoKeywords" class="col-md-10 form-control"></textarea>
-				<span asp-validation-for="SeoKeywords" class="text-danger"></span>
-			</div>
-		</div>
-		<hr />
-		<div class="form-group">
-			<label asp-for="BasesUnit" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select asp-for="BasesUnitID" class="col-md-10 form-control" asp-items="ViewBag.BaseUnit"></select>
-				<span asp-validation-for="BasesUnitID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="Price" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<input id="basisPrice" asp-for="Price" class="col-md-10 form-control" />
-				<span asp-validation-for="Price" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="SecondBaseUnit" class="col-md-10 col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select asp-for="SecondBaseUnitID" class="col-md-10 form-control" asp-items="ViewBag.SeconedUnit"></select>
-				<span asp-validation-for="SecondBaseUnitID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="SecondBasePrice" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<input id="sbPrice" asp-for="SecondBasePrice" class="col-md-10 form-control" /><div class="container">
-					<!-- Trigger the modal with a button -->
-					<button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Preisberechen</button>
-					<!-- Modal -->
-					<div class="modal fade" id="myModal" role="dialog">
-						<div class="modal-dialog">
-							<!-- Modal content-->
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">@Html.DisplayNameFor(model => model.SecondBasePrice)</h4>
-								</div>
-								<div class="modal-body">
-									<div class="form-group">
-										<label class="col-md-3 control-label">Stoffbreite</label>
-										<input id="productwith" class="col-md-5 form-control" />
-									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-success" onclick="marelibusoft.admin.calculateSecondBasePrice()">Berechen</button>
-									<button type="button" class="btn btn-default" data-dismiss="modal">Schliessen</button>
-								</div>
-							</div>
-						</div>
-					</div>
+    <div class="form-horizontal col-md-12">
+        @if (behave == "Create")
+        {
+            <h4>@Model.ProductNumber</h4>
+        }
+        else
+        {
+            <h4>@Model.ProductNumber - @Model.Name</h4>
+        }
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ProductID" />
+        <div class="form-group">
+            <label asp-for="ProductNumber" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ProductNumber" class="col-md-10 form-control" />
+                <span asp-validation-for="ProductNumber" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="col-md-10 form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ShortDescription" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ShortDescription" class="col-md-10 form-control" />
+                <span asp-validation-for="ShortDescription" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Description" class="col-md-10 form-control summernote" rows="10"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            <label asp-for="SeoDescription" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea id="seodescription" asp-for="SeoDescription" class="col-md-10 form-control counted" data-max-chars="155" rows="5" onkeyup="marelibusoft.common.countChar(this);"></textarea>
+                <span id="seodescriptionval" asp-validation-for="SeoDescription" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="SeoKeywords" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="SeoKeywords" class="col-md-10 form-control"></textarea>
+                <span asp-validation-for="SeoKeywords" class="text-danger"></span>
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            <label asp-for="BasesUnit" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="BasesUnitID" class="col-md-10 form-control" asp-items="ViewBag.BaseUnit"></select>
+                <span asp-validation-for="BasesUnitID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input id="basisPrice" asp-for="Price" class="col-md-10 form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="SecondBaseUnit" class="col-md-10 col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="SecondBaseUnitID" class="col-md-10 form-control" asp-items="ViewBag.SeconedUnit"></select>
+                <span asp-validation-for="SecondBaseUnitID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="SecondBasePrice" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input id="sbPrice" asp-for="SecondBasePrice" class="col-md-10 form-control" />
+                <br /><br />
+                <!-- Trigger the modal with a button -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Preisberechen</button>
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">@Html.DisplayNameFor(model => model.SecondBasePrice)</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Stoffbreite</label>
+                                    <input id="productwith" class="col-md-5 form-control" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" onclick="marelibusoft.admin.calculateSecondBasePrice()">Berechen</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Schliessen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				</div>
+                <span asp-validation-for="SecondBasePrice" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="AvailableQuantity" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="AvailableQuantity" class="col-md-10 form-control" />
+                <span asp-validation-for="AvailableQuantity" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MinimumPurchaseQuantity" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MinimumPurchaseQuantity" class="col-md-10 form-control" />
+                <span asp-validation-for="MinimumPurchaseQuantity" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="SizeID" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="SizeID" class="col-md-10 form-control" asp-items="ViewBag.Size"></select>
+                <span asp-validation-for="SizeID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Period" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="PeriodID" class="col-md-10 form-control" asp-items="ViewBag.Periods"></select>
+                <span asp-validation-for="PeriodID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ShippingPriceTypeID" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="ShippingPriceTypeID" class="col-md-10 form-control" asp-items="ViewBag.ShippingPriceTypeID"></select>
+                <span asp-validation-for="ShippingPriceTypeID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="IsActive" class="control-label"></label>
+            <input asp-for="IsActive" class="form-check-inline" type="checkbox" />
+            <span asp-validation-for="IsActive" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="IsShowTextVariant" class="control-label"></label>
+            <input asp-for="IsShowTextVariant" class="form-check-inline" type="checkbox" />
+            <span asp-validation-for="IsShowTextVariant" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TextVariantTitel" class="control-label"></label>
+            <input asp-for="TextVariantTitel" class="form-control" />
+            <span asp-validation-for="TextVariantTitel" class="text-danger"></span>
+        </div>
 
-				<span asp-validation-for="SecondBasePrice" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="AvailableQuantity" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<input asp-for="AvailableQuantity" class="col-md-10 form-control" />
-				<span asp-validation-for="AvailableQuantity" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="MinimumPurchaseQuantity" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<input asp-for="MinimumPurchaseQuantity" class="col-md-10 form-control" />
-				<span asp-validation-for="MinimumPurchaseQuantity" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="SizeID" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select asp-for="SizeID" class="col-md-10 form-control" asp-items="ViewBag.Size"></select>
-				<span asp-validation-for="SizeID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="Period" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select asp-for="PeriodID" class="col-md-10 form-control" asp-items="ViewBag.Periods"></select>
-				<span asp-validation-for="PeriodID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="ShippingPriceTypeID" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select asp-for="ShippingPriceTypeID" class="col-md-10 form-control" asp-items="ViewBag.ShippingPriceTypeID"></select>
-				<span asp-validation-for="ShippingPriceTypeID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="IsActive" class="control-label"></label>
-			<input asp-for="IsActive" class="form-control" type="checkbox" />
-			<span asp-validation-for="IsActive" class="text-danger"></span>
-		</div>
-		@*<div class="form-group">
-			<label asp-for="CategoryName" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select id="listCatagories" asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID" onchange="getSubCatagoriesByCatagoryId()" onblur="getSubCatagoriesByCatagoryId()"></select>
-				<span asp-validation-for="CategoryID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="CategorySubName" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select id="listSubCatagories" asp-for="CategorySubID" class="form-control" asp-items="ViewBag.CategorySubID" onchange="getDetailCatagories()" onblur="getDetailCatagories()"></select>
-				<span asp-validation-for="CategorySubID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label asp-for="CategoryDetailName" class="col-md-2 control-label"></label>
-			<div class="col-md-10">
-				<select id="listDetailCatagories" asp-for="CategoryDetailID" class="form-control" asp-items="ViewBag.CategoryDetailID"></select>
-				<span asp-validation-for="CategoryDetailID" class="text-danger"></span>
-			</div>
-		</div>*@
-		<div class="form-group">
-			<div class="col-md-offset-2 col-md-10">
-				<input type="submit" value="Speichern" class="btn btn-success" />
-			</div>
-		</div>
-	</div>
+        @if (behave != "Create")
+        {
+            <div class="form-group">
+                <label class="control-label">Varianten</label>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#variantModal">Variante anlegen</button>
+                <!-- Modal -->
+                <div class="modal modal-wide fade" id="variantModal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" onclick="marelibusoft.admin.cleareModalVariant()">&times;</button>
+                                <h4 class="modal-title">Variante anlegen</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container col-xs-12">
+                                    <div class="row">
+                                        <div class="container">
+                                            @await Component.InvokeAsync("ProductVariant")
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="control-label">Variante</label>
+                                        <input id="variantNameAdd" class="form-control" />
+                                        <label class="control-label">Optionsname</label>
+                                        <input id="variantOptionNameAdd" class="form-control" />
+                                        <label class="form-check-label">Auswahl zwingend erforderlich</label>
+                                        <input id="isAbsolutelyNecessary" class="form-check-inline" type="checkbox" />
+                                        <label class="form-check-label">Kopie als Vorlage anlegen</label>
+                                        <input id="copyTemplate" class="form-check-inline" type="checkbox" />
+                                        <a class="btn btn-success" onclick="marelibusoft.admin.AddVariantOption('tblOpt')"><i class="fa fa-plus-circle"></i> Option hinzuf&uuml;gen</a>
+
+                                        <div id="table" class="table">
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <label class="control-label">Wert</label>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <label class="control-label">Aktionen</label>
+                                                </div>
+                                            </div>
+                                            <div id="tblOpt">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div id="containerCombi" class="row">
+                                        <label class="control-label">Kombinationsvariantename</label>
+                                        <input id="combiVariantNameAdd" class="form-control" />
+                                        <label class="control-label">Optionsname</label>
+                                        <input id="combiVariantOptionNameAdd" class="form-control" />
+                                        <a class="btn btn-success" onclick="marelibusoft.admin.AddVariantOption('tblCombi')"><i class="fa fa-plus-circle"></i> Option hinzuf&uuml;gen</a>
+                                        <div id="tableCombi" class="table">
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <label class="control-label">Wert</label>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <label class="control-label">Aktionen</label>
+                                                </div>
+                                            </div>
+                                            <div id="tblCombi">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="btn btn-success" onclick="marelibusoft.admin.createVariants()">anlegen</a>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="marelibusoft.admin.cleareModalVariant()">Schliessen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Variants != null)
+                {
+                    @foreach (var variant in Model.Variants)
+                    {
+                        <div class="row marelibu-varinat-rows" id="variantRowID_@variant.ID"
+                             data-variant-id="@variant.ID"
+                             data-varinat-name="@variant.Name"
+                             data-option-name="@variant.OptionName" 
+                             data-combi-name="@variant.CombiOptionName">
+                            <h4>@variant.Name</h4>
+                            <label class="form-check-label">Auswahl zwingend erforderlich</label>
+                            <input type="checkbox" class="form-check-inline"
+                                   id="isAbsolutelyNecessary_@variant.ID"
+                                   checked="@variant.IsAbsolutelyNecessary"
+                                   onclick="marelibusoft.admin.putVariantIsAbsolutelyNecessary('@variant.ID')" />
+                            <a class="btn btn-success" onclick="marelibusoft.admin.saveVariant('@variant.ID')"><i class="fa fa-save"></i></a>
+                            <a class="btn btn-danger" onclick="marelibusoft.admin.deleteProductVariant('@variant.ID')"><i class="fa fa-trash-o"></i> Variante l&ouml;schen</a>
+                            <a class="btn btn-default" onclick="marelibusoft.admin.addOption(@variant.ID)">Option hinzuf&uuml;gen</a>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>@variant.OptionName</th>
+                                        <th>@variant.CombiOptionName</th>
+                                        <th>Menge</th>
+                                        <th>Preis / &euro;</th>
+                                        <th>Ausblenden</th>
+                                        <th>Aktionen</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="variantTableBodyId_@variant.ID" class="marelibu-varinat">
+                                    @foreach (var option in variant.Options)
+                                    {
+                                        <tr id="row_@option.ID" data-option-id="@option.ID">
+                                            <td><input id="option_@option.ID" class="form-control" data-bind="@option.Option" value="@option.Option" /></td>
+                                            <td><input id="combi_@option.ID" class="form-control" data-bind="@option.Combi" value="@option.Combi" /> </td>
+                                            <td><input id="quatity_@option.ID" class="form-control" data-bind="@option.Quantity" value="@Math.Round(option.Quantity,2)" /> </td>
+                                            <td><input id="price_@option.ID" class="form-control" data-bind="@option.Price" value="@Math.Round(option.Price,2)" /></td>
+                                            <td class="align-items-center"><input type="checkbox" id="isNotShown_@option.ID" class="form-check-inline" data-bind="@option.IsNotShown" value="@option.IsNotShown" checked="@option.IsNotShown" /></td>
+                                            <td>
+                                                <a class="btn btn-success" onclick="marelibusoft.admin.saveOption(@variant.ID, @option.ID)"><i class="fa fa-save" title="Speichern"></i></a>
+                                                <a class="btn btn-danger" onclick="marelibusoft.admin.deleteOption(@variant.ID, @option.ID)"><i class="fa fa-trash" title="L&ouml;schen"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+            </div>
+        }
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Speichern" class="btn btn-success" onsubmit="marelibusoft.admin.saveVariantOnSubmit()" />
+            </div>
+        </div>
+    </div>
 </form>
 
 <div>
-	@if (Model.ImageUrls != null)
-	{
-		<hr />
-			@foreach (var item in Model.ImageUrls)
-			{
-				<img src="~/images/store/@item" class="img-thumbnail" style="max-height:100px;max-width:100px;" />
-			}
-			<hr />
-	}
+    @if (Model.ImageUrls != null)
+    {
+        <hr />
+        @foreach (var item in Model.ImageUrls)
+        {
+            <img src="~/images/store/@item" class="img-thumbnail" style="max-height:100px;max-width:100px;" />
+        }
+        <hr />
+    }
 </div>
 <div>
-	<a class="btn btn-success" asp-action="Create" asp-area="Admin" asp-controller="ProductImages" asp-route-id="@Model.ProductID">Neues Bild</a>
+    <a class="btn btn-success" asp-action="Create" asp-area="Admin" asp-controller="ProductImages" asp-route-id="@Model.ProductID">Neues Bild</a>
 </div>
 <hr />
-<div>
-    <a class="btn btn-primary" asp-action="Index">Zur&uuml;ck zur &Uuml;bersicht</a>
-</div>
+@if (behave == "Edit")
+{
+    <div>
+        <a class="btn btn-primary" asp-action="Index">Zur&uuml;ck zur &Uuml;bersicht</a>
+    </div>
+}
+else
+{
+    <form asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-id="@Model.ProductID">
+        <div class="form-actions no-color">
+            <input type="hidden" asp-for="ProductID"  />
+            <input type="submit" value="Zur&uuml;ck zur &Uuml;bersicht" class="btn btn-default" />
+          </div>
+    </form>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

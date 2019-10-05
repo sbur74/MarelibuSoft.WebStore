@@ -19,14 +19,15 @@
 
 <div id="cartDetail">
 	@foreach (var item in Model.Lines)
-	{
-		string plus = item.ID + "_plus";
-		string minus = item.ID + "_minus";
-		string quantity = item.ID + "_quantity";
-		string qunitityPrice = item.ID + "_quantityPrice";
-		string availableQunitity = item.ProductID + "_availableQuantity";
-		string startQuantityId = item.ID + "_startQuantity";
-		string loaderId = item.ID + "_loader";
+    {
+        string plus = item.ID + "_plus";
+        string minus = item.ID + "_minus";
+        string quantity = item.ID + "_quantity";
+        string qunitityPrice = item.ID + "_quantityPrice";
+        string availableQunitity = item.ProductID + "_availableQuantity";
+        string startQuantityId = item.ID + "_startQuantity";
+        string loaderId = item.ID + "_loader";
+        bool hasVarinats = item.VariantList.Count > 0 || item.TextOptionList.Count > 0;
 		<div class="row">
             <div class="col-md-1 item">
                 @if (item.SellActionItemId > 0)
@@ -42,24 +43,48 @@
 					<div class="col-md-4">
 						<a asp-action="Artikel" asp-controller="Produkte" asp-route-id="@item.SlugUrl">@Html.DisplayFor(modelItem => item.ProductName)</a>
 					</div>
-					<div class="col-md-3">
-						<div class="input-group">
-							<span id="@startQuantityId" class="hidden">@item.Quantity</span>
-							<span class="input-group-btn">
-								<button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID');updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');">&nbsp;-&nbsp;</button>
-							</span>
-							<input id="@quantity" class="form-control disabled" disabled
-								   style="min-width:40px;" value="@Html.DisplayFor(modelItem => item.Quantity)"
-								   onload="quantityPrice(@item.ID,'@item.PosPrice', '@item.Unit');"
-								   onchange="quantityPrice(@item.ID, '@item.SellBasePrice', '@item.UnitID');" onsubmit="updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');" />
-							<span class="input-group-btn">
-								<button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID','@item.Quantity');
+                    <div class="col-md-3">
+                        @if (hasVarinats)
+                        {
+                            <span class="badge badge-dark">Gew&auml;hlte Variante</span><br />
+                            if (item.TextOptionList.Count > 0)
+                            {
+                                <span>Text: </span>
+                                foreach (var text in item.TextOptionList)
+                                {
+                                    <span>@text.Text</span>
+                                }
+                            }
+                            if (item.VariantList.Count > 0)
+                            {
+                                <br />
+                                foreach (var variant in item.VariantList)
+                                {
+                                    <span>@variant.VariantName: </span>
+                                    <span>@variant.Value</span>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <div class="input-group">
+                                <span id="@startQuantityId" class="hidden">@item.Quantity</span>
+                                <span class="input-group-btn">
+                                    <button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID');updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');">&nbsp;-&nbsp;</button>
+                                </span>
+                                <input id="@quantity" class="form-control disabled" disabled
+                                       style="min-width:40px;" value="@Html.DisplayFor(modelItem => item.Quantity)"
+                                       onload="quantityPrice(@item.ID,'@item.PosPrice', '@item.Unit');"
+                                       onchange="quantityPrice(@item.ID, '@item.SellBasePrice', '@item.UnitID');" onsubmit="updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');" />
+                                <span class="input-group-btn">
+                                    <button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ID,'@item.MinimumPurchaseQuantity','@item.SellBasePrice', '@item.UnitID','@item.Quantity');
 										updateCartline('@item.ID','@item.Position','@item.UnitID','@item.ProductID', '@item.SellBasePrice','@item.MinimumPurchaseQuantity');">
-									+
-								</button>
-							</span>
-						</div>
-					</div>
+                                        +
+                                    </button>
+                                </span>
+                            </div>
+                        }
+                    </div>
 					<div class="col-md-4">
 						Preis:
 						<span id="@qunitityPrice" class="label label-default listprice" style="font-size:medium"> @Html.DisplayFor(modelItem => item.PosPrice) &euro; *</span>
@@ -76,10 +101,18 @@
 					<div class="col-md-4">
 						@Html.DisplayFor(modelItem => item.ShortDescription)
 					</div>
-					<div class="col-md-3">
-						Restmenge:
-						<span id="@availableQunitity">@Html.DisplayFor(modelItem => item.AvailableQuantity) @Html.DisplayFor(modelItem => item.Unit)</span>
-					</div>
+                    <div class="col-md-3">
+                        @if (!hasVarinats)
+                        {
+                        Restmenge:
+                            <span id="@availableQunitity">@Html.DisplayFor(modelItem => item.AvailableQuantity) @Html.DisplayFor(modelItem => item.Unit)</span>
+                        }
+                        else
+                        {
+                            <span>Menge:</span>
+                            <span>@Math.Round(item.Quantity)</span><span>@item.Unit</span>
+                        }
+                    </div>
 					<div class="col-md-4">
 						<small>Grundpreis:</small><br />
 						<small>@Html.DisplayFor(modelItem => item.SellBasePrice) &euro;/@Html.DisplayFor(modelItem => item.Unit) *</small>
@@ -101,6 +134,7 @@
 </div>
 @if (Model.Lines.Count > 0)
 {
+    //Versand Optionden anzeigen
 	<div class="row">
 		<div class="col-md-1">
 		</div>
@@ -166,10 +200,5 @@
 	}
 </div>
 <br />
-<p class="small">
-	* Umsatzsteuer f&auml;llt nach &sect; 19 Abs. 1 UStG nicht an und wird daher auch nicht ausgewiesen (Kleinunternehmerregelung).
-	@*Bei Bestellungen aus dem Ausland k&ouml;nnen Zollgeb&uuml;hren anfallen, die vom K&auml;ufer zu tragen sind. Schweizer Kunden k&ouml;nnen diese unter http://xtares.admin.ch berechnen lassen.*@
-</p>
-<p class="small">
-	Technisch bedingt kann es zu Farbabweichungen kommen.
-</p>
+@await Html.PartialAsync("_TaxInfoPartial")
+@await Html.PartialAsync("_TechInfoPartial")

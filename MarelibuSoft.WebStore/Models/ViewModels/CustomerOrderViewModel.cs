@@ -15,7 +15,8 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public DateTime OrderDate { get; set; }
 		[Display(Name = "Zahlungsart")]
 		public string PaymentName { get; set; }
-		[Display(Name = "Rechung bezahlt")]
+        public bool IsCancelled { get; set; }
+        [Display(Name = "Rechung bezahlt")]
 		public bool IsPayed { get; set; }
 		[Display(Name = "Ware versendet")]
 		public bool IsSend { get; set; }

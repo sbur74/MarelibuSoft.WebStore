@@ -17,7 +17,7 @@ marelibusoft.common.showModalAlert = function (elementId, message, type) {
 			//alertMessage.addClass("failure");
 			break;
 		case "warning":
-			alertMessage.append("<div class='media - body'><div class ='alert alert-warning'><span class='glyphicon glyphicon-warning-sign'></span> " + message + "</div></div>");
+			alertMessage.append("<div class='media - body'><div class ='alert alert-warning'>" + message + "</div></div>");
 			//alertMessage.addClass("warning");
 			break;
 		
@@ -44,4 +44,22 @@ marelibusoft.common.countChar = function (object) {
 	if (textLength.Length >= 155) {
 		marelibusoft.common.showModalAlert("myalert", "Du darfst nur 155 Zeichen verwenden!", "wanring");
 	}
+}
+
+marelibusoft.common.str2Float = function (str) {
+    if(!str) return 0.0;
+    var value = str.replace(",", ".");
+    return parseFloat(value);
+}
+
+marelibusoft.common.float2LocalCurrencyString = function (fvalue) {
+    if (!isNaN(fvalue)) {
+        return fvalue.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+    }
+    return "";
+}
+
+
+marelibusoft.common.float2LocalString = function (fvalue) {
+    return fvalue.toLocaleString('de-De');
 }

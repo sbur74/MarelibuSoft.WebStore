@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MarelibuSoft.WebStore.Models;
 
 namespace MarelibuSoft.WebStore.Common.Helpers
 {
@@ -28,12 +29,33 @@ namespace MarelibuSoft.WebStore.Common.Helpers
 
 				if(cart != null)
 				{
-					var lines = context.ShoppingCartLines.Where(l => l.ShoppingCartID.Equals(cart.ID)).ToList();
+					var lines = context.ShoppingCartLines
+                        .Where(l => l.ShoppingCartID.Equals(cart.ID))
+                        .Include(o => o.VariantValues)
+                        .ToList();
 					foreach (var item in lines)
 					{
-						var product = context.Products.Single(p => p.ProductID == item.ProductID);
-						product.AvailableQuantity += item.Quantity;
+						var product = context.Products
+                            .Include(v => v.ProductVariants)
+                            .ThenInclude(o => o.Options)
+                            .Single(p => p.ProductID == item.ProductID);
 
+                        if(item.VariantValues.Count > 0)
+                        {
+                            foreach(ShoppingCartLineVariantValue variantValue in item.VariantValues)
+                            {
+                                var option = product.ProductVariants
+                                    .Single(v => v.ID == variantValue.ProductVariant)
+                                    .Options.Single(o => o.ID == variantValue.ProductVariantOption);
+                                option.Quantity += variantValue.Quantity;
+                                context.ProductVariantOptions.Update(option);
+                            }
+                        }
+                        else
+                        {
+                            product.AvailableQuantity += item.Quantity;
+                        }
+						
 						context.Products.Update(product);
 						context.ShoppingCartLines.Remove(item);
 					}

@@ -11,22 +11,15 @@ marelibusoft.cart.changedItems = [];
 function addQuantity(sender, minQuantity, basePrice) {
 	var id = sender;
 	var input = $("#" + id + "_quantity");
-	var quntityString = input.val();
-	quntityString = quntityString.replace(",", "."); //todo: localization
-	var quantity = parseFloat(quntityString);
-	var minstr = minQuantity.replace(",", ".");
-	var minfl = parseFloat(minstr);
+    var quantity = marelibusoft.common.str2Float(input.val());
+    var minfl = marelibusoft.common.str2Float(minQuantity);
 
 	if (minfl < 1.0) {
 		quantity += 0.1;
 	} else {
 		quantity++;
 	}
-
-	quantity = quantity.toFixed(2);
-	quantity = parseFloat(quantity);
-	quantity = quantity.toLocaleString();
-
+    quantity = marelibusoft.common.float2LocalString(quantity);
 	input.val(quantity);
 	quantityPrice(sender, basePrice);
 }
@@ -34,11 +27,9 @@ function addQuantity(sender, minQuantity, basePrice) {
 function subQuantity(sender, minQuantity, basePrice) {
 	var id = sender;
 	var input = $("#" + id + "_quantity");
-	var quntityString = input.val();
-	quntityString = quntityString.replace(",", "."); //todo: localization
-	var quantity = parseFloat(quntityString);
+    var quantity = marelibusoft.common.str2Float(input.val());
 	var chkq = quantity;
-	var minq = parseFloat(minQuantity.replace(",", "."));
+    var minq = marelibusoft.common.str2Float(minQuantity);
 	var fstartQuantity = 0.0;
 
 	if (minq < 1.0) {
@@ -52,27 +43,19 @@ function subQuantity(sender, minQuantity, basePrice) {
 		quantity =  chkq;
 	} 
 
-	quantity = quantity.toFixed(2);
-	quantity = parseFloat(quantity);
-	quantity = quantity.toLocaleString();
+    quantity = marelibusoft.common.float2LocalString(quantity);
 	
 	input.val(quantity);
 	quantityPrice(sender, basePrice);
 }
 
 function quantityPrice(itemId, basePrice) {
-	var qntStr = $("#" + itemId + "_quantity").val();
 	var labelPrice = $("#" + itemId + "_quantityPrice");
-	qntStr = qntStr.replace(",", ".");
-	basePrice = basePrice.replace(",", ".");
-	var quantity = parseFloat(qntStr);
-	var prBasePrice = parseFloat(basePrice);
+    var quantity = marelibusoft.common.str2Float($("#" + itemId + "_quantity").val());
+    var prBasePrice = marelibusoft.common.str2Float(basePrice);
 	var qntPrice = prBasePrice * quantity;
-
-	var priceStr = qntPrice.toFixed(2);
-	qntPrice = parseFloat(priceStr);
-	priceStr = qntPrice.toLocaleString();
-	priceStr += " &euro; <b>*</b>";
+    var priceStr = marelibusoft.common.float2LocalCurrencyString(qntPrice);
+    priceStr += "&nbsp;<b>*</b>"
 	labelPrice.html(priceStr);
 }
 
@@ -83,8 +66,10 @@ function postCartLine(itemId, itemUnit, basePrice) {
 	var quantityString = input.val();
 	quantityString = quantityString.replace(",", ".");
 	var bpricestr = basePrice.replace(",", ".");
-	var fBasePrice = parseFloat(bpricestr);
+    var fBasePrice = parseFloat(bpricestr);
+    fBasePrice = marelibusoft.common.str2Float(basePrice);
     var fquantity = parseFloat(quantityString);
+    fquantity = marelibusoft.common.str2Float($("#" + id + "_quantity").val());
     var sellactitid = $("#" + id + "_sellActionItemId").val();
 	var apiurl = "/api/ShoppingCartLines";
 	console.log("postCartLine -> quantity: " + fquantity);

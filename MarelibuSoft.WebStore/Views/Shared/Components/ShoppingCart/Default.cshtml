@@ -2,7 +2,7 @@
 <p hidden id="cartid">@Html.DisplayFor(model => model.ID)</p>
 <p hidden id="sessionid">@Html.DisplayFor(model => model.SessionId)</p>
 <a asp-area="" asp-controller="ShoppingCarts" asp-action="Details" asp-route-id="@Model.ID" >
-	<span class="glyphicon glyphicon-shopping-cart"></span>
+	<i class="fa fa-shopping-cart"></i>
 	Warenkorb: @Html.DisplayFor(model => model.Lines.Count)
 </a>
 

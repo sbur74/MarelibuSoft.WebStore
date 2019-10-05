@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using MarelibuSoft.WebStore.Models;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 {
@@ -61,7 +62,13 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string SeoDescription { get; set; }
 		[Display(Name = "SEO Schlagworte(Keywords), Trenzeich Komma")]
 		public string SeoKeywords { get; set; }
+        [Display(Name="Text Variante anzeigen")]
+        public bool IsShowTextVariant { get; set; }
+        [Display(Name="Text Varianten Titel")]
+        public string TextVariantTitel { get; set; }
+        public List<string> ImageUrls { get; set; }
 
-		public List<string> ImageUrls { get; set; }
-	}
+        public List<ProductVariant> Variants { get; set; }
+
+    }
 }

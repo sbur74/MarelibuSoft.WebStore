@@ -62,5 +62,11 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public List<ProductImage> ImageUrls { get; set; }
 
         public bool IsNew { get; set; }
+
+        public string Error { get; set; }
+
+        public bool IsShownTextVartiant { get; set; }
+        public string TextVariantTitel { get; set; }
+        public List<ProductVariantViewModel> Variants { get; set; }
     }
 }

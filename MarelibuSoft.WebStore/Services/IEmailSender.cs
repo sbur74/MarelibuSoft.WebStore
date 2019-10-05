@@ -8,7 +8,7 @@ namespace MarelibuSoft.WebStore.Services
     public interface IEmailSender
     {
         Task SendEmailAsync(string email, string subject, string message);
-		Task SendEmailWithAttachmentsAsync(string email, string subject, string message, List<string> Attachments);
+		Task SendEmailWithAttachmentsAsync(string email, string subject, string message, List<string> Attachments, string bcc);
 
 	}
 }

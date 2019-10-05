@@ -186,3 +186,12 @@ for details on configuring this project to bundle and minify static web assets. 
 		margin-right: 0;
 	}
 }
+
+/*bereiter modal dialog*/
+.modal.modal-wide .modal-dialog {
+    width: 90%;
+}
+
+.modal-wide .modal-body {
+    overflow-y: auto;
+}

@@ -1,5 +1,26 @@
 {
   "version": "1.0",
   "defaultProvider": "cdnjs",
-  "libraries": []
+  "libraries": [
+    {
+      "library": "vue@2.6.10",
+      "destination": "wwwroot/lib/vue/"
+    },
+    {
+      "library": "jquery@3.4.1",
+      "destination": "wwwroot/lib/jquery/"
+    }
+  ,
+{
+  "provider": "filesystem",
+  "library": "C:\\Users\\sburo\\Downloads\\bootstrap-3.4.1.zip",
+  "destination": "wwwroot/lib/bootstrap/"
+}
+,
+{
+  "provider": "filesystem",
+  "library": "C:\\Users\\sburo\\Downloads\\bootstrap-3.4.1",
+  "destination": "wwwroot/lib/bootstrap/"
+}
+]
 }

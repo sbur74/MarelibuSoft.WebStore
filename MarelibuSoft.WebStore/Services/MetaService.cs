@@ -8,6 +8,7 @@ namespace MarelibuSoft.WebStore.Services
 	public class MetaService : IMetaService
 	{
 		private Dictionary<string,string> _metadata;
+        private Dictionary<string, string> _metadataProperty;
 
 		public Dictionary<string,string> Metadata
 		{
@@ -15,16 +16,31 @@ namespace MarelibuSoft.WebStore.Services
 			set { _metadata = value; }
 		}
 
-		public MetaService()
+        public Dictionary<string, string> MetadataProperty
+        {
+            get
+            {
+                return _metadataProperty;
+            }
+            set
+            {
+                _metadataProperty = value;
+            }
+        }
+
+        public MetaService()
 		{
 			_metadata = new Dictionary<string, string>();
 			_metadata.Add("description", "Verkauf von Eislaufasseoirs, Stoffen und mehr.");
 			_metadata.Add("author", "Petra Buron");
+
+            _metadataProperty = new Dictionary<string, string>();
 		}
 
-		public MetaService(Dictionary<string,string>meta)
+		public MetaService(Dictionary<string,string>meta, Dictionary<string,string>propertyMeta)
 		{
 			_metadata = meta;
+            _metadataProperty = propertyMeta;
 		}
 
 
@@ -44,5 +60,22 @@ namespace MarelibuSoft.WebStore.Services
 				_metadata.Add(key, value);
 			}
 		}
-	}
+
+        public Dictionary<string, string> GetMetadataProperty()
+        {
+            return _metadataProperty;
+        }
+
+        public void AddMetadataProperty(string key, string value)
+        {
+            if (_metadataProperty.Keys.Contains(key))
+            {
+                _metadataProperty[key] = value;
+            }
+            else
+            {
+                _metadataProperty.Add(key, value);
+            }
+        }
+    }
 }

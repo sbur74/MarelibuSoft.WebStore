@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using MarelibuSoft.WebStore.Models.ViewModels;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 {
@@ -25,5 +26,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		public string Image { get; set; }
 		[Display(Name = "Verkauseinheit")]
 		public string OrderUnit { get; set; }
-	}
+
+        public List<TextOptionViewModel> TextOptionList { get; set; }
+        public List<VariantViewModel> VariantList { get; set; }
+    }
 }

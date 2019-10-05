@@ -24,7 +24,10 @@ namespace MarelibuSoft.WebStore.TagHelpers
 				foreach (var item in metaService.GetMetadata())
 					output.PostContent.AppendHtml(
 						$"<meta name=\"{item.Key}\" content=\"{item.Value}\" /> \r\n");
-			}
+                foreach (var item in metaService.GetMetadataProperty())
+                    output.PostContent.AppendHtml(
+                        $"<meta property=\"{item.Key}\" content=\"{item.Value}\" /> \r\n");
+            }
 		}
 	}
 }

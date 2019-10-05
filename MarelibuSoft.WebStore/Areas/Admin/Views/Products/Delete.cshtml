@@ -1,13 +1,13 @@
 @model MarelibuSoft.WebStore.Models.Product
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Löschen";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
+    <h2>L&ouml;schen??</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+    <h3>Willst Du das wirklich l&ouml;schen?</h3>
 <div>
     <h4>Product</h4>
     <hr />
@@ -107,6 +107,7 @@
     
     <form asp-action="Delete">
         <div class="form-actions no-color">
+            <input type="hidden" asp-for="ProductID" />
             <input type="submit" value="L&ouml;schen" class="btn btn-danger" /> |
             <a asp-action="Index" class="btn btn-default">Zur&uuml;ck zur &Uuml;bersicht</a>
         </div>

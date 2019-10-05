@@ -24,5 +24,8 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string Unit { get; set; }
 
 		public Guid OrderID { get; set; }
-	}
+
+        public List<TextOptionViewModel> TextOptions { get; set; }
+        public List<VariantViewModel> VariantList { get; set; }
+    }
 }

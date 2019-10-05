@@ -31,6 +31,9 @@
 			<th>
 				@Html.DisplayNameFor(model => model.IsClosed)
 			</th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCancelled)
+            </th>
 			<th>
 				@Html.DisplayNameFor(model => model.TrackingNumber)
 			</th>
@@ -62,6 +65,9 @@
 			<td>
 				@Html.DisplayFor(modelItem => item.IsClosed)
 			</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsCancelled)
+            </td>
 			<td>
 				@Html.DisplayFor(modelItem => item.TrackingNumber)
 			</td>

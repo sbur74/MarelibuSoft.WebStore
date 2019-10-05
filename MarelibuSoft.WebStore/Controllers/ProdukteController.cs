@@ -67,7 +67,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
             var sellacitons = await _context.SellActions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).Include(i => i.SellActionItems).ToListAsync();
 
 
-            var products = await _context.Products.Include(p => p.ImageList).Include(ca => ca.CategoryAssignments).OrderByDescending(p => p.ProductID).ToListAsync();
+            var products = await _context.Products.Include(p => p.ImageList).Include(ca => ca.CategoryAssignments).Include(v => v.ProductVariants).OrderByDescending(p => p.ProductID).ToListAsync();
 			List<Product> filterProducts = new List<Product>();
 			List<ProductThumbnailsViewModel> thubnails = new List<ProductThumbnailsViewModel>();
 			var categoryAssignments = new List<CategoryAssignment>();
@@ -187,6 +187,13 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
                         secondPriceUnit = Math.Round(SecondBasePrice, 2).ToString() + " €/" + strUnit;
                     }
 
+                    bool hasoption = false;
+
+                    if (item.ProductVariants.Count > 0 || item.IsShowTextVariant)
+                    {
+                        hasoption = true;
+                    }
+
                     vmProduct.AvailableQuantity = item.AvailableQuantity;
 					vmProduct.BasesUnit = baseUnit;
 					vmProduct.BasesUnitID = item.BasesUnitID;
@@ -199,7 +206,7 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 					vmProduct.SecondPriceUnit = secondPriceUnit;
 					vmProduct.SlugUrl = $"{item.ProductID}-{item.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(item.Name)}";
                     vmProduct.IsNew = CheckIsNewProduct(item.PublishedOn);
-
+                    vmProduct.HasOptions = hasoption;
                 }
 				catch (Exception ex)
 				{
@@ -265,17 +272,20 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 
             var product = await _context.Products
 				.Include(p => p.ImageList)
-                .SingleOrDefaultAsync(m => m.ProductID == productId);
+                .Include(v => v.ProductVariants).ThenInclude(o => o.Options)
+                .SingleOrDefaultAsync(m => m.ProductID == productId && m.IsActive);
             if (product == null)
             {
-                return NotFound();
+                return View( new ProductDetailViewModel { Error = "Dieser Artikel ist nicht mehr verfügbar!"});
             }
 
             List<ProductImage> imgs = product.ImageList;
 
             ProductImage mainImg = GetMainImageUrl(imgs);
 
-            var sellacitons = await _context.SellActions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).Include(i => i.SellActionItems).ToListAsync();
+            var sellacitons = await _context.SellActions
+                                    .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now)
+                                    .Include(i => i.SellActionItems).ToListAsync();
 
             SellActionItem sellActionItem = null;
             SellAction sellAction = null;
@@ -327,14 +337,98 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 
 			string baseuint = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID);
 
-			ProductDetailViewModel dvm = new ProductDetailViewModel()
+            #region Produkt Varianten und Oprionen
+            //Alle Varianten suchden
+            List<ProductVariantViewModel> variantViewModels = new List<ProductVariantViewModel>();
+            foreach (ProductVariant variant in product.ProductVariants)
+            {
+                ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel
+                {
+                    ID = variant.ID,
+                    IsAbsolutelyNecessary = variant.IsAbsolutelyNecessary,
+                    Name = variant.Name,
+                    OptionName = variant.OptionName,
+                    ProductId = variant.ProductId
+                };
+                List<ProductVariantOptionViewModel> optionViewModels = new List<ProductVariantOptionViewModel>();
+                foreach (ProductVariantOption opt in variant.Options)
+                {
+                    var optvm = new ProductVariantOptionViewModel
+                    {
+                        ID = opt.ID,
+                        Option = opt.Option,
+                        IsNotShown = opt.IsNotShown,
+                        Price = opt.Price,
+                        ProductVariantID = opt.ProductVariantID,
+                        Quantity = opt.Quantity
+                    };
+
+                    if(!optionViewModels.Exists(o => o.Option == optvm.Option))
+                    {
+                        var combis = variant.Options.Where(o => o.Option == optvm.Option);
+                        Dictionary<int, string> combiDict = new Dictionary<int, string>();
+                        foreach (ProductVariantOption item in combis)
+                        {
+                            combiDict.Add(item.ID, item.Combi);
+                        }
+                        optvm.Combi = combiDict;
+                        optionViewModels.Add(optvm);
+                    }
+                    
+                }
+                productVariantViewModel.Options = optionViewModels;
+
+                variantViewModels.Add(productVariantViewModel);
+
+                //prüfe ob es Kobiantionen gibt
+                if (!string.IsNullOrWhiteSpace(variant.CombiOptionName))
+                {
+                    ProductVariantViewModel combiVariant = new ProductVariantViewModel
+                    {
+                        ID = variant.ID,
+                        IsAbsolutelyNecessary = variant.IsAbsolutelyNecessary,
+                        Name = variant.CombiOptionName,
+                        OptionName = variant.CombiOptionName,
+                        ProductId = variant.ProductId
+                    };
+                    List<ProductVariantOptionViewModel> optionCombiViewModels = new List<ProductVariantOptionViewModel>();
+                    foreach (var combi in variant.Options)
+                    {
+                        var optcombivm = new ProductVariantOptionViewModel
+                        {
+                            ID = combi.ID,
+                            Option = combi.Combi,
+                            IsNotShown = combi.IsNotShown,
+                            Price = combi.Price,
+                            ProductVariantID = combi.ProductVariantID,
+                            Quantity = combi.Quantity
+                        };
+                        if (!optionCombiViewModels.Exists(o => o.Option == optcombivm.Option))
+                        {
+                            var combis = variant.Options.Where(o => o.Combi == optcombivm.Option);
+                            Dictionary<int, string> combiDict = new Dictionary<int, string>();
+                            foreach (ProductVariantOption item in combis)
+                            {
+                                combiDict.Add(item.ID, item.Option);
+                            }
+                            optcombivm.Combi = combiDict;
+                            optionCombiViewModels.Add(optcombivm);
+                        }
+                    }
+                    combiVariant.Options = optionCombiViewModels;
+                    variantViewModels.Add(combiVariant);
+                }
+            }
+            #endregion Produktvarianten und Optionen
+
+            ProductDetailViewModel dvm = new ProductDetailViewModel()
 			{
 				ProductID = product.ProductID,
 				AvailableQuantity = product.AvailableQuantity,
 				BasesUnit = baseuint,
 				BasesUnitID = product.BasesUnitID,
 				Description = product.Description,
-				Price = productPrice,
+				Price = Math.Round(productPrice,2),
                 OrgPrice = productOrgPrice,
                 SellActionPrecent = (int) productSellActionPrecent,
                 SellActionItemId = sellactionitemid,
@@ -350,20 +444,39 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 				SeoDescription = product.SeoDescription,
 				SeoKeywords = product.SeoKeywords,
 				Shipping = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
-                IsNew = CheckIsNewProduct(product.PublishedOn)
-				
+                IsNew = CheckIsNewProduct(product.PublishedOn),
+                IsShownTextVartiant = product.IsShowTextVariant,
+                TextVariantTitel = product.TextVariantTitel,
+                Variants = variantViewModels
 			};
 
 			if (!string.IsNullOrWhiteSpace(dvm.SeoDescription))
 			{
                 dvm.SeoDescription += metaSellActionDescription;
+
+                if (dvm.IsNew)
+                {
+                    dvm.SeoDescription += ", Artikel ist neu im Sortiment.";
+                }
+
 				metaService.AddMetadata("description", dvm.SeoDescription); 
 			}
 			if (!string.IsNullOrWhiteSpace(dvm.SeoKeywords))
 			{
                 dvm.SeoKeywords += metaSellActionKeyWord;
+                if (dvm.IsNew)
+                {
+                    dvm.SeoKeywords += ", neu";
+                }
 				metaService.AddMetadata("keywords", dvm.SeoKeywords);
 			}
+            metaService.AddMetadataProperty("og:title", $"{dvm.Name}");
+            metaService.AddMetadataProperty("og.type", "product");
+            metaService.AddMetadataProperty("og.url", $"https://www.marelibudesign.de/Produkte/Artikel/{dvm.ProductID}-{dvm.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(dvm.Name)}");
+            metaService.AddMetadataProperty("og:image", $"https://www.marelibudesign.de/images/store/{dvm.MainImageUrl}");
+            metaService.AddMetadataProperty("og:description",$"Grundpreis: {dvm.Price} EUR/{dvm.BasesUnit}, {dvm.SeoDescription}");
+            metaService.AddMetadataProperty("og:price:amount", dvm.Price.ToString());
+            metaService.AddMetadataProperty("og:price:currency", $"EUR/{dvm.BasesUnit}");
 
 			return View(dvm);
         }
@@ -399,8 +512,9 @@ namespace MarelibuSoft.WebStore.Areas.Store.Controllers
 
             DateTime now = DateTime.Now;
             TimeSpan timeSpan = now.Subtract(publisheddate);
+            TimeSpan days14 = new TimeSpan(14, 0, 0, 0);
 
-            if (timeSpan.TotalDays < 14)
+            if (timeSpan.TotalDays <= days14.TotalDays)
             {
                 isNew = true;
             }

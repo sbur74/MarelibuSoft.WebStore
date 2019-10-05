@@ -75,7 +75,7 @@ namespace MarelibuSoft.WebStore.Services
             return Task.CompletedTask;
         }
 
-		public Task SendEmailWithAttachmentsAsync(string email, string subject, string message, List<string> Attachments)
+		public Task SendEmailWithAttachmentsAsync(string email, string subject, string message, List<string> Attachments,string bcc)
 		{
 			using (var client = new SmtpClient())
 			{
@@ -97,9 +97,12 @@ namespace MarelibuSoft.WebStore.Services
 					message += StaticEmailSignature.GetEmailSignature();
 					emailMessage.IsBodyHtml = true;
 					emailMessage.To.Add(new MailAddress(email));
-					emailMessage.Bcc.Add(new MailAddress("petra@marelibudesign.de"));
-					//emailMessage.Bcc.Add(new MailAddress("service@marelibudesign.de"));
-					//emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
+                    if (!string.IsNullOrWhiteSpace(bcc))
+                    {
+                        emailMessage.Bcc.Add(new MailAddress(bcc));
+                    }
+					
+					
 					emailMessage.From = new MailAddress(_configuration["Email:Email"]);
 					emailMessage.Subject = subject;
 					emailMessage.Body = message;

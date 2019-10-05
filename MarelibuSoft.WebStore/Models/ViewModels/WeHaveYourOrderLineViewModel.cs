@@ -17,5 +17,8 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public decimal Quantity { get; set; }
 		public string ProductUnit { get; set; }
 		public decimal Price { get; set; }
-	}
+
+        public List<TextOptionViewModel> TextOptionsList { get; set; }
+        public List<VariantViewModel> VariantList { get; set; }
+    }
 }

@@ -52,5 +52,7 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string SlugUrl { get; set; }
 
         public bool IsNew { get; set; }
+
+        public bool HasOptions { get; set; }
     }
 }

@@ -8,7 +8,7 @@
 
 
 
-<h2>@ViewBag.Title</h2>
+<h1>@ViewBag.Title</h1>
 
 
 <div class="hidden">
@@ -58,72 +58,79 @@
                     <a asp-action="Artikel" asp-route-id="@item.SlugUrl">
                         <img src="~/images/store/@Html.DisplayFor(modelItme => item.MainImageUrl)" alt="Artikelbild" style="height:150px;">
                     </a>
-                <div class="caption">
-                    <a asp-action="Artikel" asp-route-id="@item.SlugUrl">
-                        <h3 class="flex-text">@Html.DisplayFor(modelItem => item.Name)</h3>
-                    </a>
-                    <p class="flex-text">
-                        @Html.DisplayFor(modelItem => item.ShortDescription)<br />
-                        <span>@Html.DisplayNameFor(modelItme => item.AvailableQuantity)</span>
-                        <span id="@availableQunitity">@Html.DisplayFor(modelItem => item.AvailableQuantity)</span> <span>@Html.DisplayFor(modelItem => item.BasesUnit)</span>
-                    </p>
-                    <table>
-                        <tbody>
+                    <div class="caption">
+                        <a asp-action="Artikel" asp-route-id="@item.SlugUrl">
+                            <h3 class="flex-text">@Html.DisplayFor(modelItem => item.Name)</h3>
+                        </a>
+                        <p class="flex-text">
+                            @Html.DisplayFor(modelItem => item.ShortDescription)<br />
+                            <span>@Html.DisplayNameFor(modelItme => item.AvailableQuantity)</span>
+                            <span id="@availableQunitity">@Html.DisplayFor(modelItem => item.AvailableQuantity)</span> <span>@Html.DisplayFor(modelItem => item.BasesUnit)</span>
+                        </p>
+                        <table>
+                            <tbody>
 
-                            @if (streichPreis > 0)
-                            {
-                                <tr>
-                                    <td class="small">@Html.DisplayNameFor(modelItem => item.Price): </td>
-                                    <td class="small right text-danger"><b>@Html.DisplayFor(modelItem => item.Price)/@Html.DisplayFor(modelItem => item.BasesUnit)</b></td>
-                                </tr>
-                                <tr>
-                                    <td class="small"></td>
-                                    <td class="small right">(<s><b>@Html.DisplayFor(modelItem => item.OrgPrice)/@Html.DisplayFor(modelItem => item.BasesUnit)</b></s>)</td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td class="small">@Html.DisplayNameFor(modelItem => item.Price): </td>
-                                    <td class="small right"> @Html.DisplayFor(modelItem => item.Price)/@Html.DisplayFor(modelItem => item.BasesUnit)</td>
-                                </tr>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(item.SecondPriceUnit))
-                            {
-                            <tr>
                                 @if (streichPreis > 0)
                                 {
-                                    <td></td>
-                                    <td class="small right text-danger"> @Html.DisplayFor(modelItem => item.SecondPriceUnit)</td>
+                                    <tr>
+                                        <td class="small">@Html.DisplayNameFor(modelItem => item.Price): </td>
+                                        <td class="small right text-danger"><b>@Html.DisplayFor(modelItem => item.Price)/@Html.DisplayFor(modelItem => item.BasesUnit)</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="small"></td>
+                                        <td class="small right">(<s><b>@Html.DisplayFor(modelItem => item.OrgPrice)/@Html.DisplayFor(modelItem => item.BasesUnit)</b></s>)</td>
+                                    </tr>
                                 }
                                 else
                                 {
-                                    <td></td>
-                                    <td class="small right"> @Html.DisplayFor(modelItem => item.SecondPriceUnit)</td>
+                                    <tr>
+                                        <td class="small">@Html.DisplayNameFor(modelItem => item.Price): </td>
+                                        <td class="small right"> @Html.DisplayFor(modelItem => item.Price)/@Html.DisplayFor(modelItem => item.BasesUnit)</td>
+                                    </tr>
                                 }
-                            </tr>
-                            }
-                        </tbody>
-                    </table>
-
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            <button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-minus-sign"></i></button>
-                        </span>
-                        <input id="@quantity" class="form-control" style="text-align:right;max-width:none;" value="@Html.DisplayFor(modelItem => item.MinimumPurchaseQuantity)"
-                               onload="quantityPrice(@item.ProductID,'@item.Price');"
-                               onchange="quantityPrice(@item.ProductID, '@item.Price');" />
-                        <span class="input-group-btn">
-                            <button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
-                        </span>
+                                @if (!string.IsNullOrWhiteSpace(item.SecondPriceUnit))
+                                {
+                                    <tr>
+                                        @if (streichPreis > 0)
+                                        {
+                                            <td></td>
+                                            <td class="small right text-danger"> @Html.DisplayFor(modelItem => item.SecondPriceUnit)</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                            <td class="small right"> @Html.DisplayFor(modelItem => item.SecondPriceUnit)</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @if (item.HasOptions)
+                        {
+                            <p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
+                            <a asp-action="Artikel" asp-route-id="@item.SlugUrl" class="btn btn-default" role="button"><i class="fa fa-info"></i> Variante W&auml;hlen</a>
+                        }
+                        else
+                        {
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button id="@minus" class="btn btn-primary" onclick="subQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-minus-sign"></i></button>
+                                </span>
+                                <input id="@quantity" class="form-control" style="text-align:right;max-width:none;" value="@Html.DisplayFor(modelItem => item.MinimumPurchaseQuantity)"
+                                       onload="quantityPrice(@item.ProductID,'@item.Price');"
+                                       onchange="quantityPrice(@item.ProductID, '@item.Price');" />
+                                <span class="input-group-btn">
+                                    <button id="@plus" class="btn btn-primary" onclick="addQuantity(@item.ProductID,'@item.MinimumPurchaseQuantity','@item.Price');"><i class="glyphicon glyphicon-plus-sign"></i></button>
+                                </span>
+                            </div>
+                            <p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
+                            <input type="hidden" id="@sellactitid" value="@item.SellActionItemId" />
+                            <a id="@btnItemCart" class="btn btn-primary" role="button" onclick="postCartLine(@item.ProductID, '@item.BasesUnitID', '@item.Price');">
+                                <span class="glyphicon glyphicon-shopping-cart"></span> in den Warenkorb
+                            </a>
+                            @* <a asp-action="Artikel" asp-route-id="@item.SlugUrl" class="btn btn-default" role="button">Zum Artikel</a>*@
+                        }
                     </div>
-                    <p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
-                    <input type="hidden" id="@sellactitid" value="@item.SellActionItemId" />
-                    <a id="@btnItemCart" class="btn btn-primary" role="button" onclick="postCartLine(@item.ProductID, '@item.BasesUnitID', '@item.Price');">
-                        <span class="glyphicon glyphicon-shopping-cart"></span> in den Warenkorb
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ProductID" class="btn btn-default" role="button">Zum Artikel</a>
-                </div>
             </div>
         </div>
     }

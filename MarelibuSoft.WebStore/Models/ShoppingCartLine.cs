@@ -13,8 +13,11 @@ namespace MarelibuSoft.WebStore.Models
 		public decimal Quantity { get; set; }
 		public decimal SellBasePrice { get; set; } // price per unit at selling time
 		public int UnitID{ get; set; }
-
         public int SellActionItemId { get; set; }
+
+        public List<ShoppingCartLineVariantValue> VariantValues { get; set; }
+
+        public List<ShoppingCartLineTextOption> ShoppingCartLineTextOptions { get; set; }
 
         public Guid ShoppingCartID { get; set; }
 		public ShoppingCart ShoppingCart { get; set; }

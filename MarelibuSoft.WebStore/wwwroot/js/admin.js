@@ -243,3 +243,430 @@ marelibusoft.admin.sendShippingMail = function (orderid) {
 
 	var xxsrf = $("input[name='__RequestVerificationToken']").val();
 }
+
+$(".modal-wide").on("show.bs.modal", function () {
+    var height = $(window).height() - 200;
+    $(this).find(".modal-body").css("max-height", height);
+});
+
+marelibusoft.admin.getVariants = function () {
+    var url = "/api/ProductVariants";
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+    $.ajax(url, {
+        type: "GET",
+        contentType: "application/json",
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            return (data);
+        }, error: function () {
+            alert("Fehler");
+        }
+
+    });
+}
+
+marelibusoft.admin.getVariantOptions = function () {
+    var url = "/api/VariantOptionTemplates/variant/";
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+    var id = $("#selectVariant").find(":selected")[0].id;
+    var variantName = $("#selectVariant").find(":selected").text();
+    var optionName = $("#selectVariant").find(":selected").attr("data-optionname");
+    $("#variantNameAdd").val(variantName);
+    $("#variantOptionNameAdd").val(optionName);
+    console.log("selected variant:" + id);
+    url += id;
+    $.ajax(url, {
+        type: "GET",
+        contentType: "application/json",
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            var table = "tblOpt";
+            if (data) {
+                for (var i = 0; i < data.length; i++) {
+                    marelibusoft.admin.AddVariantOption(table ,data[i].option);
+                }
+            }
+        }, error: function () {
+            alert("Fehler");
+        }
+
+    });
+}
+
+
+marelibusoft.admin.getVariantCombiOptions = function () {
+    var url = "/api/VariantOptionTemplates/variant/";
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+    var id = $("#selectVariantCombi").find(":selected")[0].id;
+    var variantName = $("#selectVariantCombi").find(":selected").text();
+    var optionName = $("#selectVariantCombi").find(":selected").attr("data-optionname");
+    $("#combiVariantNameAdd").val(variantName);
+    $("#combiVariantOptionNameAdd").val(optionName);
+    console.log("selected variant:" + id);
+    url += id;
+    $.ajax(url, {
+        type: "GET",
+        contentType: "application/json",
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            var table = "tblCombi";
+            if (data) {
+                for (var i = 0; i < data.length; i++) {
+                    marelibusoft.admin.AddVariantOption(table, data[i].option);
+                }
+            }
+        }, error: function () {
+            alert("Fehler");
+        }
+
+    });
+}
+
+marelibusoft.admin.cleareModalVariant = function () {
+    marelibusoft.admin.variantOptionCount = 0;
+    marelibusoft.admin.variantCombiCount = 0;
+    $("#variantNameAdd").val("");
+    $("#variantOptionNameAdd").val("");
+    $("#combiVariantNameAdd").val("");
+    $("#combiVariantOptionNameAdd").val("");
+    $("#tblOpt").empty();
+    $("tblCombi").empty();
+}
+
+marelibusoft.admin.variantOptionCount = 0;
+marelibusoft.admin.variantCombiCount = 0;
+
+marelibusoft.admin.AddVariantOption = function (table, value) {
+      
+    var rowid = 0;
+    if (table === "tblOpt") {
+        marelibusoft.admin.variantOptionCount++;
+        rowid = marelibusoft.admin.variantOptionCount;
+    } else {
+        if (table === "tblCombi") {
+            marelibusoft.admin.variantCombiCount++;
+            rowid = marelibusoft.admin.variantCombiCount;
+        }
+    }
+    if (!value) value = "";
+    var tabelbody = $("#" + table);
+    var htmlrow = "<div id='" + table +"_row_" + rowid + "' class='row'>" +
+        "<div class='col-xs-9'>" +
+        "<input id='" + table + "_optionId_" + rowid + "' class='form-control' type='text' value='" + value + "' />" +
+        "</div >" +
+        "<div class='col-xs-3'>" +
+        "<a class='btn btn-danger' onclick='marelibusoft.admin.delteVariantRow(\"" + table + "\", " + rowid + ")'><i class='fa fa-trash'></i></a>" +
+        "</div ></div>";
+
+
+    tabelbody.append(htmlrow);
+    $("#" + table + "_optionId_" + rowid).focus();
+}
+
+marelibusoft.admin.delteVariantRow = function (table, rowid) {
+    var id = "#" + table +"_row_" + rowid;
+    $(id).empty();
+    var tbody = $("#" + table);
+    tbody.remove(id);
+}
+marelibusoft.admin.saveVariantOnSubmit = function () {
+    event.preventDefault();
+    $(".marelibu-varinat-rows").each(function (i, el) {
+        var varinatid = $(this).data("variant-id");
+        console.log(varinatid);
+        marelibusoft.admin.saveVariant(varinatid);
+    });
+
+}
+
+marelibusoft.admin.saveVariant = function (varinatId) {
+    var id = varinatId;
+
+    $("#variantTableBodyId_" + id + " > tr").each(function (i, el) {
+        var optId = $(this).data("option-id");
+        marelibusoft.admin.saveOption(id, optId);
+    });        
+}
+
+marelibusoft.admin.createVariants = function () {
+    var productID = $("#ProductID").val();
+    var variantName = $("#variantNameAdd").val();
+    var variantOption = $("#variantOptionNameAdd").val();
+    var combiVariantName = $("#combiVariantNameAdd").val();
+    var combiVariantOption = $("#combiVariantOptionNameAdd").val();
+    var copyTemplateControl = $('#copyTemplate');
+    var copyTemplate = false;
+    var isAbsolutelyNecessaryControl = $("#isAbsolutelyNecessary");
+    var isAbsolutelyNecessary = false;
+    var tbody = $("#tblOpt");
+    var tcombi = $("#tblCombi");
+    var optionInputs = tbody.find("input");
+    var combiInputs = tcombi.find("input");
+    var counter = marelibusoft.admin.variantOptionCount;
+    var combiCounter = marelibusoft.admin.variantCombiCount;
+    var variantOptions = [];
+    var templateOptions = [];
+    var templateOptCombi = [];
+
+    if (isAbsolutelyNecessaryControl.prop("checked")) isAbsolutelyNecessary = true;
+
+    if (copyTemplateControl.prop("checked")) copyTemplate = true;
+
+    if (combiInputs.length > 0) {
+        $.each(optionInputs, function (i, option) {
+            $.each(combiInputs, function (j, combi) {
+                var productVariantOption = {}
+                productVariantOption.option = option.value;
+                productVariantOption.quantity = 15.0;
+                productVariantOption.price = 0.0;
+                productVariantOption.combi = combi.value;
+                variantOptions.push(productVariantOption);
+                if (copyTemplate) {
+                    var variantOptionTemplate = {};
+                    variantOptionTemplate.option = option.value;
+                    templateOptions.push(variantOptionTemplate);
+                }
+            });
+        });
+    } else {
+        $.each(optionInputs, function (i, option) {
+            var productVariantOption = {}
+            productVariantOption.option = option.value;
+            productVariantOption.quantity = 15.0;
+            productVariantOption.price = 0.0;
+            productVariantOption.combi = "";
+            variantOptions.push(productVariantOption);
+            if (copyTemplate) {
+                var variantOptionTemplate = {};
+                variantOptionTemplate.option = option.value;
+                templateOptions.push(variantOptionTemplate);
+            }
+
+        });
+    }    
+
+    var productVariant = {};
+    productVariant.Name = variantName;
+    productVariant.OptionName = variantOption;
+    productVariant.Options = variantOptions;
+    productVariant.IsAbsolutelyNecessary = isAbsolutelyNecessary;
+    productVariant.ProductId = productID;
+
+    if (copyTemplate) {
+        var variantTemplate = {};
+        variantTemplate.Name = variantName;
+        variantTemplate.OptionName = variantOption;
+        variantTemplate.VariantOptionTemplates = templateOptions;
+        marelibusoft.admin.postVariantTemplate(variantTemplate);
+    }
+    marelibusoft.admin.postVariant(productVariant);   
+
+    $("#variantModal").modal("hide");
+    location.reload();
+}
+
+marelibusoft.admin.putVariantIsAbsolutelyNecessary = function (variantId) {
+    var control = $("#isAbsolutelyNecessary_" + variantId);
+    var isAbsolutelyNecessary = false;
+    if (control.prop("checked")) isAbsolutelyNecessary = true;
+
+    var url = "/api/ProductVariants/isNecessary/" + variantId;
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+
+    $.ajax(url, {
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ "isActive": isAbsolutelyNecessary }),
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            if ($(".new-product").length > 0) {
+                location.reload();
+            }
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+}
+
+marelibusoft.admin.postVariant = function (variant) {
+    var url = "/api/ProductVariants";
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+
+    var variantObj = variant
+
+    $.ajax(url, {
+        headers : { 'X-XSRF-TOKEN': xxsrf },
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(variantObj),
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            console.log(data);
+            if ($(".new-product").length > 0) {
+                location.reload();
+            }
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+}
+
+marelibusoft.admin.postVariantTemplate = function (variantTemplate) {
+    var url = "/api/VariantTemplates";
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+
+    var temp = variantTemplate;
+
+    $.ajax(url, {
+        headers : { 'X-XSRF-TOKEN': xxsrf },
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(temp),
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            console.log("Variante angelegt");
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+}
+
+marelibusoft.admin.deleteProductVariant = function (variantId) {
+    var url = "/api/ProductVariants/" + variantId;
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+
+    $.ajax(url, {
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        type: "DELETE",
+        contentType: "application/json",
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            location.reload();
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+}
+
+marelibusoft.admin.addOption = function (variantId) {
+    var option = {
+        Opiton: "",
+        Qunatity: 1.0,
+        Price: 0.0,
+        ProductVariantID: variantId
+    };
+
+    var url = "/api/ProductVariantOptions";
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+
+    $.ajax(url, {
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(option),
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            location.reload();
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+}
+
+
+marelibusoft.admin.saveOption = function (variantId, optionId) {
+    var optionValue = $("#option_" + optionId).val();
+    var quantityValue = marelibusoft.common.str2Float($("#quatity_" + optionId).val());
+    var priceValue = marelibusoft.common.str2Float($("#price_" + optionId).val());
+    var isNotShownValue = false;
+    if ($("#isNotShown_" + optionId).prop("checked")) {
+        isNotShownValue = true;
+    }
+    var url = "/api/ProductVariantOptions/" + optionId;
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+
+    $.ajax(url, {
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+            "id": optionId,
+            "option": optionValue,
+            "quantity": quantityValue,
+            "price": priceValue,
+            "isNotShown": isNotShownValue,
+            "productVariantID": variantId,
+        }),
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            console.log("geändert angelegt");
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+
+}
+
+marelibusoft.admin.deleteOption = function (variantId, optionId) {
+    var url = "/api/ProductVariantOptions/" + optionId;
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+
+    $.ajax(url, {
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        type: "DELETE",
+        contentType: "application/json",
+        data: JSON.stringify({
+            "id": optionId,
+            "productVariantID": variantId
+        }),
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            console.log("gelöscht");
+            location.reload();
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+}
+
+marelibusoft.admin.addCombiVariant = function () {
+    var container = $("containerCombi");
+    var html = "<a class='btn btn-success' onclick='marelibusoft.admin.AddVariantOption('tableBodyVariantCombi')'>" +
+        "<i class='fa fa - plus - circle'></i> Option hinzuf& uuml; gen</a >" +
+        "<div id = 'tableCombi class='table'>" +
+        "<div class='row'>" +
+        "<div class='col-xs-3'>" +
+        "<label class='control-label'>Wert</label>" +
+        "</div>" +
+        "<div class='col-xs-3'>" +
+        "<label class='control-label'>Menge</label>" +
+        "</div>" +
+        "<div class='col-xs-3'>" +
+        "<label class='control-label'>Preis</label>" +
+        "</div>" +
+        "<div class='col-xs-'>" +
+        "<label class='control-label'>Aktionen</label>" +
+        "</div>" +
+        "</div >" +
+        "<div id='tableBodyVariantCombi'></div></div >";
+    container.append(html);
+}

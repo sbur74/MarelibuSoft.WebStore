@@ -40,11 +40,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			List<IndexProductViewModel> vms = new List<IndexProductViewModel>();
 			ViewData["CurrentFilter"] = searchString;
 
-			var products = await _context.Products.OrderByDescending(p => p.ProductNumber).ToListAsync();
-			if (!String.IsNullOrEmpty(searchString))
-			{
-				products = products.Where(p => p.Name.Contains(searchString)).ToList();
-			}
+			var products =  _context.Products.OrderByDescending(p => p.ProductNumber).ToList();
+			
 
 			foreach (var item in products)
 			{
@@ -79,7 +76,18 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					IsActive = item.IsActive,
 					MainImage = mainImgStr
 				};
-				vms.Add(vm);
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    if(item.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+                    || item.ProductNumber.ToString().Contains(searchString, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        vms.Add(vm);
+                    }
+                }
+                else
+                {
+                    vms.Add(vm);
+                }
 			}
 
 			//IQueryable<IndexProductViewModel> queryable = vms.AsQueryable();
@@ -98,6 +106,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
             }
 
             var product = await _context.Products
+                .Include(v => v.ProductVariants)
+                .ThenInclude(o => o.Options)
                 .SingleOrDefaultAsync(m => m.ProductID == id);
 
 			AdminProductViewModel vm = new AdminProductViewModel()
@@ -131,7 +141,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				ShippingPriceTypeID = product.ShippingPriceType,
 				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
 				SeoDescription = product.SeoDescription,
-				SeoKeywords = product.SeoKeywords
+				SeoKeywords = product.SeoKeywords,
+                Variants = product.ProductVariants,
+                IsShowTextVariant = product.IsShowTextVariant,
+                TextVariantTitel = product.TextVariantTitel
 			};
             if (product == null)
             {
@@ -142,10 +155,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         }
 
         // GET: Admin/Products/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
 			int actProductNumber = 0;
-			var lastProd = _context.Products.LastOrDefault();
+			var lastProd = await _context.Products.LastOrDefaultAsync();
 			if(lastProd != null)
 			{
 				actProductNumber = lastProd.ProductNumber + 1;
@@ -173,10 +186,16 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			ViewData["CategorySubID"] = new SelectList(catsubvms, "ID", "Name");
 			ViewData["CategoryDetailID"] = new SelectList(catdeatailvms, "ID", "Name");
 			ViewData["ShippingPriceTypeID"] = new SelectList(shippingPriceTypes, "ID", "Name");
+            ViewData["Behave"] = "Create";
 
-			var vm = new AdminProductViewModel();
-			vm.ProductNumber = actProductNumber;
-			return View(vm) ;
+            Product product = new Product { ProductNumber = actProductNumber };
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
+
+            var vm = new AdminProductViewModel();
+            vm.ProductID = product.ProductID;
+			vm.ProductNumber = product.ProductNumber;
+			return View("Edit", vm) ;
         }
 
 		// GET: Admin/Products/Edit/5
@@ -188,7 +207,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				return NotFound();
 			}
 
-			var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductID == id);
+			var product = await _context.Products.Include(v => v.ProductVariants).SingleOrDefaultAsync(m => m.ProductID == id);
 			if (product == null)
 			{
 				return NotFound();
@@ -201,9 +220,30 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				actProductNumber = lastProd.ProductNumber + 1;
 			}
 
+            Product cproduct = new Product { ProductNumber = actProductNumber, ProductVariants = new List<ProductVariant>() };
+
+            var variants = product.ProductVariants;
+
+            foreach (ProductVariant variant in variants)
+            {
+                var cvt = new ProductVariant { Name = variant.Name, OptionName = variant.OptionName, Options = new List<ProductVariantOption>() };                var options = await _context.ProductVariantOptions.Where(o => o.ProductVariantID == variant.ID).ToListAsync();
+                foreach (ProductVariantOption option in variant.Options)
+                {
+                    var copt = new ProductVariantOption
+                    {
+                        IsNotShown = option.IsNotShown, Option = option.Option, Price = option.Price, Quantity = option.Quantity
+                    };
+                    cvt.Options.Add(copt);
+                }
+                cproduct.ProductVariants.Add(cvt);
+            }
+
+            await _context.Products.AddAsync(cproduct);
+            await _context.SaveChangesAsync();            
+
 			AdminProductViewModel vm = new AdminProductViewModel()
 			{
-				ProductID = product.ProductID,
+				ProductID = cproduct.ProductID,
 				AvailableQuantity = Math.Round(product.AvailableQuantity, 2).ToString(),
 				Description = product.Description,
 				MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity, 2).ToString(),
@@ -217,6 +257,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				SecondBaseUnitID = product.SecondBaseUnit,
 				SecondBasePrice = Math.Round(product.SecondBasePrice, 2).ToString(),
 				IsActive = product.IsActive,
+                IsShowTextVariant = product.IsShowTextVariant,
+                TextVariantTitel = product.TextVariantTitel,
 				BasesUnit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID),
 				Period = new ShippingPeriodHelper(_context).GetDescription(product.ShippingPeriod),
 				SecondBaseUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit),
@@ -225,7 +267,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				ShippingPriceTypeID = product.ShippingPriceType,
 				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
 				SeoDescription = product.SeoDescription,
-				SeoKeywords = product.SeoKeywords
+				SeoKeywords = product.SeoKeywords,
+                Variants = await _context.ProductVariants.Include(v => v.Options).Where(v => v.ProductId == cproduct.ProductID).ToListAsync()
 			};
 
 			List<UnitViewModel> vmunits = new UnitHelper(_context, factory).GetVmUnits();
@@ -244,8 +287,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			ViewData["CategorySubID"] = new SelectList(catsubvms, "ID", "Name");
 			ViewData["CategoryDetailID"] = new SelectList(catdeatailvms, "ID", "Name");
 			ViewData["ShippingPriceTypeID"] = new SelectList(shippingPriceTypes, "ID", "Name");
+            ViewData["Behave"] = "Copy";
 
-			return View(vm);
+            return View("Edit", vm);
 		}
 
 
@@ -254,7 +298,13 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,SecondBaseUnitID,SecondBasePrice,ShortDescription,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive,SeoDescription,SeoKeywords")] AdminProductViewModel vm)
+        public async Task<IActionResult> Create(
+            [Bind(
+                "ProductID,ProductNumber,Name,Description,Price,AvailableQuantity," +
+                "MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,SecondBaseUnitID," +
+                "SecondBasePrice,ShortDescription,CategoryID,CategorySubID,CategoryDetailID," +
+                "ShippingPriceTypeID,IsActive,SeoDescription,SeoKeywords,IsShowTextVariant," +
+                "TextVariantTitel, Variants")] AdminProductViewModel vm)
        {
 			
 			
@@ -277,7 +327,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				IsActive = vm.IsActive,
 				SeoDescription = vm.SeoDescription,
 				SeoKeywords = vm.SeoKeywords,
-                PublishedOn = DateTime.Now
+                PublishedOn = DateTime.Now,
+                IsShowTextVariant = vm.IsShowTextVariant,
+                ProductVariants = vm.Variants,
+                TextVariantTitel = vm.TextVariantTitel
 			};
 
 			if (ModelState.IsValid)
@@ -304,31 +357,34 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
                 return NotFound();
             }
 
-			AdminProductViewModel vm = new AdminProductViewModel() {
-				ProductID = product.ProductID,
-				AvailableQuantity = Math.Round(product.AvailableQuantity,2).ToString(),
-				Description = product.Description,
-				MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity,2).ToString(),
-				Name = product.Name,
-				Price = Math.Round(product.Price,2).ToString(),
-				ProductNumber = product.ProductNumber,
-				PeriodID = product.ShippingPeriod,
-				SizeID = product.Size,
-				ShortDescription = product.ShortDescription,
-				BasesUnitID = product.BasesUnitID,
-				SecondBaseUnitID = product.SecondBaseUnit,
-				SecondBasePrice = Math.Round(product.SecondBasePrice,2).ToString(),
-				IsActive = product.IsActive,
-				BasesUnit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID),
-				Period = new ShippingPeriodHelper(_context).GetDescription(product.ShippingPeriod),
-				SecondBaseUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit),
-				Size = new SizeHelper(_context).GetName(product.Size),
-				ImageUrls = new ProductImageHelper(_context, factory).GetUrls(product.ProductID),
-				ShippingPriceTypeID = product.ShippingPriceType,
-				ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
-				SeoDescription = product.SeoDescription,
-				SeoKeywords = product.SeoKeywords
-			};
+            AdminProductViewModel vm = new AdminProductViewModel() {
+                ProductID = product.ProductID,
+                AvailableQuantity = Math.Round(product.AvailableQuantity, 2).ToString(),
+                Description = product.Description,
+                MinimumPurchaseQuantity = Math.Round(product.MinimumPurchaseQuantity, 2).ToString(),
+                Name = product.Name,
+                Price = Math.Round(product.Price, 2).ToString(),
+                ProductNumber = product.ProductNumber,
+                PeriodID = product.ShippingPeriod,
+                SizeID = product.Size,
+                ShortDescription = product.ShortDescription,
+                BasesUnitID = product.BasesUnitID,
+                SecondBaseUnitID = product.SecondBaseUnit,
+                SecondBasePrice = Math.Round(product.SecondBasePrice, 2).ToString(),
+                IsActive = product.IsActive,
+                BasesUnit = new UnitHelper(_context, factory).GetUnitName(product.BasesUnitID),
+                Period = new ShippingPeriodHelper(_context).GetDescription(product.ShippingPeriod),
+                SecondBaseUnit = new UnitHelper(_context, factory).GetUnitName(product.SecondBaseUnit),
+                Size = new SizeHelper(_context).GetName(product.Size),
+                ImageUrls = new ProductImageHelper(_context, factory).GetUrls(product.ProductID),
+                ShippingPriceTypeID = product.ShippingPriceType,
+                ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(product.ShippingPriceType),
+                SeoDescription = product.SeoDescription,
+                SeoKeywords = product.SeoKeywords,
+                IsShowTextVariant = product.IsShowTextVariant,
+                TextVariantTitel = product.TextVariantTitel,
+                Variants = await _context.ProductVariants.Where(pv => pv.ProductId == product.ProductID).Include(o => o.Options).ToListAsync()
+            };
 
 			List<UnitViewModel> vmunits = new UnitHelper(_context, factory).GetVmUnits();
 			List<SizeViewModel> vwsizes = new SizeHelper(_context).GetVmSizes();
@@ -346,8 +402,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 			ViewData["CategorySubID"] = new SelectList(catsubvms, "ID", "Name");
 			ViewData["CategoryDetailID"] = new SelectList(catdeatailvms, "ID", "Name");
 			ViewData["ShippingPriceTypeID"] = new SelectList(shippingPriceTypes, "ID", "Name");
+            ViewData["Behave"] = "Edit";
 
-			return View(vm);
+            return View(vm);
         }
 
         // POST: Admin/Products/Edit/5
@@ -355,7 +412,14 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int ProductID, [Bind("ProductID,ProductNumber,Name,Description,Price,AvailableQuantity,MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID,ShortDescription,SecondBasePrice,SecondBaseUnitID,CategoryID,CategorySubID,CategoryDetailID,ShippingPriceTypeID,IsActive,SeoDescription,SeoKeywords")] AdminProductViewModel vm)
+        public async Task<IActionResult> Edit(int ProductID, 
+            [Bind(
+                "ProductID," +
+                "ProductNumber,Name,Description,Price,AvailableQuantity," +
+                "MinimumPurchaseQuantity,BasesUnitID,SizeID,PeriodID," +
+                "ShortDescription,SecondBasePrice,SecondBaseUnitID,CategoryID,CategorySubID,CategoryDetailID," +
+                "ShippingPriceTypeID,IsActive,SeoDescription,SeoKeywords, IsShowTextVariant, TextVariantTitel, Variants")] 
+                AdminProductViewModel vm)
         {
 			Product product = new Product() {
 				ProductID = vm.ProductID,
@@ -375,8 +439,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				ShippingPriceType = vm.ShippingPriceTypeID,
 				SeoDescription = vm.SeoDescription,
 				SeoKeywords = vm.SeoKeywords,
-                PublishedOn = DateTime.Now
-			};
+                //PublishedOn = DateTime.Now,
+                IsShowTextVariant = vm.IsShowTextVariant,
+                TextVariantTitel = vm.TextVariantTitel,
+                ProductVariants = vm.Variants
+            };
 
 			if (ProductID != vm.ProductID)
             {

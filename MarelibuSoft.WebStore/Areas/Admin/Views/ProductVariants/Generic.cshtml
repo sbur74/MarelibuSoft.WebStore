@@ -1,0 +1,56 @@
+﻿@model MarelibuSoft.WebStore.Models.ProductVariant
+
+@{
+    ViewData["Title"] = "Generic";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    string behave = ViewBag.Behave;
+        string h2 = "Artikelvariante bearbeiten";
+
+    switch (behave)
+    {
+        case "Create":
+            ViewData["Title"] = "Neue Artikelvariante";
+            h2 = "Artikel erstellen";
+            break;
+        case "Copy":
+            ViewData["Title"] = "Kopie erstellen";
+            h2 = "Artikelvariante Kopie erstellen";
+            break;
+        case "Edit":
+        default:
+            ViewData["Title"] = "Bearbeiten";
+            h2 = "Artikelvariante bearbeiten";
+            break;
+    }
+}
+
+<h2>@h2</h2>
+
+<h4>@Html.DisplayFor(model => model.Name)</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Generic">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

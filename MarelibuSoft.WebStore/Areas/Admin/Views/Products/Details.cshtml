@@ -10,58 +10,66 @@
 <div>
     <h4>@Html.DisplayFor(model => model.ProductNumber) - @Html.DisplayFor(model => model.Name)</h4>
     <hr />
-	<div class="dl-horizontal">
-		<div class="container-fluid">
-			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.ShortDescription)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.ShortDescription)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2">@Html.DisplayNameFor(model => model.Description)</strong>
-			<p class="col-md-6 ">@Html.Raw(Model.Description)</p>
-		</div>
-		<hr />
-		<div class="container-fluid">
-			<strong class="col-md-2">@Html.DisplayNameFor(model => model.SeoDescription)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.SeoDescription)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2">@Html.DisplayNameFor(model => model.SeoKeywords)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.SeoKeywords)</p>
-		</div>
-		<hr />
-		<div class="container-fluid">
-			<strong class="col-md-2">@Html.DisplayNameFor(model => model.Price)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.Price) &euro;/@Html.DisplayFor(model => model.BasesUnit)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2">@Html.DisplayNameFor(model => model.AvailableQuantity)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.AvailableQuantity) @Html.DisplayFor(model => model.BasesUnit)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2">@Html.DisplayNameFor(model => model.MinimumPurchaseQuantity)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.MinimumPurchaseQuantity) @Html.DisplayFor(model => model.BasesUnit)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.Size)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.Size)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.SecondBasePrice)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.SecondBasePrice) &euro;/@Html.DisplayFor(model => model.SecondBaseUnit)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.Period)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.Period)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2 ">@Html.DisplayNameFor(model => model.ShippingPriceTypeName)</strong>
-			<p class="col-md-6 ">@Html.DisplayFor(model => model.ShippingPriceTypeName)</p>
-		</div>
-		<div class="container-fluid">
-			<strong class="col-md-2">@Html.DisplayNameFor(model => model.IsActive)</strong>
-			<p class="col-md-6">@Html.DisplayFor(model => model.IsActive)</p>
-		</div>
-	</div>
+    <div class="dl-horizontal">
+        <div class="container-fluid">
+            <strong class="col-md-2 ">@Html.DisplayNameFor(model => model.ShortDescription)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.ShortDescription)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.Description)</strong>
+            <p class="col-md-6 ">@Html.Raw(Model.Description)</p>
+        </div>
+        <hr />
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.SeoDescription)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.SeoDescription)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.SeoKeywords)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.SeoKeywords)</p>
+        </div>
+        <hr />
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.Price)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.Price) &euro;/@Html.DisplayFor(model => model.BasesUnit)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.AvailableQuantity)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.AvailableQuantity) @Html.DisplayFor(model => model.BasesUnit)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.MinimumPurchaseQuantity)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.MinimumPurchaseQuantity) @Html.DisplayFor(model => model.BasesUnit)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2 ">@Html.DisplayNameFor(model => model.Size)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.Size)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2 ">@Html.DisplayNameFor(model => model.SecondBasePrice)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.SecondBasePrice) &euro;/@Html.DisplayFor(model => model.SecondBaseUnit)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2 ">@Html.DisplayNameFor(model => model.Period)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.Period)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2 ">@Html.DisplayNameFor(model => model.ShippingPriceTypeName)</strong>
+            <p class="col-md-6 ">@Html.DisplayFor(model => model.ShippingPriceTypeName)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.IsActive)</strong>
+            <p class="col-md-6">@Html.DisplayFor(model => model.IsActive)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.IsShowTextVariant)</strong>
+            <p class="col-md-6">@Html.DisplayFor(model => model.IsShowTextVariant)</p>
+        </div>
+        <div class="container-fluid">
+            <strong class="col-md-2">@Html.DisplayNameFor(model => model.TextVariantTitel)</strong>
+            <p class="col-md-6">@Html.DisplayFor(model => model.TextVariantTitel)</p>
+        </div>
+    </div>
 	<div>
 		@if (Model.ImageUrls != null)
 		{
@@ -73,6 +81,35 @@
 			<hr />
 		}
 	</div>
+
+    @if (Model.Variants != null)
+    {
+        @foreach (var varinat in Model.Variants)
+        {
+            <div class="row">
+                <div class="col-md-3>Variant Name:</div>
+                <div class="col-md-3>@varinat.Name</div>
+                <div class="col-md-3>Options Name:</div>
+                <div class="col-md-3>@varinat.OptionName</div>
+                <div class="row">
+                    <div class="col-md-3">Option</div>
+                    <div class="col-md-3">Combi</div>
+                    <div class="col-md-3">Preis</div>
+                    <div class="col-md-3">Menge</div>
+                </div>
+                @foreach (var option in varinat.Options)
+                {
+                    <div class="row">
+                        <div class="col-md-3">@option.Option</div>
+                        <div class="col-md-3">@option.Combi</div>
+                        <div class="col-md-3">@option.Price</div>
+                        <div class="col-md-3">@option.Quantity</div>
+                     </div>
+                }
+            </div>
+        }
+    }
+
 	<div>
 		<a class="btn btn-success" asp-action="Create" asp-area="Admin" asp-controller="ProductImages" asp-route-id="@Model.ProductID">Neues Bild</a>
 	</div>

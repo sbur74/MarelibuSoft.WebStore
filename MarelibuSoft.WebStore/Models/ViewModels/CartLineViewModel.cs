@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MarelibuSoft.WebStore.Models.ViewModels
 {
@@ -25,5 +26,8 @@ namespace MarelibuSoft.WebStore.Models.ViewModels
 		public string SekUnit { get; set; }
 
 		public string SlugUrl{ get; set; }
-	}
+
+        public List<VariantViewModel> VariantList { get; set; }
+        public List<TextOptionViewModel> TextOptionList { get; set; }
+    }
 }
