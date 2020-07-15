@@ -18,9 +18,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 	public class PaymendsController : Controller
     {
         private readonly ApplicationDbContext _context;
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 
-		public PaymendsController(ApplicationDbContext context, IHostingEnvironment environment)
+		public PaymendsController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
 			_environment = environment;

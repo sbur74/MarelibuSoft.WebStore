@@ -24,15 +24,17 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 	public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
-		private readonly ILogger _logger;
+		//private readonly ILogger _logger;
 		private readonly IEmailSender _emailSender;
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 		private ShippingAddressHelper addressHelper;
 
-		public OrdersController(ApplicationDbContext context,ILogger<OrdersController>logger, IEmailSender emailSender, IHostingEnvironment environment)
+		public OrdersController(ApplicationDbContext context,
+            //ILogger<OrdersController>logger, 
+			IEmailSender emailSender, IWebHostEnvironment environment)
         {
             _context = context;
-			_logger = logger;
+			//_logger = logger;
 			_emailSender = emailSender;
 			_environment = environment;
 			addressHelper = new ShippingAddressHelper(_context);
@@ -291,7 +293,7 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				return NotFound();
 			}
 
-			_logger.LogDebug($"Admin/Orders/SendEmail values: id = {id}, action = {viewModel.StateAction}, message = {viewModel.Message}");
+			//_logger.LogDebug($"Admin/Orders/SendEmail values: id = {id}, action = {viewModel.StateAction}, message = {viewModel.Message}");
 
 			Guid orderid =(Guid) id;
 
@@ -418,22 +420,62 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
                     .SingleOrDefaultAsync(m => m.ID == orderId);
                 var olines = order.OderLines;
 				List<OrderLineViewModel> lineViewModels = new List<OrderLineViewModel>();
+
+                bool hasVariant = false;
+
 				foreach (var item in olines)
 				{
 					var unit = await _context.Units.SingleAsync(u => u.UnitID == item.UnitID);
 
-					OrderLineViewModel lineViewModel = new OrderLineViewModel {
-						ID = item.OrderLineID,
-						Image = item.ImageUrl,
-						OrderPrice = item.SellBasePrice,
-						OrderQuantity = item.Quantity,
-						ProductName = item.ProductName,
-						OrderUnit = unit.Name,
-						OrderLineTotal = 
-						item.Quantity * item.SellBasePrice,
-						Position = item.Position,
-						ProductNumber = item.ProductNumber
-					};
+                    var txtOptions = new List<TextOptionViewModel>();
+
+                    foreach (var txt in item.OrderLineTextOptions)
+                    {
+                        var txtOpts = new TextOptionViewModel
+                        {
+                            ID = txt.ID,
+                            LineId = txt.OrderLineId,
+                            Text = txt.Text
+                        };
+                        txtOptions.Add(txtOpts);
+                        hasVariant = true;
+                    }
+
+                    var variantOptions = new List<VariantViewModel>();
+
+                    foreach (var variant in item.VariantValues)
+                    {
+                        var variantOption = new VariantViewModel
+                        {
+                            Id = variant.Id,
+                            Combi = variant.Combi,
+                            LineId = variant.OrderLineId,
+                            Price = variant.Price,
+                            ProductVariant = variant.ProductVariant,
+                            ProductVariantOption = variant.ProductVariantOption,
+                            Quantity = variant.Quantity,
+                            Value = variant.Value,
+                            VariantName = variant.VarinatName
+                        };
+                        variantOptions.Add(variantOption);
+                        hasVariant = true;
+                    }
+
+                    OrderLineViewModel lineViewModel = new OrderLineViewModel
+                    {
+                        ID = item.OrderLineID,
+                        Image = item.ImageUrl,
+                        OrderPrice = item.SellBasePrice,
+                        OrderQuantity = item.Quantity,
+                        ProductName = item.ProductName,
+                        OrderUnit = unit.Name,
+                        OrderLineTotal =
+                        item.Quantity * item.SellBasePrice,
+                        Position = item.Position,
+                        ProductNumber = item.ProductNumber,
+                        TextOptionList = txtOptions,
+                        VariantList = variantOptions
+                    };
 
 					lineViewModels.Add(lineViewModel);
 				}
@@ -488,12 +530,14 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					Total = order.Total,
 					CustomerFirstName = customer.FirstName,
 					CutomerLastName = customer.Name,
-					OderLines = lineViewModels
+					OderLines = lineViewModels,
+                    HasVariant = hasVariant
 				};
 			}
 			catch (Exception e)
 			{
-				_logger.LogError(e, "Admin.OrdersController.GetViewModel -> error on sql transaction", null);
+				//_logger.LogError(e, "Admin.OrdersController.GetViewModel -> error on sql transaction", null);
+				Console.WriteLine(e);
 			}
 
 			return vm;

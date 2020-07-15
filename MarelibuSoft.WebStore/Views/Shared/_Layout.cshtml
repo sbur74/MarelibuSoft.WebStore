@@ -3,7 +3,9 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="google-site-verification" content="5zOaix-UJTRGmY9xG8lUedINzt3VoG8AqwN4RJEgZ1I" />
+    <environment exclude="Development">
+        <meta name="google-site-verification" content="5zOaix-UJTRGmY9xG8lUedINzt3VoG8AqwN4RJEgZ1I" />
+    </environment>
 
 	<title>@ViewData["Title"] - marelibuDesign</title>
 
@@ -62,7 +64,9 @@
         </div>
     </nav>
     <div class="toogler">
-        <div id="myalert"></div>
+        <div id="myalert" class="media">
+            
+        </div>
     </div>
 
     <div id="myModal" class="modal fade" role="dialog">

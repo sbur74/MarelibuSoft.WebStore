@@ -10,11 +10,11 @@ namespace MarelibuSoft.WebStore.Areas.Admin.ViewComponents
 {
 	public class CmsFilesLoadedViewComponent : ViewComponent
 	{
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 		private string _uploadPath;
 		private string _shopimages;
 
-		public CmsFilesLoadedViewComponent(IHostingEnvironment hostingEnvironment)
+		public CmsFilesLoadedViewComponent(IWebHostEnvironment hostingEnvironment)
 		{
 			_environment = hostingEnvironment;
 			_uploadPath = "contents";

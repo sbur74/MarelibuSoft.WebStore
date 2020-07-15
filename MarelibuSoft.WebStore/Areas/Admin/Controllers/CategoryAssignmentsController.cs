@@ -23,11 +23,13 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		private readonly ILogger _logger;
 		private readonly ILoggerFactory factory;
 
-        public CategoryAssignmentsController(ApplicationDbContext context, ILogger<CategoryAssignmentsController>logger, ILoggerFactory loggerFactory)
+        public CategoryAssignmentsController(ApplicationDbContext context
+            //, ILogger<CategoryAssignmentsController>logger, ILoggerFactory loggerFactory
+            )
         {
             _context = context;
-			_logger = logger;
-			factory = loggerFactory;
+			//_logger = logger;
+			//factory = loggerFactory;
 
         }
 

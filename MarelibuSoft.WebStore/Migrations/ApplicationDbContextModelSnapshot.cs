@@ -20,39 +20,54 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<int>("AccessFailedCount");
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Email")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("EmailConfirmed");
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("LockoutEnabled");
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NormalizedEmail")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
-                    b.Property<string>("PasswordHash");
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PhoneNumber");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("PhoneNumberConfirmed");
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("SecurityStamp");
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -70,15 +85,20 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.BankAcccount", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("AccountOwner");
+                    b.Property<string>("AccountOwner")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Iban");
+                    b.Property<string>("Iban")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Institute");
+                    b.Property<string>("Institute")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("SwiftBic");
+                    b.Property<string>("SwiftBic")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -88,16 +108,21 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Category", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("HtmlDescription");
+                    b.Property<string>("HtmlDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("SeoDescription")
+                        .HasColumnType("varchar(155) CHARACTER SET utf8mb4")
                         .HasMaxLength(155);
 
-                    b.Property<string>("SeoKeywords");
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -107,15 +132,20 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CategoryAssignment", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("CategoryDetailID");
+                    b.Property<int>("CategoryDetailID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("CategoryID");
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("CategorySubID");
+                    b.Property<int>("CategorySubID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProductID");
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -127,18 +157,24 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CategoryDetail", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("CategorySubID");
+                    b.Property<int>("CategorySubID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("HtmlDescription");
+                    b.Property<string>("HtmlDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("SeoDescription")
+                        .HasColumnType("varchar(155) CHARACTER SET utf8mb4")
                         .HasMaxLength(155);
 
-                    b.Property<string>("SeoKeywords");
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -150,18 +186,24 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CategorySub", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("CategoryID");
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("HtmlDescription");
+                    b.Property<string>("HtmlDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("SeoDescription")
+                        .HasColumnType("varchar(155) CHARACTER SET utf8mb4")
                         .HasMaxLength(155);
 
-                    b.Property<string>("SeoKeywords");
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -173,27 +215,38 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CmsPage", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("LastChange");
+                    b.Property<DateTime>("LastChange")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("LayoutEnum");
+                    b.Property<int>("LayoutEnum")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PageContent");
+                    b.Property<string>("PageContent")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PageDesciption");
+                    b.Property<string>("PageDesciption")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("PageEnum");
+                    b.Property<int>("PageEnum")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SeoDescription");
+                    b.Property<string>("SeoDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("SeoKeywords");
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("StatusEnum");
+                    b.Property<int>("StatusEnum")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Titel");
+                    b.Property<string>("Titel")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -203,29 +256,41 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CmsPageDraft", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("DraftOfPageId");
+                    b.Property<int>("DraftOfPageId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("LastChange");
+                    b.Property<DateTime>("LastChange")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("LayoutEnum");
+                    b.Property<int>("LayoutEnum")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PageContent");
+                    b.Property<string>("PageContent")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PageDesciption");
+                    b.Property<string>("PageDesciption")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("PageEnum");
+                    b.Property<int>("PageEnum")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SeoDescription");
+                    b.Property<string>("SeoDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("SeoKeywords");
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("StatusEnum");
+                    b.Property<int>("StatusEnum")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Titel");
+                    b.Property<string>("Titel")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -235,19 +300,26 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CmsStartPage", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("HeadContent");
+                    b.Property<string>("HeadContent")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("LeftContent");
+                    b.Property<string>("LeftContent")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("RightContent");
+                    b.Property<string>("RightContent")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("SeoDescription");
+                    b.Property<string>("SeoDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("SeoKeywords");
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -257,13 +329,17 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Country", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Code");
+                    b.Property<string>("Code")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("IsAllowedShipping");
+                    b.Property<bool>("IsAllowedShipping")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -272,30 +348,42 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Customer", b =>
                 {
-                    b.Property<Guid>("CustomerID")
-                        .ValueGeneratedOnAdd();
+                    b.Property<byte[]>("CustomerID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<string>("AdditionalAddress");
+                    b.Property<string>("AdditionalAddress")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("AllowedPayByBill");
+                    b.Property<bool>("AllowedPayByBill")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("City");
+                    b.Property<string>("City")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("CompanyName");
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("CountryId");
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("CustomerNo");
+                    b.Property<string>("CustomerNo")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PostCode");
+                    b.Property<string>("PostCode")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("CustomerID");
 
@@ -305,13 +393,17 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CustomerGroup", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<decimal>("Rabatt");
+                    b.Property<decimal>("Rabatt")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("ID");
 
@@ -321,11 +413,15 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.CustomerGroupAssignment", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("CustomerID");
+                    b.Property<byte[]>("CustomerID")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<int>("GroupID");
+                    b.Property<int>("GroupID")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -337,17 +433,23 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Ebook", b =>
                 {
                     b.Property<int>("EbookID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("FkProductID");
+                    b.Property<int>("FkProductID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Path");
+                    b.Property<string>("Path")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PathFileID");
+                    b.Property<string>("PathFileID")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Version");
+                    b.Property<string>("Version")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("EbookID");
 
@@ -357,23 +459,32 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Guest", b =>
                 {
                     b.Property<int>("GuestID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("AdditionalAddress");
+                    b.Property<string>("AdditionalAddress")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("City");
+                    b.Property<string>("City")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("DateOfBirth");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PostCode");
+                    b.Property<string>("PostCode")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("GuestID");
 
@@ -383,29 +494,41 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Impressum", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("AdditionalAddress");
+                    b.Property<string>("AdditionalAddress")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Bank");
+                    b.Property<string>("Bank")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Bic");
+                    b.Property<string>("Bic")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("City");
+                    b.Property<string>("City")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("CountryID");
+                    b.Property<int>("CountryID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("EMail");
+                    b.Property<string>("EMail")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Iban");
+                    b.Property<string>("Iban")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PostCode");
+                    b.Property<string>("PostCode")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ShopAdmin");
+                    b.Property<string>("ShopAdmin")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ShopName");
+                    b.Property<string>("ShopName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -415,13 +538,17 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.LawContent", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("HtmlContent");
+                    b.Property<string>("HtmlContent")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("SiteType");
+                    b.Property<int>("SiteType")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Titel");
+                    b.Property<string>("Titel")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -430,46 +557,69 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Order", b =>
                 {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                    b.Property<byte[]>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<Guid>("CartID");
+                    b.Property<byte[]>("CartID")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<Guid>("CustomerID");
+                    b.Property<byte[]>("CustomerID")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<bool>("ExceptLawConditions");
+                    b.Property<bool>("ExceptLawConditions")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("FreeText");
+                    b.Property<string>("FreeText")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("GustID");
+                    b.Property<byte[]>("GustID")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<bool>("IsCancelled");
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsClosed");
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsPayed");
+                    b.Property<bool>("IsPayed")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsSend");
+                    b.Property<bool>("IsSend")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Number");
+                    b.Property<string>("Number")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("OrderDate");
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("PaymentID");
+                    b.Property<int>("PaymentID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ShippingAddressId");
+                    b.Property<int>("ShippingAddressId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ShippingPeriodId");
+                    b.Property<int>("ShippingPeriodId")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("ShippingPrice");
+                    b.Property<decimal>("ShippingPrice")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ShippingPriceId");
+                    b.Property<int>("ShippingPriceId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("Shippingdate");
+                    b.Property<DateTime>("Shippingdate")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<decimal>("Total");
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("TrackingNumber");
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -479,13 +629,17 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderCompletionText", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Content");
+                    b.Property<string>("Content")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("PaymendType");
+                    b.Property<int>("PaymendType")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -495,25 +649,36 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderLine", b =>
                 {
                     b.Property<int>("OrderLineID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ImageUrl");
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("OrderID");
+                    b.Property<byte[]>("OrderID")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<int>("Position");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProductID");
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ProductName");
+                    b.Property<string>("ProductName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ProductNumber");
+                    b.Property<int>("ProductNumber")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Quantity");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<decimal>("SellBasePrice");
+                    b.Property<decimal>("SellBasePrice")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("UnitID");
+                    b.Property<int>("UnitID")
+                        .HasColumnType("int");
 
                     b.HasKey("OrderLineID");
 
@@ -525,13 +690,17 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderLineTextOption", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("OrderLineId");
+                    b.Property<int>("OrderLineId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -543,23 +712,32 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.OrderLineVariantValue", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Combi");
+                    b.Property<string>("Combi")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("OrderLineId");
+                    b.Property<int>("OrderLineId")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Price");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ProductVariant");
+                    b.Property<int>("ProductVariant")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProductVariantOption");
+                    b.Property<int>("ProductVariantOption")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Quantity");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("VarinatName");
+                    b.Property<string>("VarinatName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -571,15 +749,20 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Paymend", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LogoUrl");
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("PaymendType");
+                    b.Property<int>("PaymendType")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -589,45 +772,65 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Product", b =>
                 {
                     b.Property<int>("ProductID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("AvailableQuantity");
+                    b.Property<decimal>("AvailableQuantity")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("BasesUnitID");
+                    b.Property<int>("BasesUnitID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsShowTextVariant");
+                    b.Property<bool>("IsShowTextVariant")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<decimal>("MinimumPurchaseQuantity");
+                    b.Property<decimal>("MinimumPurchaseQuantity")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<decimal>("Price");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ProductNumber");
+                    b.Property<int>("ProductNumber")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("PublishedOn");
+                    b.Property<DateTime>("PublishedOn")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<decimal>("SecondBasePrice");
+                    b.Property<decimal>("SecondBasePrice")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("SecondBaseUnit");
+                    b.Property<int>("SecondBaseUnit")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SeoDescription");
+                    b.Property<string>("SeoDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("SeoKeywords");
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ShippingPeriod");
+                    b.Property<int>("ShippingPeriod")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ShippingPriceType");
+                    b.Property<int>("ShippingPriceType")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ShortDescription");
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("Size");
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
 
-                    b.Property<string>("TextVariantTitel");
+                    b.Property<string>("TextVariantTitel")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ProductID");
 
@@ -637,15 +840,20 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ProductImage", b =>
                 {
                     b.Property<int>("ProductImageID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ImageUrl");
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("IsMainImage");
+                    b.Property<bool>("IsMainImage")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ProductID");
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
 
                     b.HasKey("ProductImageID");
 
@@ -657,17 +865,23 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ProductVariant", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("CombiOptionName");
+                    b.Property<string>("CombiOptionName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("IsAbsolutelyNecessary");
+                    b.Property<bool>("IsAbsolutelyNecessary")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("OptionName");
+                    b.Property<string>("OptionName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ProductId");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -679,19 +893,26 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ProductVariantOption", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Combi");
+                    b.Property<string>("Combi")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("IsNotShown");
+                    b.Property<bool>("IsNotShown")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Option");
+                    b.Property<string>("Option")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<decimal>("Price");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ProductVariantID");
+                    b.Property<int>("ProductVariantID")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Quantity");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("ID");
 
@@ -703,17 +924,23 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.SellAction", b =>
                 {
                     b.Property<int>("SellActionID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ActionName");
+                    b.Property<string>("ActionName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("EndDate");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<decimal>("Percent");
+                    b.Property<decimal>("Percent")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<DateTime>("StartDate");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("SellActionID");
 
@@ -723,11 +950,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.SellActionItem", b =>
                 {
                     b.Property<int>("SellActionItemID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("FkProductID");
+                    b.Property<int>("FkProductID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SellActionID");
+                    b.Property<int>("SellActionID")
+                        .HasColumnType("int");
 
                     b.HasKey("SellActionItemID");
 
@@ -739,29 +969,42 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShippingAddress", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("AdditionalAddress");
+                    b.Property<string>("AdditionalAddress")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("City");
+                    b.Property<string>("City")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("CompanyName");
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("CountryID");
+                    b.Property<int>("CountryID")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("CustomerID");
+                    b.Property<byte[]>("CustomerID")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("IsInvoiceAddress");
+                    b.Property<bool>("IsInvoiceAddress")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsMainAddress");
+                    b.Property<bool>("IsMainAddress")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PostCode");
+                    b.Property<string>("PostCode")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -771,9 +1014,11 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShippingPeriod", b =>
                 {
                     b.Property<int>("ShippingPeriodID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Decription");
+                    b.Property<string>("Decription")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ShippingPeriodID");
 
@@ -783,15 +1028,20 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShippingPrice", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("CountryId");
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<decimal>("Price");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ShippingPriceTypeId");
+                    b.Property<int>("ShippingPriceTypeId")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -803,11 +1053,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShippingPriceType", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -817,13 +1070,17 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShopContent", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("ShowIn");
+                    b.Property<int>("ShowIn")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Site");
+                    b.Property<string>("Site")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -833,15 +1090,20 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShopFile", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Filename");
+                    b.Property<string>("Filename")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ShopFileType");
+                    b.Property<int>("ShopFileType")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -850,22 +1112,32 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCart", b =>
                 {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
+                    b.Property<byte[]>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<DateTime>("CreateAt");
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("CustomerId");
+                    b.Property<byte[]>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<DateTime>("LastChange");
+                    b.Property<DateTime>("LastChange")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Number");
+                    b.Property<string>("Number")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("OrderId");
+                    b.Property<byte[]>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<string>("SessionId");
+                    b.Property<string>("SessionId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("TabCounter");
+                    b.Property<int>("TabCounter")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -875,21 +1147,30 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCartLine", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("Position");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProductID");
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Quantity");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("SellActionItemId");
+                    b.Property<int>("SellActionItemId")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("SellBasePrice");
+                    b.Property<decimal>("SellBasePrice")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid>("ShoppingCartID");
+                    b.Property<byte[]>("ShoppingCartID")
+                        .IsRequired()
+                        .HasColumnType("varbinary(16)");
 
-                    b.Property<int>("UnitID");
+                    b.Property<int>("UnitID")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -901,11 +1182,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCartLineTextOption", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("ShoppingCartLineId");
+                    b.Property<int>("ShoppingCartLineId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -917,21 +1201,29 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.ShoppingCartLineVariantValue", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Combi");
+                    b.Property<string>("Combi")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<decimal>("Price");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ProductVariant");
+                    b.Property<int>("ProductVariant")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProductVariantOption");
+                    b.Property<int>("ProductVariantOption")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Quantity");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ShoppingCartLineId");
+                    b.Property<int>("ShoppingCartLineId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -943,11 +1235,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Size", b =>
                 {
                     b.Property<int>("SizeID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("SizeID");
 
@@ -957,11 +1252,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.Unit", b =>
                 {
                     b.Property<int>("UnitID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("LongName");
+                    b.Property<string>("LongName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("UnitID");
 
@@ -971,11 +1269,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.VariantOptionTemplate", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Option");
+                    b.Property<string>("Option")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("VariantTemplateId");
+                    b.Property<int>("VariantTemplateId")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -987,11 +1288,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.VariantProductAssignment", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProductID");
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("VariantID");
+                    b.Property<int>("VariantID")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -1001,11 +1305,14 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("MarelibuSoft.WebStore.Models.VariantTemplate", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("OptionName");
+                    b.Property<string>("OptionName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ID");
 
@@ -1015,15 +1322,19 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -1038,14 +1349,18 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("RoleId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -1057,14 +1372,18 @@ namespace MarelibuSoft.WebStore.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("UserId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -1075,14 +1394,18 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ProviderDisplayName");
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("UserId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -1093,9 +1416,11 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("RoleId");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -1106,13 +1431,17 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -1249,7 +1578,7 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1257,7 +1586,7 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser")
+                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1265,7 +1594,7 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser")
+                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1273,12 +1602,12 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser")
+                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1286,7 +1615,7 @@ namespace MarelibuSoft.WebStore.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser")
+                    b.HasOne("MarelibuSoft.WebStore.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

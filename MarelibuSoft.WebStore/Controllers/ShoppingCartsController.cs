@@ -148,7 +148,7 @@ namespace MarelibuSoft.WebStore.Controllers
                         ProductVariantOption = variant.ProductVariantOption,
                         Quantity = variant.Quantity,
                         LineId = variant.ShoppingCartLineId,
-                        VariantName = product.ProductVariants.Single(v => v.ID == variant.ProductVariant).Name,
+                        VariantName = product.ProductVariants.Single(v => v.ID == variant.ProductVariant).OptionName,
                         Value = variant.Value
                     };
                     variantList.Add(variantVm); 

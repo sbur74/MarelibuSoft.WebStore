@@ -105,7 +105,6 @@
                 <tbody>
                     @foreach (var item in Model.OrderLines)
                     {
-                        bool hasVariant = item.VariantList.Count > 0 || item.TextOptionsList.Count > 0;
                         <tr>
                             <td><img src="~/images/store/@item.ImagePath" width="50" height="50" /></td>
                             <td>@item.Position</td>
@@ -114,7 +113,7 @@
                             <td>@item.Quantity @item.ProductUnit</td>
                             <td>@item.Price</td>
                         </tr>
-                        if (hasVariant)
+                        if (item.TextOptionsList != null)
                         {
                             foreach (var txt in item.TextOptionsList)
                             {
@@ -124,6 +123,9 @@
                                     <td colspan="3">@txt.Text</td>
                                 </tr>
                             }
+                        }
+                        if (item.VariantList != null)
+                        {
                             foreach (var variant in item.VariantList)
                             {
                                 <tr>

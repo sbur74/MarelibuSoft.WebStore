@@ -1,20 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MarelibuSoft.WebStore.Areas.Admin.Helpers;
+using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
+using MarelibuSoft.WebStore.Common.Helpers;
+using MarelibuSoft.WebStore.Common.Statics;
+using MarelibuSoft.WebStore.Common.ViewModels;
+using MarelibuSoft.WebStore.Data;
+using MarelibuSoft.WebStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MarelibuSoft.WebStore.Data;
-using MarelibuSoft.WebStore.Models;
-using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
-using MarelibuSoft.WebStore.Common.ViewModels;
-using System.Globalization;
-using Microsoft.AspNetCore.Authorization;
-using MarelibuSoft.WebStore.Generics;
-using MarelibuSoft.WebStore.Areas.Admin.Helpers;
-using MarelibuSoft.WebStore.Common.Helpers;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 {
@@ -27,11 +27,14 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		private readonly ILoggerFactory factory;
 		private CultureInfo deDE = new CultureInfo("de-DE");
 
-		public ProductsController(ApplicationDbContext context, ILogger<ProductsController> logger, ILoggerFactory loggerFactory )
+		public ProductsController(ApplicationDbContext context 
+			//ILogger<ProductsController> logger, 
+			//ILoggerFactory loggerFactory
+			)
         {
             _context = context;
-			_logger = logger;
-			factory = loggerFactory;
+			//_logger = logger;
+			//factory = loggerFactory;
         }
 
         // GET: Admin/Products
@@ -54,8 +57,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 				}
 				catch (Exception e)
 				{
-					_logger.LogError(e, "Fehler, beim ermittel eines Hauptatriklebildes!");
+					//_logger.LogError(e, "Fehler, beim ermittel eines Hauptatriklebildes!");
 					mainImgStr = "noImage.svg";
+					Console.WriteLine(e);
 				}
 
 				 
@@ -74,8 +78,10 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 					ShippingPriceTypeName = new ShippingPriceTypeHelper(_context).GetNameByID(item.ShippingPriceType),
 					ShippingTime = new ShippingPeriodHelper(_context).GetDescription(item.ShippingPeriod),
 					IsActive = item.IsActive,
-					MainImage = mainImgStr
-				};
+					MainImage = mainImgStr,
+                    Slug = $"{item.ProductID}-{item.ProductNumber}-{FriendlyUrlHelper.ReplaceUmlaute(item.Name)}"
+                };
+
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     if(item.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)

@@ -24,5 +24,11 @@ namespace MarelibuSoft.WebStore.Models.AccountViewModels
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
+
+        [Required(ErrorMessage = "Bitte geben Sie den angezeigten Captcha Code ein!")]
+        [StringLength(4)]
+        public string CaptchaCode { get; set; }
+
+        public string ErrorString { get; set; }
     }
 }

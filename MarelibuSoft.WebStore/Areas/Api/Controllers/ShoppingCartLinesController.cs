@@ -1,13 +1,12 @@
+using MarelibuSoft.WebStore.Data;
+using MarelibuSoft.WebStore.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MarelibuSoft.WebStore.Data;
-using MarelibuSoft.WebStore.Models;
-using Microsoft.Extensions.Logging;
 
 namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 {
@@ -18,10 +17,12 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
         private readonly ApplicationDbContext _context;
 		private readonly ILogger _logger;
 
-        public ShoppingCartLinesController(ApplicationDbContext context, ILogger<ShoppingCartLinesController>logger)
+        public ShoppingCartLinesController(ApplicationDbContext context
+            //, ILogger<ShoppingCartLinesController>logger
+            )
         {
             _context = context;
-			_logger = logger;
+			//_logger = logger;
         }
 
         // GET: api/ShoppingCartLines
@@ -37,7 +38,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 		[Produces("application/json")]
 		public async Task<IActionResult> GetShoppingCartLine([FromRoute] int id)
         {
-			_logger.LogDebug($"api/ShoppingCartLines/GetShoppingCartLine id : {id}");
+			//_logger.LogDebug($"api/ShoppingCartLines/GetShoppingCartLine id : {id}");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -67,7 +68,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 		[Produces("application/json")]
 		public async Task<IActionResult> PutShoppingCartLine([FromRoute] int id, [FromBody] ShoppingCartLine shoppingCartLine)
         {
-			_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine id:{id}");
+			//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine id:{id}");
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { message = ModelState.IsValid });
@@ -82,13 +83,13 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 			var product = await _context.Products.Where(p => p.ProductID.Equals(shoppingCartLine.ProductID)).SingleAsync();
 			decimal lineQuantity = Math.Round(line.Quantity);
 
-			_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity = {lineQuantity}, shoppingCartLine.Quantity = {shoppingCartLine.Quantity}");
+			//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity = {lineQuantity}, shoppingCartLine.Quantity = {shoppingCartLine.Quantity}");
 
 			if(lineQuantity < shoppingCartLine.Quantity)
 			{
-				_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity < shoppingCartLine.Quantity");
+				//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity < shoppingCartLine.Quantity");
 				decimal diff = shoppingCartLine.Quantity - line.Quantity;
-				_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity < shoppingCartLine.Quantity diff = {diff}, AvailableQuantity = {product.AvailableQuantity}");
+				//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity < shoppingCartLine.Quantity diff = {diff}, AvailableQuantity = {product.AvailableQuantity}");
 				if (product.AvailableQuantity >= diff)
 				{
 					product.AvailableQuantity -= diff; 
@@ -97,16 +98,16 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 				{
 					return BadRequest("Nicht genung Ware verfügbar!");
 				}
-				_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity < shoppingCartLine.Quantity AvailableQuantity - diff = AvailableQuantity = {product.AvailableQuantity}");
+				//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity < shoppingCartLine.Quantity AvailableQuantity - diff = AvailableQuantity = {product.AvailableQuantity}");
 
 			}
 			if (lineQuantity > shoppingCartLine.Quantity)
 			{
-				_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity > shoppingCartLine.Quantity");
+				//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity > shoppingCartLine.Quantity");
 				decimal diff = line.Quantity - shoppingCartLine.Quantity;
-				_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity > shoppingCartLine.Quantity diff = {diff}, AvailableQuantity = {product.AvailableQuantity}");
+				//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity > shoppingCartLine.Quantity diff = {diff}, AvailableQuantity = {product.AvailableQuantity}");
 				product.AvailableQuantity += diff;
-				_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity > shoppingCartLine.Quantity AvailableQuantity + diff = AvailableQuantity = {product.AvailableQuantity}");
+				//_logger.LogDebug($"api/ShoppingCartLines/PutShoppingCartLine lineQuantity > shoppingCartLine.Quantity AvailableQuantity + diff = AvailableQuantity = {product.AvailableQuantity}");
 			}
 			
 			
@@ -124,7 +125,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
             catch (Exception e)
             {
 
-				_logger.LogError(e, $"Api Error PutShoppingCartLine{id}", null);
+				//_logger.LogError(e, $"Api Error PutShoppingCartLine{id}", null);
 
                 if (!ShoppingCartLineExists(id))
                 {
@@ -210,7 +211,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 			}
 			catch (Exception e)
 			{
-				_logger.LogError(e, "Api Error Post ShoppingCartLine", null);
+				//_logger.LogError(e, "Api Error Post ShoppingCartLine", null);
 				return BadRequest(e);
 			}
 
@@ -313,7 +314,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
                 return NotFound(new { message = "Zeile konnte nicht gelöscht werdern!" });
             }
 
-			_logger.LogDebug($"api/ShoppingCartLines/DeleteShoppingCartLine id:{id}");
+			//_logger.LogDebug($"api/ShoppingCartLines/DeleteShoppingCartLine id:{id}");
 
 			var cart = await _context.ShoppingCarts.SingleAsync(c => c.ID.Equals(shoppingCartLine.ShoppingCartID));
 			cart.LastChange = DateTime.Now;
@@ -339,7 +340,7 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 			_context.ShoppingCartLines.Remove(shoppingCartLine);
             await _context.SaveChangesAsync();
 
-			_logger.LogDebug($"api/ShoppingCartLines/DeleteShoppingCartLine return AvailableQuantity:{product.AvailableQuantity}");
+			//_logger.LogDebug($"api/ShoppingCartLines/DeleteShoppingCartLine return AvailableQuantity:{product.AvailableQuantity}");
 
             return Ok(product);
         }

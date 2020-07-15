@@ -9,74 +9,84 @@
 
 <table class="table">
     <thead>
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Number)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.OrderDate)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.EMail)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.FreeText)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.IsPayed)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.IsSend)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.IsClosed)
-			</th>
+        <tr>
+            <th>
+                &nbsp;
+                &nbsp;
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EMail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FreeText)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPayed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsSend)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsClosed)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsCancelled)
             </th>
-			<th>
-				@Html.DisplayNameFor(model => model.TrackingNumber)
-			</th>
-			<th>
-			</th>
-		</tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TrackingNumber)
+            </th>
+            <th>
+            </th>
+        </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-		<tr>
-			<td>
-				@Html.DisplayFor(modelItem => item.Number)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.OrderDate)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.EMail)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.FreeText)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.IsPayed)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.IsSend)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.IsClosed)
-			</td>
+        <tr>
+            <td>
+                if (item.HasVariant)
+                {
+                <i class="fa fa-info-circle warning" title="hat Varianten"></i>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EMail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FreeText)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPayed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsSend)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsClosed)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsCancelled)
             </td>
-			<td>
-				@Html.DisplayFor(modelItem => item.TrackingNumber)
-			</td>
-			<td>
-				<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-				@*<a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |*@
-				<a asp-action="EMailSend" asp-route-id="@item.ID">Rechungs-Email Senden</a>
-			</td>
-		</tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrackingNumber)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                @*<a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |*@
+                <a asp-action="EMailSend" asp-route-id="@item.ID">Rechungs-Email Senden</a>
+            </td>
+        </tr>
 }
     </tbody>
 </table>

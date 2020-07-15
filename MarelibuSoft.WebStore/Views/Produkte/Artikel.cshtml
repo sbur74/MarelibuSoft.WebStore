@@ -57,7 +57,7 @@
                             <b>NEU</b>
                         </span>
                     }
-                <dl class="dl-horizontal">
+                <dl id="description" class="dl-horizontal" data-base-unit="@Model.BasesUnit">
                     <dt>
                         @Html.DisplayNameFor(model => model.ProductNumber)
                     </dt>
@@ -107,7 +107,7 @@
                         @Html.DisplayNameFor(model => model.MinimumPurchaseQuantity)
                     </dt>
                     <dd>
-                        @Html.DisplayFor(model => model.MinimumPurchaseQuantity) @Html.DisplayFor(model => model.BasesUnit)
+                        @Html.DisplayFor(model => model.MinimumPurchaseQuantity) <span id="baseUnit">@Html.DisplayFor(model => model.BasesUnit)</span>
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.Size)
@@ -142,21 +142,29 @@
                     <form id="sendToCard">
                         @if (showOptions)
                         {
-                            <h3>Produkt Optionen w&auml;hlen</h3>
+                            <h3>Variante w&auml;hlen</h3>
                         }
                         @if (Model.IsShownTextVartiant)
                         {
                             <div id="textOptions">
                                 <div class="form-group">
-                                    <label class="control-label">@Model.TextVariantTitel eingeben</label>
-                                    <input id="textOptionInput"
-                                           data-text-variant-titel="@Model.TextVariantTitel" 
-                                           type="text" 
-                                           class="form-control"
-                                           required 
-                                           onchange="marelibusoft.shop.checkTextVariant()"
-                                           onblur="marelibusoft.shop.checkTextVariant()"
-                                           />
+                                    <div class="row">
+                                        <div class="col-xs-2">
+                                            <label class="control-label text-right">@Model.TextVariantTitel</label>
+                                        </div>
+                                        <div class="col-xs-10">
+                                            <input id="textOptionInput"
+                                                   data-text-variant-titel="@Model.TextVariantTitel"
+                                                   data-max-chars="16"
+                                                   placeholder="@Model.TextVariantTitel"
+                                                   type="text"
+                                                   class="form-control form-inline"
+                                                   required
+                                                   onchange="marelibusoft.shop.checkTextVariant()"
+                                                   onblur="marelibusoft.shop.checkTextVariant()"
+                                                   onkeyup="marelibusoft.shop.countText()" />
+                                        </div>
+                                    </div>
                                     <span id="textVariantValidate" class="text-danger"></span>
                                 </div>
                             </div>
@@ -167,43 +175,37 @@
                                 @foreach (var variant in Model.Variants)
                                 {
                                     <div class="form-group">
-                                        <h4>@variant.Name</h4>
-                                        <label class="control-label">@variant.OptionName</label>
-
-                                        <select id="variantSelect_@variant.ID" onchange="marelibusoft.shop.checkOption(@variant.ID, @Model.ProductID)"
-                                                data-variant-id="@variant.ID"
-                                                data-variant-is-necessary="@variant.IsAbsolutelyNecessary">
-                                            @if (!variant.IsAbsolutelyNecessary)
-                                            {
-                                                <option id="zero_@variant.ID">nicht gew&auml;hlt</option>
-                                            }
-                                            @foreach (var option in variant.Options)
-                                            {
-                                                if (!option.IsNotShown)
-                                                {
-                                                    <option id="optionId_@option.ID"
-                                                            data-option-id="@option.ID"
-                                                            data-option-price="@Math.Round(option.Price,2)"
-                                                            data-option-quantity="@Math.Round(option.Quantity,2)">
-                                                        @option.Option
-                                                        @if (option.Price > 0.0M)
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                <label class="control-label text-right">@variant.OptionName</label>
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <select id="variantSelect_@variant.ID" onchange="marelibusoft.shop.checkOption(@variant.ID, @Model.ProductID)"
+                                                        data-variant-id="@variant.ID"
+                                                        data-variant-is-necessary="@variant.IsAbsolutelyNecessary">
+                                                    @if (!variant.IsAbsolutelyNecessary)
+                                                    {
+                                                        <option id="zero_@variant.ID">nicht gew&auml;hlt</option>
+                                                    }
+                                                    @foreach (var option in variant.Options)
+                                                    {
+                                                        if (!option.IsNotShown)
                                                         {
-                                                            <span> | Preisaufschlag: + </span> @Math.Round(option.Price, 2); <span>&euro;</span>
+                                                            <option id="optionId_@option.ID"
+                                                                    data-option-id="@option.ID"
+                                                                    data-option-price="@Math.Round(option.Price,2)"
+                                                                    data-option-quantity="@Math.Round(option.Quantity,2)">
+                                                                @option.Option
+                                                                @if (option.Price > 0.0M)
+                                                                {
+                                                                    <span> | Preisaufschlag: + </span> @Math.Round(option.Price, 2); <span>&euro;</span>
+                                                                }
+                                                            </option>
                                                         }
-                                                    </option>
-                                                }
-                                            }
-                                        </select>
-                                        @if (Math.Round(variant.Options[0].Quantity, 2) > 0.00M)
-                                        {
-                                            <br />
-                                            <dl class="dl-horizontal">
-                                                <dt>Verf&uuml;gbare Menge</dt>
-                                                <dd>
-                                                    <span id="variantQuantity_@variant.ID">@Math.Round(variant.Options[0].Quantity)</span> <span>@Model.BasesUnit</span>
-                                                </dd>
-                                            </dl>
-                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>             
                                         <span id="variantValidation_@variant.ID" class="text-danger"></span>
                                     </div>
                                 }

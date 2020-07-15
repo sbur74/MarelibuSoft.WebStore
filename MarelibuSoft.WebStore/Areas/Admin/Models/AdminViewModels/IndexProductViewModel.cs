@@ -28,9 +28,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		//public string MinimumPurchaseQuantity { get; set; }
 		[Display(Name = "Basiseinheit")]
 		public string BasesUnit { get; set; }
-		//[Display(Name = "Größe")]
-		//public string Size { get; set; }
-		[Display(Name = "Lieferzeit")]
+        public string Slug { get; set; }
+        [Display(Name = "Lieferzeit")]
 		public string ShippingTime { get; set; }
 		[Display(Name = "Lieferkostentyp")]
 		public string ShippingPriceTypeName { get; set; }

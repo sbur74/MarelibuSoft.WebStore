@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.IO;
-using Microsoft.AspNetCore.Hosting;
 
 namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 {
@@ -13,9 +10,9 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
     [ApiController]
     public class ApiFilesController : ControllerBase
     {
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 
-		public ApiFilesController(IHostingEnvironment environment)
+		public ApiFilesController(IWebHostEnvironment environment)
 		{
 			_environment = environment;
 		}

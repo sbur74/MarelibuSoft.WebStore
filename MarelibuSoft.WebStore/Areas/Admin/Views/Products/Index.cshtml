@@ -58,10 +58,14 @@
 	var sendername = "product" + item.ProductID;
         <tr>
 			<td>
-				<img src="~/images/store/@item.MainImage" style="max-width:80px; max-height:80px;" class="img-responsive" />
+                <a asp-area="" asp-action="Artikel" asp-controller="Produkte" asp-route-id="@item.Slug">
+                    <img src="~/images/store/@item.MainImage" style="max-width:80px; max-height:80px;" class="img-responsive" />
+                </a>
 			</td>
             <td>
-                @Html.DisplayFor(modelItem => item.ProductNumber)
+                <a asp-area="" asp-action="Artikel" asp-controller="Produkte" asp-route-id="@item.Slug">
+                    @Html.DisplayFor(modelItem => item.ProductNumber)
+                    </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)

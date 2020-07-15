@@ -23,9 +23,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 	public class ProductImagesController : Controller
     {
         private readonly ApplicationDbContext _context;
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 
-		public ProductImagesController(ApplicationDbContext context, IHostingEnvironment env)
+		public ProductImagesController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
 			_environment = env;

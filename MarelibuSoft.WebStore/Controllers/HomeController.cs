@@ -12,6 +12,8 @@ using MarelibuSoft.WebStore.Services;
 using MarelibuSoft.WebStore.Common.Helpers;
 using MarelibuSoft.WebStore.Common.Statics;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace MarelibuSoft.WebStore.Controllers
 {
@@ -23,7 +25,9 @@ namespace MarelibuSoft.WebStore.Controllers
 		private readonly IMetaService metaService;
 		private ShoppingCartHelper cartHelper;
 
-		public HomeController(ApplicationDbContext context, ILoggerFactory loggerFactory, IMetaService service)
+		public HomeController(ApplicationDbContext context, 
+			ILoggerFactory loggerFactory, 
+			IMetaService service)
 		{
 			_context = context;
 			factory = loggerFactory;
@@ -35,10 +39,13 @@ namespace MarelibuSoft.WebStore.Controllers
 		public IActionResult Index()
         {
 			var model = new HomeViewModel();
-            var products = _context.Products.Include(p => p.ImageList).Where(p => p.IsActive);
+            var products = _context.Products.Include(p => p.ImageList).Where(p => p.IsActive).ToList();
 			
 			var urls = new List<SliderViewModel>();
-			var startpage = _context.CmsStartPages.LastOrDefault();
+			var startpagelist = _context.CmsStartPages.ToList();
+			var startpage = startpagelist.FirstOrDefault();
+
+
 
 			metaService.AddMetadata("description", "Verkauf von Eislaufasseoirs, Stoffen und mehr.");
 			metaService.AddMetadata("keywords", "Asseoirs,Eiskunstlauf,Stoffe,Webrare,Taschen");
@@ -67,7 +74,8 @@ namespace MarelibuSoft.WebStore.Controllers
                     break;
                 }
                 string imgUrl = main.ImageUrl;
-                var sellActionItem = _context.SellActionItems.LastOrDefault(i => i.FkProductID == item.ProductID);
+				var sellActions = _context.SellActionItems.Where(sa => sa.FkProductID == item.ProductID).ToList();
+				var sellActionItem = sellActions.FirstOrDefault();
                 int saiId = 0;
                 if (sellActionItem != null)
                 {
@@ -168,5 +176,18 @@ namespace MarelibuSoft.WebStore.Controllers
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
-	}
+
+        [Route("get-captcha-image")]
+        public IActionResult GetCaptchaImage()
+        {
+            int width = 360;
+            int height = 120;
+            var captchaCode = CaptchaService.GenerateCaptchaCode();
+            var result = CaptchaService.GenerateCaptchaImage(width, height, captchaCode);
+            HttpContext.Session.SetString("CaptchaCode", result.CaptchaCode);
+            Stream s = new MemoryStream(result.CaptchaByteData);
+            return new FileStreamResult(s, "image/png");
+            return Ok();
+        }
+    }
 }

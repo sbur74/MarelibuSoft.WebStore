@@ -21,11 +21,13 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		private readonly ILoggerFactory factory;
 		private readonly ILogger logger;
 
-        public CustomersController(ApplicationDbContext context, ILoggerFactory loggerFactory)
+        public CustomersController(ApplicationDbContext context
+            //, ILoggerFactory loggerFactory
+            )
         {
             _context = context;
-			factory = loggerFactory;
-			logger = factory.CreateLogger<CustomersController>();
+			//factory = loggerFactory;
+			//logger = factory.CreateLogger<CustomersController>();
         }
 
         // GET: Admin/Customers

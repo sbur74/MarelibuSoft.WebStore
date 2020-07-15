@@ -1,36 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MarelibuSoft.WebStore.Data;
+using MarelibuSoft.WebStore.Services;
+using MarelibuSoft.WebStore.TagHelpers;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MarelibuSoft.WebStore.Data;
-using MarelibuSoft.WebStore.Models;
-using MarelibuSoft.WebStore.Services;
-using System.Globalization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using System.Threading;
-using System.IO;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using MarelibuSoft.WebStore.TagHelpers;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
+using System;
+using System.Globalization;
 
 namespace MarelibuSoft.WebStore
 {
     public class Startup
     {
 		private readonly ILogger _logger;
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-			_logger = logger;
+			//_logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -38,11 +33,13 @@ namespace MarelibuSoft.WebStore
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
         {
-			_logger.LogInformation("Startup.ConfigureServices -> start");
+			//_logger.LogInformation("Startup.ConfigureServices -> start");
+
+			//services.AddLogging(logging => logging.AddConfiguration(Configuration));
 
 			services.AddDbContext<ApplicationDbContext>(options => {
 				var dbconnection = Configuration.GetConnectionString("DefaultConnection");
-				_logger.LogInformation($"Startup.ConfigureServices -> Database Connection:{dbconnection}"); 
+				//_logger.LogInformation($"Startup.ConfigureServices -> Database Connection:{dbconnection}"); 
 				options.UseMySql(dbconnection,
 					mySqlOptionsAction =>
 						{
@@ -52,14 +49,18 @@ namespace MarelibuSoft.WebStore
 							int minor = version.GetValue<int>("Minor");
 							int build = version.GetValue<int>("Build");
 
-							_logger.LogInformation($"Startup.ConfigureServices -> Use MySql Version: {major}.{minor}.{build}");
+							//_logger.LogInformation($"Startup.ConfigureServices -> Use MySql Version: {major}.{minor}.{build}");
 
 							mySqlOptionsAction.ServerVersion(new Version(major, minor, build), Pomelo.EntityFrameworkCore.MySql.Infrastructure.ServerType.MySql)
 								.CharSetBehavior(CharSetBehavior.AppendToAllColumns)
-								.AnsiCharSet(CharSet.Latin1)
-								.UnicodeCharSet(CharSet.Utf8mb4);
+								.CharSet(CharSet.Utf8);
 						});
 					});
+
+			services
+				.AddDefaultIdentity<IdentityUser>()
+				.AddRoles<IdentityRole>()
+				.AddEntityFrameworkStores<ApplicationDbContext>();
 
 			services.Configure<IdentityOptions>(options =>
 			{
@@ -72,22 +73,26 @@ namespace MarelibuSoft.WebStore
 				options.Password.RequiredUniqueChars = 0;
 			});
 
-			services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
 
-			services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, EmailSender>();
 			services.AddSingleton<IMetaService, MetaService>();
 			services.AddSingleton<ITagHelperComponent, MetaDataTagHelperComponent>();
 
 			services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
-			services.AddMvc(options =>
-			{
-				options.SslPort = 6001;
-				options.Filters.Add(new RequireHttpsAttribute());
-				options.RespectBrowserAcceptHeader = true;
-			})
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.SslPort = 6001;
+                options.Filters.Add(new RequireHttpsAttribute());
+                options.RespectBrowserAcceptHeader = true;
+                options.EnableEndpointRouting = false;
+            })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+				.AddNewtonsoftJson();
+			services.AddControllers();
+			services.AddControllersWithViews();
+	
+			services.AddHealthChecks();
+
 			services.AddHttpsRedirection(options =>
 			{
 				options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
@@ -99,25 +104,26 @@ namespace MarelibuSoft.WebStore
 			{
 				var expiration = TimeSpan.FromMinutes(25);
 				options.IdleTimeout = expiration;
+                options.Cookie.HttpOnly = true;
 			});
 
-			_logger.LogInformation("Startup.ConfigureServices -> end");
+			//_logger.LogInformation("Startup.ConfigureServices -> end");
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-			_logger.LogInformation("Startup.Configure -> start");
+			//_logger.LogInformation("Startup.Configure -> start");
 			if (env.IsDevelopment() || env.IsStaging())
             {
-				_logger.LogInformation($"Startup.Configure -> env: {env.EnvironmentName}");
+				//_logger.LogInformation($"Startup.Configure -> env: {env.EnvironmentName}");
 				app.UseDeveloperExceptionPage();
-                //app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+				//app.UseBrowserLink();
+				app.UseDeveloperExceptionPage();
             }
             else
             {
-				_logger.LogInformation($"Startup.Configure -> env: {env.EnvironmentName}");
+				//_logger.LogInformation($"Startup.Configure -> env: {env.EnvironmentName}");
 				app.UseExceptionHandler("/Home/Error");
 				app.UseHsts();
 			}
@@ -131,7 +137,7 @@ namespace MarelibuSoft.WebStore
 			var supportedCultures = new[] { cultureInfo };
 			for (int i = 0; i < supportedCultures.Length; i++)
 			{
-				_logger.LogInformation($"Startup.Configure -> supported cultures[{i}]: {supportedCultures[i].DisplayName }"); 
+				//_logger.LogInformation($"Startup.Configure -> supported cultures[{i}]: {supportedCultures[i].DisplayName }"); 
 			}
 
 			app.UseRequestLocalization(new RequestLocalizationOptions {
@@ -142,26 +148,28 @@ namespace MarelibuSoft.WebStore
 
 			app.UseStaticFiles();
 
+			app.UseRouting();
+			app.UseCors();
+
 			app.UseAuthentication();
-			
+			app.UseAuthorization();
 			app.UseSession();
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
 
-			app.UseMvc(routes =>
-			{
-				routes.MapRoute(
-					name: "areaRoute",
-					template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-					);
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health");
+                endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+            });
 
-				routes.MapRoute(
-					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
-			});
+            //app.UseEndpoints(endpoints =>
+            //{
+            //	endpoints.MapControllers();
+            //});
 
-			_logger.LogInformation("Startup.Configure -> end");
+            //_logger.LogInformation("Startup.Configure -> end");
 
-		}
+        }
 	}
 }

@@ -13,10 +13,10 @@ if (!marelibusoft.admin.sellaction) {
 marelibusoft.admin.sellaction.addItem = function (itemid) {
     var sellactionid = $("#sellactionid").val();
     var xxsrf = $("input[name='__RequestVerificationToken']").val();
-    var apiurl = "/api/SellActionItems"
+    var apiurl = "/api/SellActionItems";
     var body = JSON.stringify({
-        sellActionID : sellactionid,
-        fkProductID : itemid
+        sellActionID: sellactionid,
+        fkProductID: itemid
     });
 
     $.ajax(apiurl, {
@@ -39,7 +39,7 @@ marelibusoft.admin.sellaction.addItem = function (itemid) {
             $("#messages").empty().append(html).fadeIn(3000).fadeOut(1500);
         }
     });
-}
+};
 
 marelibusoft.admin.sellaction.dropItem = function (itemid) {
     var apiurl = "/api/SellActionItems/" + itemid;
@@ -65,7 +65,7 @@ marelibusoft.admin.sellaction.dropItem = function (itemid) {
         dataType: 'json',
         timeout: 60000
     });
-}
+};
 
 marelibusoft.admin.sellaction.reloadselected = function () {
     var xxsrf = $("input[name='__RequestVerificationToken']").val();
@@ -106,4 +106,4 @@ marelibusoft.admin.sellaction.reloadselected = function () {
         dataType: 'json',
         timeout: 60000
     });
-}
+};

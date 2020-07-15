@@ -25,16 +25,16 @@ namespace MarelibuSoft.WebStore.Controllers
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 		private readonly ApplicationDbContext _context;
 		private CountryHelper countryHelper;
 
 		public AccountController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger, ApplicationDbContext context)
         {
@@ -259,7 +259,18 @@ namespace MarelibuSoft.WebStore.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                // Validate Captcha Code
+                if (!CaptchaService.ValidateCaptchaCode(model.CaptchaCode, HttpContext))
+                {
+                    ViewData["ReturnUrl"] = returnUrl;
+                    model.Countries = countryHelper.GetCountries();
+                    model.ShoppingCartId = HttpContext.Session.GetString("ShoppingCartId");
+                    model.CaptchaCode = string.Empty;
+                    model.ErrorString = "Sie müssen angezeigten den Captcha Code eingeben!";
+                    return View(model);
+                }
+
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
 				string UserID = user.Id;
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -302,7 +313,12 @@ namespace MarelibuSoft.WebStore.Controllers
 
 					string subject = "Registrierung abschließen";
 					string message = $"<h2>Herzlich Willkommen bei marelibuDesign!</h2>" +
-						$"<p>Bitte bestätigen Sie Ihre Registrierung durch Klicken dieses Links: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Registrierung abschließen.</a><br />Danach können Sie Sich in Ihr Kundenkonto einloggen.</p><p>Sie haben Sich nicht auf www.marelibuDesign.de angemeldet? Dann klicken Sie den Link bitte nicht, die eingegebenen Daten werden nach Ablauf von 7 Tagen automatisch gelöscht.</p><br /> ";
+						$"<p>Bitte bestätigen Sie Ihre Registrierung durch Klicken dieses Links: " +
+                        $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Registrierung abschließen.</a><br />" +
+                        $"Danach können Sie Sich in Ihr Kundenkonto einloggen.</p>" +
+                        $"<p>Sie haben Sich nicht auf www.marelibuDesign.de angemeldet? " +
+                        $"Dann klicken Sie den Link bitte nicht, die eingegebenen Daten werden nach " +
+                        $"Ablauf von 7 Tagen automatisch gelöscht.</p><br /> ";
 
 					await _emailSender.SendEmailAsync(user.Email, subject, message);
 
@@ -314,9 +330,9 @@ namespace MarelibuSoft.WebStore.Controllers
 
 			// If we got this far, something failed, redisplay form
 			ViewData["ReturnUrl"] = returnUrl;
-			ViewData["CountryID"] = new SelectList(countryHelper.GetVmList(), "ID", "Name");
-			ViewData["ShoppingCartId"] = HttpContext.Session.GetString("ShoppingCartId");
-			return View(model);
+            model.Countries = countryHelper.GetCountries();
+            model.ShoppingCartId = HttpContext.Session.GetString("ShoppingCartId");
+            return View(model);
         }
 
         [HttpPost]
@@ -413,7 +429,7 @@ namespace MarelibuSoft.WebStore.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -459,7 +475,8 @@ namespace MarelibuSoft.WebStore.Controllers
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
-            return View();
+            var model = new ForgotPasswordViewModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -469,6 +486,13 @@ namespace MarelibuSoft.WebStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Validate Captcha Code
+                //if (!CaptchaService.ValidateCaptchaCode(model.CaptchaCode, HttpContext))
+                //{
+                //    model.CaptchaCode = string.Empty;
+                //    model.ErrorString = "Sie müssen angezeigten den Captcha Code eingeben!";
+                //    return View(model);
+                //}
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {

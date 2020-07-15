@@ -11,9 +11,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Helpers
 {
     public class UploadHelper 
     {
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 
-		public UploadHelper(IHostingEnvironment environment)
+		public UploadHelper(IWebHostEnvironment environment)
 		{
 			_environment = environment;
 		}

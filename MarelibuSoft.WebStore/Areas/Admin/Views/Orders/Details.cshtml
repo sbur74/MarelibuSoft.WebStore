@@ -123,87 +123,87 @@
 </div>
 <h4>Auftragspositionen</h4>
 <div class="table table-bordered">
-	<div class="row">
-		<div class="col-md-1">
-			<strong>Position</strong>
-		</div>
-		<div class="col-md-1">
-			<strong>Artikelbild</strong>
-		</div>
-		<div class="col-md-1">
-			<strong>Artikel-Nr.</strong>
-		</div>
-		<div class="col-md-1">
-			<strong>Artikelname</strong>
-		</div>
-		<div class="col-md-1">
-			<strong>Arikelpreis</strong>
-		</div>
-		<div class="col-md-1">
-			<strong>Menge</strong>
-		</div>
-		<div class="col-md-1">
-			<strong>Betrag</strong>
-		</div>
-	</div>
-	@foreach (var item in Model.OderLines)
+    <div class="row">
+        <div class="col-md-1">
+            <strong>Position</strong>
+        </div>
+        <div class="col-md-1">
+            <strong>Artikelbild</strong>
+        </div>
+        <div class="col-md-1">
+            <strong>Artikel-Nr.</strong>
+        </div>
+        <div class="col-md-1">
+            <strong>Artikelname</strong>
+        </div>
+        <div class="col-md-1">
+            <strong>Arikelpreis</strong>
+        </div>
+        <div class="col-md-1">
+            <strong>Menge</strong>
+        </div>
+        <div class="col-md-1">
+            <strong>Betrag</strong>
+        </div>
+    </div>
+    @foreach (var item in Model.OderLines)
 	{
-        <div class="row">
-            <div class="col-md-1">
-                <p id="@item.ID" class="hidden">@item.ID</p>
-                <p>@item.Position</p>
-            </div>
-            <div class="col-md-1">
-                <img src="~/images/store/@item.Image" width="50" height="50" />
-            </div>
-            <div class="col-md-1">
-                <p>@item.ProductNumber</p>
-            </div>
-            <div class="col-md-1">
-                <p>@item.ProductName</p>
-            </div>
-            <div class="col-md-1">
-                <p>@Math.Round(item.OrderPrice, 2) &euro;</p>
-            </div>
-            <div class="col-md-1">
-                <p>@Math.Round(item.OrderQuantity, 2) @item.OrderUnit</p>
-            </div>
-            <div class="col-md-1">
-                <p>@Math.Round(item.OrderLineTotal, 2) &euro;</p>
-            </div>
-            @if (item.TextOptionList.Count > 0)
+    <div class="row">
+        <div class="col-md-1">
+            <p id="@item.ID" class="hidden">@item.ID</p>
+            <p>@item.Position</p>
+        </div>
+        <div class="col-md-1">
+            <img src="~/images/store/@item.Image" width="50" height="50" />
+        </div>
+        <div class="col-md-1">
+            <p>@item.ProductNumber</p>
+        </div>
+        <div class="col-md-1">
+            <p>@item.ProductName</p>
+        </div>
+        <div class="col-md-1">
+            <p>@Math.Round(item.OrderPrice, 2) &euro;</p>
+        </div>
+        <div class="col-md-1">
+            <p>@Math.Round(item.OrderQuantity, 2) @item.OrderUnit</p>
+        </div>
+        <div class="col-md-1">
+            <p>@Math.Round(item.OrderLineTotal, 2) &euro;</p>
+        </div>
+    </div>
+    @if (item.TextOptionList != null &&  item.TextOptionList.Count > 0)
             {
                 foreach (var txt in item.TextOptionList)
                 {
-                    <div class="row">
-                        <div class="col-md-2">
-                            Text:
-                        </div>
-                        <div class="col-md-10">
-                            @txt.Text
-                        </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <strong>Text:</strong>
                     </div>
+                    <div class="col-md-10">
+                        @txt.Text
+                    </div>
+                </div>
                 }
             }
-            @if (item.VariantList.Count > 0)
+    @if (item.VariantList != null && item.VariantList.Count > 0)
             {
                 <div class="row">
-                    <div class="col-md-3">Option</div>
-                    <div class="col-md-3">Combi</div>
-                    <div class="col-md-3">Preis</div>
-                    <div class="col-md-3">Menge</div>
+                    <div class="col-md-3"><strong>Option</strong></div>
+                    <div class="col-md-3"><strong>Combi</strong></div>
+                    <div class="col-md-3"><strong>Preis</strong></div>
+                    <div class="col-md-3"><strong>Menge</strong></div>
                 </div>
                 foreach (var varinat in item.VariantList)
                 {
-                    <div class="row">
-                        <div class="col-md-3">@varinat.Value</div>
-                        <div class="col-md-3">@varinat.Combi</div>
-                        <div class="col-md-3">@varinat.Price</div>
-                        <div class="col-md-3">@varinat.Quantity</div>
-                    </div>
+                <div class="row">
+                    <div class="col-md-3">@varinat.Value</div>
+                    <div class="col-md-3">@varinat.Combi</div>
+                    <div class="col-md-3">@Math.Round(varinat.Price, 2)</div>
+                    <div class="col-md-3">@Math.Round(varinat.Quantity, 2)</div>
+                </div>
                 }
             }
-        </div>
 	}
 </div>
 <h4>Liefern an</h4>

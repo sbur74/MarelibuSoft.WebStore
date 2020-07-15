@@ -21,11 +21,13 @@ namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 		private readonly ILoggerFactory factory;
 		private readonly ILogger logger;
 
-		public AdminCategoryAssignmentsController(ApplicationDbContext context, ILoggerFactory loggerFactory)
+		public AdminCategoryAssignmentsController(ApplicationDbContext context
+            //, ILoggerFactory loggerFactory
+            )
         {
             _context = context;
-			factory = loggerFactory;
-			logger = factory.CreateLogger<AdminCategoryAssignmentsController>();
+			//factory = loggerFactory;
+			//logger = factory.CreateLogger<AdminCategoryAssignmentsController>();
         }
 
         // GET: api/AdminCategoryAssignments

@@ -14,9 +14,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 	[Area("Admin")]
 	public class CmsFilesController : Controller
     {
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 		private string _uploadPath;
-		public CmsFilesController(IHostingEnvironment hostingEnvironment)
+		public CmsFilesController(IWebHostEnvironment hostingEnvironment)
 		{
 			_environment = hostingEnvironment;
 			_uploadPath = "contents";

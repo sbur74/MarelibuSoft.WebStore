@@ -184,13 +184,13 @@
             @Html.DisplayFor(modelItem => item.SellBasePrice) &euro;
         </div>
     </div>
-    if (item.TextOptions.Count > 0)
+    if (item.TextOptions != null && item.TextOptions.Count > 0)
     {
         foreach (var txt in item.TextOptions)
         {
             <div class="row">
                 <div class="col-md-3">
-                    Text:
+                    <strong>Text:</strong>
                 </div>
                 <div class="col-md-9">
                     @txt.Text
@@ -198,13 +198,13 @@
             </div>
         }
     }
-    if (item.VariantList.Count > 0)
+    if (item.VariantList != null && item.VariantList.Count > 0)
     {
         foreach (var varinat in item.VariantList)
         {
             <div class="row">
                 <div class="col-md-3">
-                    @varinat.VariantName
+                    <strong>@varinat.VariantName </strong>
                 </div>
                 <div class="col-md-9">
                     @varinat.Value

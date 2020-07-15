@@ -1,15 +1,11 @@
-﻿using System;
+﻿using MarelibuSoft.WebStore.Areas.Api.ViewModels;
+using MarelibuSoft.WebStore.Data;
+using MarelibuSoft.WebStore.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MarelibuSoft.WebStore.Data;
-using MarelibuSoft.WebStore.Models;
-using Microsoft.AspNetCore.Authorization;
-using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
-using MarelibuSoft.WebStore.Areas.Api.ViewModels;
 
 namespace MarelibuSoft.WebStore.Areas.Api.Controllers
 {

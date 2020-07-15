@@ -20,9 +20,9 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 	public class ShopFilesController : Controller
     {
         private readonly ApplicationDbContext _context;
-		private IHostingEnvironment _environment;
+		private IWebHostEnvironment _environment;
 
-        public ShopFilesController(ApplicationDbContext context, IHostingEnvironment environment)
+        public ShopFilesController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
 			_environment = environment;

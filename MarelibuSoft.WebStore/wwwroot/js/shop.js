@@ -28,14 +28,14 @@ marelibusoft.shop.checkOption = function (variantId, productId) {
         var startpreis = marelibusoft.common.str2Float($("#grundPreis").html());
         $("#optionPrice").empty();
         $("#optionPrice").remove();
-        $("#optionPriceTableBody").append("<tr id='optionPrice'><td> + </td><td>"
-            + marelibusoft.common.float2LocalCurrencyString(price) + "</td></tr>");
+        $("#optionPriceTableBody").append(
+            "<tr id='optionPrice'><td> + </td><td>" + marelibusoft.common.float2LocalCurrencyString(price) + "</td></tr>");
         var gesamtPreis = startpreis + price;
         var gvalue = marelibusoft.common.float2LocalCurrencyString(gesamtPreis);
         $("#" + productId + "_quantityPrice").html(gvalue);
     }
+};
 
-}
 marelibusoft.shop.sendCartLine = function (itemId, itemUnit, basePrice) {
     var cartID = $("#cartid").html();
     var xxsrf = $("input[name='__RequestVerificationToken']").val();
@@ -48,7 +48,7 @@ marelibusoft.shop.sendCartLine = function (itemId, itemUnit, basePrice) {
     var textInput = $("#textOptionInput");
 
     var cartLine = {
-        shoppingCartID: cartID, 
+        shoppingCartID: cartID,
         quantity: fquantity,
         productID: id,
         unitID: itemUnit,
@@ -66,7 +66,7 @@ marelibusoft.shop.sendCartLine = function (itemId, itemUnit, basePrice) {
         txtOption = { "text": str };
         cartLine.shoppingCartLineTextOptions.push(txtOption);
         cartLine["textVariant"] = str;
-    }                 
+    }
 
     var variantoptions = $("#variants");
     if (variantoptions) {
@@ -78,42 +78,63 @@ marelibusoft.shop.sendCartLine = function (itemId, itemUnit, basePrice) {
             var price = selecetbox.find(":selected").attr("data-option-price");
             var productVariantOption = selecetbox.find(":selected").attr("data-option-id");
             var value = selecetbox.find(":selected").val();
-            if (productVariantOption) {             
+            if (productVariantOption) {
                 var variant = {
                     "productVariant": productVariant,
                     "productVariantOption": productVariantOption,
                     "price": price,
                     "value": value,
                     "quantity": fquantity
-                    };
+                };
                 cartLine.variantValues.push(variant);
             }
-            
         }
     }
 
-    $.ajax(apiurl, {
-        type: 'POST',
-        headers: { 'X-XSRF-TOKEN': xxsrf },
-        data: JSON.stringify(cartLine),
-        success: function (data) {
-            //TODO: add message system and refresh of shoppingcart view component
-            console.log(data);
-            getAvailableQuantity(data);
-            $("#cartDisplay").load("/AjaxContent/ShoppingCart");
-            marelibusoft.common.showModalAlert("alert", "Erfolgreich angelegt!", "success");
-        },
-        error: function (data) {
-            $("#cartDisplay").load("/AjaxContent/ShoppingCart");
-            marelibusoft.common.showModalAlert("alert", "Bei der Anlage ist ein Fehler aufgetreten!", "danger");
-            setTimeout(
-                location.reload(), 800);
-        },
-        contentType: "application/json",
-        //dataType: 'json',
-        timeout: 60000
-    });  
-}
+    var available = false;
+    for (var i = 0; i < cartLine.variantValues.length; i++) {
+        var varvalue = cartLine.variantValues[i];
+        available = marelibusoft.shop.checkAvailableQuantity(
+            varvalue.productVariantOption,
+            varvalue.quantity
+        );
+    }
+
+    if (available) {
+        $.ajax(apiurl, {
+            type: 'POST',
+            headers: { 'X-XSRF-TOKEN': xxsrf },
+            data: JSON.stringify(cartLine),
+            success: function (data) {
+                //TODO: add message system and refresh of shoppingcart view component
+                console.log(data);
+                getAvailableQuantity(data);
+                $("#cartDisplay").load("/AjaxContent/ShoppingCart");
+                marelibusoft.common.showModalAlert("alert", "Erfolgreich angelegt!", "success");
+            },
+            error: function (data) {
+                $("#cartDisplay").load("/AjaxContent/ShoppingCart");
+                marelibusoft.common.showModalAlert("alert", "Bei der Anlage ist ein Fehler aufgetreten!", "danger");
+                setTimeout(
+                    location.reload(), 800);
+            },
+            contentType: "application/json",
+            //dataType: 'json',
+            timeout: 60000
+        });
+    }   
+};
+
+marelibusoft.shop.checkAvailableQuantity = function (optionId, qunatity) {
+    var availableQuantity = $("#optionId_" + optionId).data("option-quantity");
+    availableQuantity = marelibusoft.common.str2Float(availableQuantity);
+    var unit = $("#description").data("base-unit");
+    if (qunatity > availableQuantity) {
+        marelibusoft.common.showModalAlert(optionId, "Menge nicht verfügbar! Maximal " + availableQuantity + " " + unit + " verfügbar!", "danger");
+        return false;
+    }
+    return true;
+};
 
 marelibusoft.shop.checkTextVariant = function () {
     var txtinputelement = $("#textOptionInput");
@@ -137,41 +158,51 @@ marelibusoft.shop.checkTextVariant = function () {
         marelibusoft.shop.hideTextInputError();
         return true;
     }
-}
+};
 
 marelibusoft.shop.showTextInputError = function () {
     marelibusoft.common.showModalAlert("textOptionInput", "Sie müssen einen Text eingeben!", "danger");
     $("#textVariantValidate").append("Sie müssen einen Text eingeben!");
     $("#textOptionInput").addClass("danger");
-}
+};
 
 marelibusoft.shop.hideTextInputError = function () {
     $("#textVariantValidate").hide();
     $("#textOptionInput").removeClass("danger");
-}
+}; 
+
+marelibusoft.shop.countText = function () {
+    var text = $("#textOptionInput").val();
+
+    if (text.length > 16) {
+        marelibusoft.common.showModalAlert("myalert", "Sie können nicht mehr als 16 Zeichen verwenden!", "warning");
+        $("#textOptionInput").val(text.substr(0, text.length - 1));
+        return;
+    }
+};
 
 
 function sendDeleteCart() {
-	var cartID = $("#cartid").html();
-	var sessionID = $("#sessionid").html();
-	var xxsrf = $("input[name='__RequestVerificationToken']").val();
-	var apiurl = "api/ShoppingCarts/" + cartID;
+    var cartID = $("#cartid").html();
+    var sessionID = $("#sessionid").html();
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+    var apiurl = "api/ShoppingCarts/" + cartID;
 
-	$.ajax(apiurl,
-		{
-			type: "DELETE",
-			headers: xxsrf,
-			data: JSON.stringify({
-				iD: cartID,
-				sessionId: sessionID
-			}),
-			success: function (data) {
-				$("#cartDisplay").load("/AjaxContent/ShoppingCart");
-			},
-			async: false,
-			contentType: "application/json",
-			dataType: "json",
-			timeout: 60000
-		}
-	);
+    $.ajax(apiurl,
+        {
+            type: "DELETE",
+            headers: xxsrf,
+            data: JSON.stringify({
+                iD: cartID,
+                sessionId: sessionID
+            }),
+            success: function (data) {
+                $("#cartDisplay").load("/AjaxContent/ShoppingCart");
+            },
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            timeout: 60000
+        }
+    );
 }

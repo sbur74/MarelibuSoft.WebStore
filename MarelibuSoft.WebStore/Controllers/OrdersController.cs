@@ -24,14 +24,14 @@ namespace MarelibuSoft.WebStore.Controllers
 	public class OrdersController : Controller
 	{
 		private readonly ApplicationDbContext _context;
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserManager<IdentityUser> _userManager;
 		private readonly ILogger logger;
 		private readonly ILoggerFactory factory;
 		private readonly IEmailSender _emailSender;
 		private ShoppingCartHelper cartHelper;
 		private ShippingAddressHelper addressHelper;
 
-		public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILoggerFactory loggerFactory, IEmailSender emailSender)
+		public OrdersController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ILoggerFactory loggerFactory, IEmailSender emailSender)
 		{
 			_context = context;
 			_userManager = userManager;
@@ -192,7 +192,7 @@ namespace MarelibuSoft.WebStore.Controllers
 
                     foreach (ShoppingCartLineVariantValue variantValue in item.VariantValues)
                     {
-                        string varinatname = product.ProductVariants.Single(v => v.ID == variantValue.ProductVariant).Name;
+                        string varinatname = product.ProductVariants.Single(v => v.ID == variantValue.ProductVariant).OptionName;
                         var clvvm = new VariantViewModel
                         {
                             Id = variantValue.Id,
@@ -409,7 +409,7 @@ namespace MarelibuSoft.WebStore.Controllers
                         {
                             foreach (var variantvalue in item.VariantValues)
                             {
-                                string vname = product.ProductVariants.Single(v => v.ID == variantvalue.ProductVariant).Name;
+                                string vname = product.ProductVariants.Single(v => v.ID == variantvalue.ProductVariant).OptionName;
                                 var ordervariant = new OrderLineVariantValue
                                 {
                                     Combi = variantvalue.Combi,

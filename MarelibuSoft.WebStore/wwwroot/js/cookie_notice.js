@@ -8,31 +8,31 @@
  */
 
 window.onload = function (e) {
-	var csplit = document.cookie.split(";");
-	var cookie_accepted = false;
-	for (var i = 0; i < csplit.length; i++) {
-		var cstr = csplit[i].replace(" ", "");
-		var esplit = cstr.split("=");
-		if (esplit[0] === "COOKIES_MARELIBU_ACCEPTED") {
-			cookie_accepted = esplit[1];
-		}
-	}
+    var csplit = document.cookie.split(";");
+    var cookie_accepted = false;
+    for (var i = 0; i < csplit.length; i++) {
+        var cstr = csplit[i].replace(" ", "");
+        var esplit = cstr.split("=");
+        if (esplit[0] === "COOKIES_MARELIBU_ACCEPTED") {
+            cookie_accepted = esplit[1];
+        }
+    }
 
-	if (cookie_accepted) {
-		document.querySelector("#cookieConsent").classList.add("hidden");
-	}
-	else {
-		this.console.log("remove class hidden");
-		document.querySelector("#cookieConsent").classList.remove("hidden");
-		// Bind click-accept-event to accept-button
-		document.getElementById('cookie_notice_button_accept').addEventListener('click', function () {
-			document.querySelector("#cookieConsent").classList.add("hidden");
-			accept_cookies();
-		});
+    if (cookie_accepted) {
+        document.querySelector("#cookieConsent").classList.add("hidden");
+    }
+    else {
+        this.console.log("remove class hidden");
+        document.querySelector("#cookieConsent").classList.remove("hidden");
+        // Bind click-accept-event to accept-button
+        document.getElementById('cookie_notice_button_accept').addEventListener('click', function () {
+            document.querySelector("#cookieConsent").classList.add("hidden");
+            accept_cookies();
+        });
 
-	}
+    }
 
-}
+};
 
 function accept_cookies() {
 
@@ -47,5 +47,5 @@ function accept_cookies() {
 	document.getElementById('cookieConsent').style.display = "none";
 	return false;
 
-}
+};
 

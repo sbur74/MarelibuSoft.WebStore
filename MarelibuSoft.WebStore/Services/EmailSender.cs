@@ -6,11 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 using System.Threading.Tasks;
 
 namespace MarelibuSoft.WebStore.Services
@@ -19,134 +17,107 @@ namespace MarelibuSoft.WebStore.Services
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender
     {
-		private IConfiguration _configuration;
-		private readonly ILogger _logger;
-		private readonly IHostingEnvironment _environment;
-		private const string FILESFOLDER = "files";
+        private IConfiguration _configuration;
+        private readonly ILogger _logger;
+        private readonly IWebHostEnvironment _environment;
+        private const string FILESFOLDER = "files";
+        private MailboxAddress senderAddress;
+        private string signature = string.Empty;
+        private string user = string.Empty;
+        private string password = string.Empty;
+        private string hostname = string.Empty;
+        private string path = string.Empty;
+        private int hostport = 0;
 
-		public EmailSender(IConfiguration configuration, ILogger<EmailSender>logger, IHostingEnvironment environment)
-		{
-			_configuration = configuration;
-			_logger = logger;
-			_environment = environment;
-		}
-        public Task SendEmailAsync(string email, string subject, string message)
+
+        public EmailSender(IConfiguration configuration, ILogger<EmailSender> logger, IWebHostEnvironment environment)
         {
-			using (var client = new SmtpClient())
-			{
-				var credential = new NetworkCredential {
-					UserName = _configuration["Email:Email"],
-					Password = _configuration["Email:Password"]
-				};
-
-				client.Credentials = credential;
-				client.Host = _configuration["Email:Host"];
-				client.Port = int.Parse(_configuration["Email:Port"]);
-				client.EnableSsl = true;
-
-				using (var emailMessage = new MailMessage())
-				{
-
-					message += StaticEmailSignature.GetEmailSignature();
-					emailMessage.IsBodyHtml = true;
-					emailMessage.To.Add(new MailAddress(email));
-					emailMessage.Bcc.Add(new MailAddress("petra@marelibudesign.de"));
-					//emailMessage.Bcc.Add(new MailAddress("pburon@t-online.de"));
-					emailMessage.From = new MailAddress(_configuration["Email:Email"]);
-					emailMessage.Subject = subject;
-					emailMessage.Body = message;
-
-					ServicePointManager.ServerCertificateValidationCallback =
-						delegate (object s, X509Certificate certificate,
-								 X509Chain chain, SslPolicyErrors sslPolicyErrors)
-						{ return true; };
-
-					try
-					{
-						_logger.LogDebug("Try send EMail");
-						client.Send(emailMessage);
-					}
-					catch (Exception e)
-					{
-						_logger.LogError(e, "Error on sending E-Mail", null);
-					}
-				}
-			}
-            return Task.CompletedTask;
+            _configuration = configuration;
+            _logger = logger;
+            _environment = environment;
+            signature = StaticEmailSignature.GetEmailSignature();
+            senderAddress = new MailboxAddress(_configuration["Email:Email"]);
+            user = _configuration["Email:Email"];
+            password = _configuration["Email:Password"];
+            hostname = _configuration["Email:Host"];
+            hostport = int.Parse(_configuration["Email:Port"]);
+            path = Path.Combine(_environment.WebRootPath, FILESFOLDER);
+            path = Path.Combine(_environment.WebRootPath, FILESFOLDER);
         }
 
-		public Task SendEmailWithAttachmentsAsync(string email, string subject, string message, List<string> Attachments,string bcc)
+        public Task SendEmailAsync(string email, string subject, string message)
+        {
+            var emailmessage = new MimeMessage();
+            var bodyBuilder = new BodyBuilder();
+
+            emailmessage.From.Add(senderAddress);
+            emailmessage.To.Add(new MailboxAddress(email));
+            emailmessage.Subject = subject;
+            string contenten = CreateContent(message);
+
+            bodyBuilder.HtmlBody = contenten;
+            emailmessage.Body = bodyBuilder.ToMessageBody();
+
+            return TrySendMail(emailmessage);
+        }
+
+        private string CreateContent(string message)
+        {
+            return message + signature;
+        }
+
+        private Task TrySendMail(MimeMessage emailmessage)
+        {
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                    client.Connect(hostname, port: hostport, options: SecureSocketOptions.StartTlsWhenAvailable);
+                    client.Authenticate(user, password);
+                    _logger.LogInformation("SendEmailAsync -> try send email");
+                    client.Send(emailmessage);
+                    client.Disconnect(true);
+                    _logger.LogInformation("SendEmailAsync ->sending completet");
+                    return Task.CompletedTask;
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "SendEmailAsync -> Error on sending E-Mail", null);
+                    return Task.CompletedTask;
+                }
+            }
+        }
+
+        public Task SendEmailWithAttachmentsAsync(string email, string subject, string message, List<string> Attachments,string bcc)
 		{
-			using (var client = new SmtpClient())
-			{
-				var credential = new NetworkCredential
-				{
-					UserName = _configuration["Email:Email"],
-					Password = _configuration["Email:Password"]
-				};
 
-				client.Credentials = credential;
-				client.Host = _configuration["Email:Host"];
-				client.Port = int.Parse(_configuration["Email:Port"]);
-				client.EnableSsl = true;
+            var emailmessage = new MimeMessage();
+            var bodyBuilder = new BodyBuilder();
 
-			
+            emailmessage.From.Add(senderAddress);
+            emailmessage.To.Add(new MailboxAddress(email));
+            emailmessage.Subject = subject;
 
-				using (var emailMessage = new MailMessage())
-				{
-					message += StaticEmailSignature.GetEmailSignature();
-					emailMessage.IsBodyHtml = true;
-					emailMessage.To.Add(new MailAddress(email));
-                    if (!string.IsNullOrWhiteSpace(bcc))
-                    {
-                        emailMessage.Bcc.Add(new MailAddress(bcc));
-                    }
-					
-					
-					emailMessage.From = new MailAddress(_configuration["Email:Email"]);
-					emailMessage.Subject = subject;
-					emailMessage.Body = message;
+            if (!string.IsNullOrWhiteSpace(bcc))
+            {
+                emailmessage.Bcc.Add(new MailboxAddress(bcc));
+            }
 
-                    try
-                    {
-                        foreach (string file in Attachments)
-                        {
+            if (Attachments != null && Attachments.Count > 0)
+            {
+                foreach (string attachment in Attachments)
+                {
+                    bodyBuilder.Attachments.Add(Path.Combine(path, attachment));
+                } 
+            }
 
-                            string path = Path.Combine(_environment.WebRootPath, FILESFOLDER);
-                            string filepath = Path.Combine(path, file);
-                            Attachment data = new Attachment(filepath, MediaTypeNames.Application.Octet);
-                            // Add time stamp information for the file.
-                            ContentDisposition disposition = data.ContentDisposition;
-                            disposition.CreationDate = System.IO.File.GetCreationTime(filepath);
-                            disposition.ModificationDate = System.IO.File.GetLastWriteTime(filepath);
-                            disposition.ReadDate = System.IO.File.GetLastAccessTime(filepath);
-                            emailMessage.Attachments.Add(data);
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        _logger.LogError(e, "Fehler bei den Anhängen!!", null);
-                        Console.WriteLine(e);
-                    }
+            string contenten = CreateContent(message);
 
-					ServicePointManager.ServerCertificateValidationCallback =
-						delegate (object s, X509Certificate certificate,
-								 X509Chain chain, SslPolicyErrors sslPolicyErrors)
-						{ return true; };
+            bodyBuilder.HtmlBody = contenten;
+            emailmessage.Body = bodyBuilder.ToMessageBody();
 
-					try
-					{
-						_logger.LogDebug("Try send EMail");
-						client.Send(emailMessage);
-					}
-					catch (Exception e)
-					{
-						_logger.LogError(e, "Fehler beim E-Mail Versand:", null);
-                        Console.WriteLine($"Fehler beim E-Mail Versand: {e.Message}\nInnerException: {e.InnerException}\nStackTrace: {e.StackTrace}");
-					}
-				}
-			}
-			return Task.CompletedTask;
-		}
+            return TrySendMail(emailmessage);
+        }
 	}
 }

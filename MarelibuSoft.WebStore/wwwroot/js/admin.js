@@ -1,248 +1,248 @@
 ﻿if (!marelibusoft) {
-	var marelibusoft = {};
+    var marelibusoft = {};
 }
 
 if (!marelibusoft.admin) {
-	marelibusoft.admin = {};
+    marelibusoft.admin = {};
 }
 
 marelibusoft.admin.categoryIndexer = 0;
 
 marelibusoft.admin.getCategories = function () {
-	marelibusoft.admin.categoryIndexer++;
-	var apiurl = "/api/AdminCategories";
-	$.ajax(apiurl, {
-		type: "GET", 
-		contentType: "application/json",
-		dataType: 'json',
-		timeout: 60000,
-		success: function (result) {
-			var data = result;
-			marelibusoft.admin.renderCatgories(data);
-		},
-		error: function () {
-			alert("fehler");
-		}
-	});
-}
+    marelibusoft.admin.categoryIndexer++;
+    var apiurl = "/api/AdminCategories";
+    $.ajax(apiurl, {
+        type: "GET",
+        contentType: "application/json",
+        dataType: 'json',
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            marelibusoft.admin.renderCatgories(data);
+        },
+        error: function () {
+            alert("fehler");
+        }
+    });
+};
 
 marelibusoft.admin.getCategorySubs = function (sender) {
-	var cat = sender;
-	var apiurl = "/api/AdminCategorySubs/Category/" + cat;
-	$.ajax(apiurl, {
-		type : "GET",
-		contentType: "application/json",
-		dataType: "json",
-		timeout: 60000,
-		success: function (result) {
-			var data = result;
-			marelibusoft.admin.renderSubs(data);
-		}, error: function () {
-			alert("Fehler");
-		}
-	});
-}
+    var cat = sender;
+    var apiurl = "/api/AdminCategorySubs/Category/" + cat;
+    $.ajax(apiurl, {
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            marelibusoft.admin.renderSubs(data);
+        }, error: function () {
+            alert("Fehler");
+        }
+    });
+};
 
 marelibusoft.admin.getCategoryDetails = function (sender) {
-	var sub = sender;
-	var apiurl = "/api/AdminCategoryDetails/Sub/" + sub;
-	$.ajax(apiurl, {
-		type: "GET",
-		contentType: "application/json",
-		dataType: "json",
-		timeout: 60000,
-		success: function (result) {
-			var data = result;
-			marelibusoft.admin.renderDetails(data);
-		}, error: function (result) {
-			alert(result);
-		}
-	});
-}
+    var sub = sender;
+    var apiurl = "/api/AdminCategoryDetails/Sub/" + sub;
+    $.ajax(apiurl, {
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        timeout: 60000,
+        success: function (result) {
+            var data = result;
+            marelibusoft.admin.renderDetails(data);
+        }, error: function (result) {
+            alert(result);
+        }
+    });
+};
 
 marelibusoft.admin.renderCatgories = function (response) {
-	var idx = marelibusoft.admin.categoryIndexer;
-	var table = $("#tableBody");
-	var categoryselect = $("#categories_" + idx);
-	var html = "";
+    var idx = marelibusoft.admin.categoryIndexer;
+    var table = $("#tableBody");
+    var categoryselect = $("#categories_" + idx);
+    var html = "";
 
-	if (categoryselect.length === 0) {
-		html += "<div id='row_" + idx + "' class='row' >"
-			+ "<div id='div_categories_" + idx + "' class='col-sm-3'>"
-			+ "<select id='categories_" + idx + "' class='form-control' onchange='marelibusoft.admin.getCategorySubs(this.value)'>";
-		html += marelibusoft.admin.renderOptions(response);
-		html += "</select></div>" +
-			"<div id='subs_" + idx + "' class='col-sm-3'></div>" +
-			"<div id='details_" + idx + "' class='col-sm-3' ></div>" +
-			"<div id='deleterow_" + idx + "' class='col-sm-3'>" +
-			"<button class='btn btn-danger' onclick='marelibusoft.admin.deleteRow(\"row_" + idx + "\")'>Zeile L&ouml;schen</button>" +
-			"</div></div>";
-		table.append(html);
-	} else {
-		categoryselect.empty();
-		html += marelibusoft.admin.renderOptions(response);
-		categoryselect.append();
+    if (categoryselect.length === 0) {
+        html += "<div id='row_" + idx + "' class='row' >";
+        html += "<div id='div_categories_" + idx + "' class='col-sm-3'>";
+        html += "<select id='categories_" + idx + "' class='form-control' onchange='marelibusoft.admin.getCategorySubs(this.value)'>";
+        html += marelibusoft.admin.renderOptions(response);
+        html += "</select></div>";
+        html += "<div id='subs_" + idx + "' class='col-sm-3'></div>";
+        html += "<div id='details_" + idx + "' class='col-sm-3' ></div>";
+        html += "<div id='deleterow_" + idx + "' class='col-sm-3'>";
+        html += "<button class='btn btn-danger' onclick='marelibusoft.admin.deleteRow(\"row_" + idx + "\")'>Zeile L&ouml;schen</button>";
+        html += "</div></div>";
+        table.append(html);
+    } else {
+        categoryselect.empty();
+        html += marelibusoft.admin.renderOptions(response);
+        categoryselect.append();
 
-		var selectsubs = $("#categorysubs_" + idx);
-		if (selectsubs.length > 0) {
-			selectsubs.empty();
-			table.remove("#categorysubs_" + idx);
-		}
+        var selectsubs = $("#categorysubs_" + idx);
+        if (selectsubs.length > 0) {
+            selectsubs.empty();
+            table.remove("#categorysubs_" + idx);
+        }
 
-		var detailsselect = $("#categorydetails_" + idx);
-		if (detailsselect.length > 0) {
-			detailsselect.empty();
-			table.remove("#categorydetails_" + idx);
-		}
-	}
-}
+        var detailsselect = $("#categorydetails_" + idx);
+        if (detailsselect.length > 0) {
+            detailsselect.empty();
+            table.remove("#categorydetails_" + idx);
+        }
+    }
+};
 
 marelibusoft.admin.renderSubs = function (response) {
-	var idx = marelibusoft.admin.categoryIndexer;
-	var row = $("#row_" + idx);
-	var selectsubs = $("#categorysubs_" + idx);
-	var html = "";
+    var idx = marelibusoft.admin.categoryIndexer;
+    var row = $("#row_" + idx);
+    var selectsubs = $("#categorysubs_" + idx);
+    var html = "";
 
-	if (selectsubs.length === 0) {
-		html += "<select id='categorysubs_" + idx + "' class='form-control' onchange='marelibusoft.admin.getCategoryDetails(this.value)'>";
-		html += marelibusoft.admin.renderOptions(response);
-		html += "</select>";
-		$("#subs_"+idx).append(html);
-	} else {
-		selectsubs.empty();
-		html += marelibusoft.admin.renderOptions(response);
-		selectsubs.append(html);
+    if (selectsubs.length === 0) {
+        html += "<select id='categorysubs_" + idx + "' class='form-control' onchange='marelibusoft.admin.getCategoryDetails(this.value)'>";
+        html += marelibusoft.admin.renderOptions(response);
+        html += "</select>";
+        $("#subs_" + idx).append(html);
+    } else {
+        selectsubs.empty();
+        html += marelibusoft.admin.renderOptions(response);
+        selectsubs.append(html);
 
-		var detailsselect = $("#categorydetails_" + idx);
-		if (detailsselect.length > 0) {
-			detailsselect.empty();
-			row.remove("#categorydetails_" + idx);
-		}
-	}
-}
+        var detailsselect = $("#categorydetails_" + idx);
+        if (detailsselect.length > 0) {
+            detailsselect.empty();
+            row.remove("#categorydetails_" + idx);
+        }
+    }
+};
 
 marelibusoft.admin.renderDetails = function (response) {
-	var idx = marelibusoft.admin.categoryIndexer;
-	var row = $("#row_" + idx);
-	var html = "";
-	var detailsselect = $("#categorydetails_" + idx);
+    var idx = marelibusoft.admin.categoryIndexer;
+    var row = $("#row_" + idx);
+    var html = "";
+    var detailsselect = $("#categorydetails_" + idx);
 
-	if (detailsselect.length === 0) {
-		html += "<select id='categorydetails_" + idx + "' class='form-control'>";
-		html += marelibusoft.admin.renderOptions(response);
-		html += "</select>";
-		$("#details_" + idx).append(html);
-	} else {
-		detailsselect.empty();
-		html += marelibusoft.admin.renderOptions(response);
-		detailsselect.append(html);
-	}	
-}
+    if (detailsselect.length === 0) {
+        html += "<select id='categorydetails_" + idx + "' class='form-control'>";
+        html += marelibusoft.admin.renderOptions(response);
+        html += "</select>";
+        $("#details_" + idx).append(html);
+    } else {
+        detailsselect.empty();
+        html += marelibusoft.admin.renderOptions(response);
+        detailsselect.append(html);
+    }
+};
 
 marelibusoft.admin.renderOptions = function (response) {
-	var html = "<option value=0>nicht Zugewiesen</option>";
-	if (response) {
-		for (var i = 0; i < response.length; i++) {
-			html += "<option value='" + response[i].key + "'>" + response[i].value + "</option>";
-		}
-	}
-	return html;
-}
+    var html = "<option value=0>nicht Zugewiesen</option>";
+    if (response) {
+        for (var i = 0; i < response.length; i++) {
+            html += "<option value='" + response[i].key + "'>" + response[i].value + "</option>";
+        }
+    }
+    return html;
+};
 
 marelibusoft.admin.cleareTable = function () {
-	var tableBody = $("#tableBody");
-	tableBody.empty();
-	$("#messages").empty();
-	marelibusoft.admin.categoryIndexer = 0;
-}
+    var tableBody = $("#tableBody");
+    tableBody.empty();
+    $("#messages").empty();
+    marelibusoft.admin.categoryIndexer = 0;
+};
 
 marelibusoft.admin.deleteRow = function (rowId) {
-	$("#" + rowId).empty()
-	var tbody = $("#tablebody");
-	tbody.remove("#" + rowId);
+    $("#" + rowId).empty();
+    var tbody = $("#tablebody");
+    tbody.remove("#" + rowId);
 
-	if (tbody.children("#tablebody").length === 0) {
-		marelibusoft.admin.categoryIndexer = 0;
-	}
+    if (tbody.children("#tablebody").length === 0) {
+        marelibusoft.admin.categoryIndexer = 0;
+    }
 
-}
+};
 
 marelibusoft.admin.submitTable = function () {
-	var productselect = $("#productID");
-	var productID = productselect.val();
-	var rows = marelibusoft.admin.categoryIndexer + 1;
+    var productselect = $("#productID");
+    var productID = productselect.val();
+    var rows = marelibusoft.admin.categoryIndexer + 1;
 
-	for (var i = 1; i < rows; i++) {
-		var categoryselect = $("#categories_" + i);
-		var selectsubs = $("#categorysubs_" + i);
-		var detailsselect = $("#categorydetails_" + i);
-		var categoryID = 0;
-		var categorySubID = 0;
-		var categoryDetailID = 0;
-		if (categoryselect.length > 0) {
-			categoryID = categoryselect.val();
-		}
-		if (selectsubs.length > 0) {
-			categorySubID = selectsubs.val();
-		}
-		if (detailsselect.length > 0) {
-			categoryDetailID = detailsselect.val();
-		}
-		if (productID > 0 && categoryID > 0) {
-			marelibusoft.admin.postAssignment(productID, categoryID, categorySubID, categoryDetailID);
-		}
-	}
-}
+    for (var i = 1; i < rows; i++) {
+        var categoryselect = $("#categories_" + i);
+        var selectsubs = $("#categorysubs_" + i);
+        var detailsselect = $("#categorydetails_" + i);
+        var categoryID = 0;
+        var categorySubID = 0;
+        var categoryDetailID = 0;
+        if (categoryselect.length > 0) {
+            categoryID = categoryselect.val();
+        }
+        if (selectsubs.length > 0) {
+            categorySubID = selectsubs.val();
+        }
+        if (detailsselect.length > 0) {
+            categoryDetailID = detailsselect.val();
+        }
+        if (productID > 0 && categoryID > 0) {
+            marelibusoft.admin.postAssignment(productID, categoryID, categorySubID, categoryDetailID);
+        }
+    }
+};
 
 marelibusoft.admin.postAssignment = function (productID, categoryID, categorySubID, categoryDetialID) {
-	var body = JSON.stringify({
-		productID: productID,
-		categoryID: categoryID,
-		categorySubID: categorySubID,
-		categoryDetailID: categoryDetialID
-	});
+    var body = JSON.stringify({
+        productID: productID,
+        categoryID: categoryID,
+        categorySubID: categorySubID,
+        categoryDetailID: categoryDetialID
+    });
 
-	var xxsrf = $("input[name='__RequestVerificationToken']").val();
-	var apiurl = "/api/AdminCategoryAssignments";
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+    var apiurl = "/api/AdminCategoryAssignments";
 
-	$.ajax(apiurl, {
-		type: "POST",
-		headers: { 'X-XSRF-TOKEN': xxsrf },
-		contentType: "application/json",
-		dataType: "json",
-		data: body,
-		timeout: 60000,
-		success: function () {
-			var html = "<div class=\"alert alert-success alert-dismissable fade in\">" +
-				"<a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a>" +
-				"<strong>Erledigt!</strong> Artikel Kategorien Zuordnung angelegt</div>";
+    $.ajax(apiurl, {
+        type: "POST",
+        headers: { 'X-XSRF-TOKEN': xxsrf },
+        contentType: "application/json",
+        dataType: "json",
+        data: body,
+        timeout: 60000,
+        success: function () {
+            var html = "<div class=\"alert alert-success alert-dismissable fade in\">" +
+                "<a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a>" +
+                "<strong>Erledigt!</strong> Artikel Kategorien Zuordnung angelegt</div>";
 
-			$("#messages").empty().append(html).fadeIn(3000);
-		}, error: function () {
-			var html = "<div class=\"alert alert-danger alert-dismissable fade in\">" +
-				"<a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a>" +
-				"<strong>Fehler!</strong> Fehler, bei der Anlage.</div>";
-			$("#messages").empty().append(html).fadeIn(3000).fadeOut(1500);
-		}
-	})
-}
+            $("#messages").empty().append(html).fadeIn(3000);
+        }, error: function () {
+            var html = "<div class=\"alert alert-danger alert-dismissable fade in\">" +
+                "<a href=\"#\" class=\"close\" data-dismiss=\"alert\" aria-label=\"close\">&times;</a>" +
+                "<strong>Fehler!</strong> Fehler, bei der Anlage.</div>";
+            $("#messages").empty().append(html).fadeIn(3000).fadeOut(1500);
+        }
+    });
+};
 
 marelibusoft.admin.calculateSecondBasePrice = function () {
-	var pPrice = parseFloat($("#basisPrice").val().replace(",", "."));
-	var pwith = parseFloat($("#productwith").val().replace(",", "."));
-	var qmeter = 1 * pwith;
-	var secondPrice = pPrice / qmeter;
-	secondPrice = secondPrice.toFixed(2);
-	secondPrice = secondPrice.replace(".", ",");
-	$("#sbPrice").val(secondPrice);
-	$("#myModal").modal("hide");
-}
+    var pPrice = parseFloat($("#basisPrice").val().replace(",", "."));
+    var pwith = parseFloat($("#productwith").val().replace(",", "."));
+    var qmeter = 1 * pwith;
+    var secondPrice = pPrice / qmeter;
+    secondPrice = secondPrice.toFixed(2);
+    secondPrice = secondPrice.replace(".", ",");
+    $("#sbPrice").val(secondPrice);
+    $("#myModal").modal("hide");
+};
 
 marelibusoft.admin.sendShippingMail = function (orderid) {
-	console.log("marelibusoft.admin.sendShippingMail -> orderid:" + orderid);
+    console.log("marelibusoft.admin.sendShippingMail -> orderid:" + orderid);
 
-	var xxsrf = $("input[name='__RequestVerificationToken']").val();
-}
+    var xxsrf = $("input[name='__RequestVerificationToken']").val();
+};
 
 $(".modal-wide").on("show.bs.modal", function () {
     var height = $(window).height() - 200;
@@ -266,7 +266,7 @@ marelibusoft.admin.getVariants = function () {
         }
 
     });
-}
+};
 
 marelibusoft.admin.getVariantOptions = function () {
     var url = "/api/VariantOptionTemplates/variant/";
@@ -289,7 +289,7 @@ marelibusoft.admin.getVariantOptions = function () {
             var table = "tblOpt";
             if (data) {
                 for (var i = 0; i < data.length; i++) {
-                    marelibusoft.admin.AddVariantOption(table ,data[i].option);
+                    marelibusoft.admin.AddVariantOption(table, data[i].option);
                 }
             }
         }, error: function () {
@@ -297,7 +297,7 @@ marelibusoft.admin.getVariantOptions = function () {
         }
 
     });
-}
+};
 
 
 marelibusoft.admin.getVariantCombiOptions = function () {
@@ -329,7 +329,7 @@ marelibusoft.admin.getVariantCombiOptions = function () {
         }
 
     });
-}
+};
 
 marelibusoft.admin.cleareModalVariant = function () {
     marelibusoft.admin.variantOptionCount = 0;
@@ -340,13 +340,13 @@ marelibusoft.admin.cleareModalVariant = function () {
     $("#combiVariantOptionNameAdd").val("");
     $("#tblOpt").empty();
     $("tblCombi").empty();
-}
+};
 
 marelibusoft.admin.variantOptionCount = 0;
 marelibusoft.admin.variantCombiCount = 0;
 
 marelibusoft.admin.AddVariantOption = function (table, value) {
-      
+
     var rowid = 0;
     if (table === "tblOpt") {
         marelibusoft.admin.variantOptionCount++;
@@ -359,7 +359,7 @@ marelibusoft.admin.AddVariantOption = function (table, value) {
     }
     if (!value) value = "";
     var tabelbody = $("#" + table);
-    var htmlrow = "<div id='" + table +"_row_" + rowid + "' class='row'>" +
+    var htmlrow = "<div id='" + table + "_row_" + rowid + "' class='row'>" +
         "<div class='col-xs-9'>" +
         "<input id='" + table + "_optionId_" + rowid + "' class='form-control' type='text' value='" + value + "' />" +
         "</div >" +
@@ -370,14 +370,15 @@ marelibusoft.admin.AddVariantOption = function (table, value) {
 
     tabelbody.append(htmlrow);
     $("#" + table + "_optionId_" + rowid).focus();
-}
+};
 
 marelibusoft.admin.delteVariantRow = function (table, rowid) {
-    var id = "#" + table +"_row_" + rowid;
+    var id = "#" + table + "_row_" + rowid;
     $(id).empty();
     var tbody = $("#" + table);
     tbody.remove(id);
-}
+};
+
 marelibusoft.admin.saveVariantOnSubmit = function () {
     event.preventDefault();
     $(".marelibu-varinat-rows").each(function (i, el) {
@@ -386,7 +387,7 @@ marelibusoft.admin.saveVariantOnSubmit = function () {
         marelibusoft.admin.saveVariant(varinatid);
     });
 
-}
+};
 
 marelibusoft.admin.saveVariant = function (varinatId) {
     var id = varinatId;
@@ -394,8 +395,8 @@ marelibusoft.admin.saveVariant = function (varinatId) {
     $("#variantTableBodyId_" + id + " > tr").each(function (i, el) {
         var optId = $(this).data("option-id");
         marelibusoft.admin.saveOption(id, optId);
-    });        
-}
+    });
+};
 
 marelibusoft.admin.createVariants = function () {
     var productID = $("#ProductID").val();
@@ -424,7 +425,7 @@ marelibusoft.admin.createVariants = function () {
     if (combiInputs.length > 0) {
         $.each(optionInputs, function (i, option) {
             $.each(combiInputs, function (j, combi) {
-                var productVariantOption = {}
+                var productVariantOption = {};
                 productVariantOption.option = option.value;
                 productVariantOption.quantity = 15.0;
                 productVariantOption.price = 0.0;
@@ -439,7 +440,7 @@ marelibusoft.admin.createVariants = function () {
         });
     } else {
         $.each(optionInputs, function (i, option) {
-            var productVariantOption = {}
+            var productVariantOption = {};
             productVariantOption.option = option.value;
             productVariantOption.quantity = 15.0;
             productVariantOption.price = 0.0;
@@ -452,7 +453,7 @@ marelibusoft.admin.createVariants = function () {
             }
 
         });
-    }    
+    }
 
     var productVariant = {};
     productVariant.Name = variantName;
@@ -468,11 +469,11 @@ marelibusoft.admin.createVariants = function () {
         variantTemplate.VariantOptionTemplates = templateOptions;
         marelibusoft.admin.postVariantTemplate(variantTemplate);
     }
-    marelibusoft.admin.postVariant(productVariant);   
+    marelibusoft.admin.postVariant(productVariant);
 
     $("#variantModal").modal("hide");
     location.reload();
-}
+};
 
 marelibusoft.admin.putVariantIsAbsolutelyNecessary = function (variantId) {
     var control = $("#isAbsolutelyNecessary_" + variantId);
@@ -498,16 +499,16 @@ marelibusoft.admin.putVariantIsAbsolutelyNecessary = function (variantId) {
             alert("Fehler");
         }
     });
-}
+};
 
 marelibusoft.admin.postVariant = function (variant) {
     var url = "/api/ProductVariants";
     var xxsrf = $("input[name='__RequestVerificationToken']").val();
 
-    var variantObj = variant
+    var variantObj = variant;
 
     $.ajax(url, {
-        headers : { 'X-XSRF-TOKEN': xxsrf },
+        headers: { 'X-XSRF-TOKEN': xxsrf },
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(variantObj),
@@ -523,7 +524,7 @@ marelibusoft.admin.postVariant = function (variant) {
             alert("Fehler");
         }
     });
-}
+};
 
 marelibusoft.admin.postVariantTemplate = function (variantTemplate) {
     var url = "/api/VariantTemplates";
@@ -532,7 +533,7 @@ marelibusoft.admin.postVariantTemplate = function (variantTemplate) {
     var temp = variantTemplate;
 
     $.ajax(url, {
-        headers : { 'X-XSRF-TOKEN': xxsrf },
+        headers: { 'X-XSRF-TOKEN': xxsrf },
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(temp),
@@ -544,7 +545,7 @@ marelibusoft.admin.postVariantTemplate = function (variantTemplate) {
             alert("Fehler");
         }
     });
-}
+};
 
 marelibusoft.admin.deleteProductVariant = function (variantId) {
     var url = "/api/ProductVariants/" + variantId;
@@ -562,7 +563,7 @@ marelibusoft.admin.deleteProductVariant = function (variantId) {
             alert("Fehler");
         }
     });
-}
+};
 
 marelibusoft.admin.addOption = function (variantId) {
     var option = {
@@ -588,8 +589,7 @@ marelibusoft.admin.addOption = function (variantId) {
             alert("Fehler");
         }
     });
-}
-
+};
 
 marelibusoft.admin.saveOption = function (variantId, optionId) {
     var optionValue = $("#option_" + optionId).val();
@@ -623,7 +623,7 @@ marelibusoft.admin.saveOption = function (variantId, optionId) {
         }
     });
 
-}
+};
 
 marelibusoft.admin.deleteOption = function (variantId, optionId) {
     var url = "/api/ProductVariantOptions/" + optionId;
@@ -646,7 +646,7 @@ marelibusoft.admin.deleteOption = function (variantId, optionId) {
             alert("Fehler");
         }
     });
-}
+};
 
 marelibusoft.admin.addCombiVariant = function () {
     var container = $("containerCombi");
@@ -669,4 +669,4 @@ marelibusoft.admin.addCombiVariant = function () {
         "</div >" +
         "<div id='tableBodyVariantCombi'></div></div >";
     container.append(html);
-}
+};

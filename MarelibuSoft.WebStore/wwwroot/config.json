@@ -9,7 +9,7 @@
     "@brand-primary": "darken(#00ffff, 6.5%)",
     "@brand-success": "#00ffff",
     "@brand-info": "#80ffff",
-    "@brand-warning": "#ffff1a",
+    "@brand-warning": "#ffcc00",
     "@brand-danger": "#ff1a1a",
     "@body-bg": "#fff",
     "@text-color": "@gray-dark",

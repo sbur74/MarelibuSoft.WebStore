@@ -57,6 +57,8 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels
 		[Display(Name = "Sendungsverfolungsnummer")]
 		public string TrackingNumber { get; set; }
 
-		public OrderStateViewModel StateViewModel { get; set; }
+        public bool HasVariant { get; set; }
+
+        public OrderStateViewModel StateViewModel { get; set; }
 	}
 }

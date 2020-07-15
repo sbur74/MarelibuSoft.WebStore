@@ -108,7 +108,7 @@
                         @if (item.HasOptions)
                         {
                             <p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
-                            <a asp-action="Artikel" asp-route-id="@item.SlugUrl" class="btn btn-default" role="button"><i class="fa fa-info"></i> Variante W&auml;hlen</a>
+                            <a asp-action="Artikel" asp-route-id="@item.SlugUrl" class="btn btn-default" role="button"><i class="fa fa-info"></i> Variante w&auml;hlen</a>
                         }
                         else
                         {
@@ -126,7 +126,7 @@
                             <p class="label label-default" style="font-size:medium"><span id="@qunitityPrice">@startPrice &euro; <b>*</b></span>  <small><a asp-area="" asp-controller="Home" asp-action="PaymendAndShipping">zzgl. Versand</a></small></p>
                             <input type="hidden" id="@sellactitid" value="@item.SellActionItemId" />
                             <a id="@btnItemCart" class="btn btn-primary" role="button" onclick="postCartLine(@item.ProductID, '@item.BasesUnitID', '@item.Price');">
-                                <span class="glyphicon glyphicon-shopping-cart"></span> in den Warenkorb
+                                <i class="fa fa-shopping-cart"></i> in den Warenkorb
                             </a>
                             @* <a asp-action="Artikel" asp-route-id="@item.SlugUrl" class="btn btn-default" role="button">Zum Artikel</a>*@
                         }

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MarelibuSoft.WebStore.Models;
-using MarelibuSoft.WebStore.Models.ViewModels;
-using MarelibuSoft.WebStore.Areas.Admin.Models.AdminViewModels;
+using Microsoft.AspNetCore.Identity;
 //using Pomelo.EntityFrameworkCore.MySql.
 
 namespace MarelibuSoft.WebStore.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
-    {
+	public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+	{
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

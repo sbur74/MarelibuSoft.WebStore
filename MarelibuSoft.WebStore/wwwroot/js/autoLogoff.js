@@ -30,7 +30,7 @@
 		validNavigation = true;
 	});
 
-}
+};
 
 
 
@@ -40,10 +40,10 @@ function windowCloseEvent() {
 			callServerForBrowserCloseEvent();
 		}
 	}
-}
+};
 
 
 
 function callServerForBrowserCloseEvent() {
 	//…...Do you operation here
-}
+};

@@ -55,8 +55,14 @@ namespace MarelibuSoft.WebStore.Models.AccountViewModels
 		[Display(Name = "Land")]
 		public int CountryID { get; set; }
 
-		public List<Country> Countries { get; set; }
+        public List<Country> Countries { get; set; }
 
 		public string ShoppingCartId { get; set; }
-	}
+
+        [Required(ErrorMessage = "Bitte geben Sie den angezeigten Captcha Code ein!")]
+        [StringLength(4)]
+        public string CaptchaCode { get; set; }
+
+        public string ErrorString { get; set; }
+    }
 }

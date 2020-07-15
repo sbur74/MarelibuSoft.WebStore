@@ -16,11 +16,13 @@ namespace MarelibuSoft.WebStore.Areas.Admin.Controllers
 		private readonly ILoggerFactory factory;
 		private readonly ILogger logger;
 
-		public AdminUsersController(ApplicationDbContext dbContext, ILoggerFactory loggerFactory)
+		public AdminUsersController(ApplicationDbContext dbContext
+            //, ILoggerFactory loggerFactory
+            )
 		{
 			context = dbContext;
-			factory = loggerFactory;
-			logger = factory.CreateLogger<AdminUsersController>();
+			//factory = loggerFactory;
+			//logger = factory.CreateLogger<AdminUsersController>();
 		}
 
         // GET: AdminUserManager
